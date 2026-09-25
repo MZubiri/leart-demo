@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, signal, ViewEncapsulation } from '@angular/core';
+import { Component, computed, effect, signal, untracked, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CATEGORY_SHOWCASE, Category, OCCASIONS } from './store/products';
@@ -70,8 +70,9 @@ export class App {
       const maximum = requested.category === 'Cuadros'
         ? FRAME_LIMITS[requested.variants[0]] ?? 4
         : requested.maxFigures;
-      this.figures.set(Math.min(Math.max(this.figures(), requested.minFigures), maximum));
-      this.pets.set(Math.min(this.pets(), Math.max(0, maximum - this.figures())));
+      const figures = Math.min(Math.max(untracked(this.figures), requested.minFigures), maximum);
+      this.figures.set(figures);
+      this.pets.set(Math.min(untracked(this.pets), Math.max(0, maximum - figures)));
       this.activeStep.set(2);
     });
   }
