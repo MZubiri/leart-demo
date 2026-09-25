@@ -9,6 +9,7 @@ export class StoreService {
   readonly cart = signal<Record<string,{ quantity:number; note:string }>>(this.loadCart());
   readonly cartOpen = signal(false);
   readonly customizerOpen = signal(false);
+  readonly customizerProduct = signal<Product|null>(null);
   readonly cartLines = computed<CartLine[]>(() => Object.entries(this.cart()).map(([id,line]) => ({ product:this.products.find(product => product.id === id)!,...line })).filter(line => line.product));
   readonly cartCount = computed(() => this.cartLines().reduce((total,line) => total + line.quantity,0));
 
@@ -26,7 +27,7 @@ export class StoreService {
   clear():void { this.cart.set({}); }
   openCart():void { this.cartOpen.set(true); document.body.style.overflow='hidden'; }
   closeCart():void { this.cartOpen.set(false); document.body.style.overflow=''; }
-  openCustomizer():void { this.customizerOpen.set(true); document.body.style.overflow='hidden'; }
+  openCustomizer(product:Product|null=null):void { this.customizerProduct.set(product); this.customizerOpen.set(true); document.body.style.overflow='hidden'; }
   closeCustomizer():void { this.customizerOpen.set(false); document.body.style.overflow=''; }
   whatsappUrl():string {
     const lines=this.cartLines().map(line => `• ${line.quantity}x ${line.product.name} — ${line.product.category} (${line.product.detail})${line.note ? `\n  Detalles: ${line.note}` : ''}`);

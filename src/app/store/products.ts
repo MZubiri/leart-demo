@@ -135,7 +135,7 @@ export const PRODUCTS: Product[] = [
     description: 'Un cuadro diseñado alrededor de tu historia. El tamaño se elige según la cantidad de minifiguras, la composición y el espacio que quieras darle a la escena.',
     minFigures: 1,
     maxFigures: 8,
-    variants: ['Tamaño S · máximo 4', 'Tamaño M · máximo 6', 'Tamaño L · máximo 8'],
+    variants: ['Tamaño S · máx. 4', 'Tamaño M · máx. 6', 'Tamaño L · máx. 8'],
     allowsPets: true,
     allowsAccessories: true,
     rule: 'Tamaño S: máximo 4 figuras. Tamaño M: máximo 6. Tamaño L: máximo 8.',

@@ -26,7 +26,7 @@
     <div class="section-heading"><div><div class="eyebrow"><span></span> Una muestra de cada línea</div><h2>Ideas para <em>sorprender</em></h2></div><p>Elige un punto de partida. Leart confirmará inventario, valor y posibilidades antes de recibir el pago.</p></div>
     <div class="product-grid featured-grid">
       @for (product of featured; track product.id) {
-        <article class="product-card"><a class="product-image" [routerLink]="['/producto', product.id]">@if (product.tag) {<span class="product-tag">{{product.tag}}</span>}<img [src]="product.image" [alt]="product.name"><span class="image-arrow">→</span></a><div class="product-info"><div><small>{{product.kicker}}</small><h3><a [routerLink]="['/producto', product.id]">{{product.name}}</a></h3></div><strong>{{product.detail}}</strong></div><button class="add-cart" type="button" (click)="store.add(product)">Agregar a cotización <span>+</span></button></article>
+        <article class="product-card"><a class="product-image" [routerLink]="['/producto', product.id]">@if (product.tag) {<span class="product-tag">{{product.tag}}</span>}<img [src]="product.image" [alt]="product.name"><span class="image-arrow">→</span></a><div class="product-info"><div><small>{{product.kicker}}</small><h3><a [routerLink]="['/producto', product.id]">{{product.name}}</a></h3></div><strong>{{product.detail}}</strong></div><button class="add-cart" type="button" (click)="store.openCustomizer(product)">Configurar y cotizar <span>→</span></button></article>
       }
     </div>
     <a class="load-more" routerLink="/catalogo">Explorar catálogo completo <span>→</span></a>

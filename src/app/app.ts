@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, signal, ViewEncapsulation } from '@angular/core';
+import { Component, computed, effect, signal, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CATEGORY_SHOWCASE, Category, OCCASIONS } from './store/products';
@@ -38,25 +38,50 @@ export class App {
   readonly accessories = signal(false);
   readonly occasion = signal('Aniversario');
   readonly notes = signal('');
-  readonly variants = computed(() => VARIANTS[this.selectedCategory()]);
+  readonly variants = computed(() => {
+    const requested = this.store.customizerProduct();
+    return requested?.category === this.selectedCategory() ? requested.variants : VARIANTS[this.selectedCategory()];
+  });
   readonly maxFigures = computed(() =>
     this.selectedCategory() === 'Cuadros'
       ? FRAME_LIMITS[this.selectedVariant()] ?? 4
       : this.formats.find((item) => item.name === this.selectedCategory())?.maxFigures ?? 8,
   );
-  readonly selectedProduct = computed(
-    () => this.store.products.find((item) => item.category === this.selectedCategory()),
-  );
+  readonly selectedProduct = computed(() => {
+    const requested = this.store.customizerProduct();
+    return requested?.category === this.selectedCategory()
+      ? requested
+      : this.store.products.find((item) => item.category === this.selectedCategory());
+  });
 
-  constructor(readonly store: StoreService) {}
+  constructor(readonly store: StoreService) {
+    effect(() => {
+      const isOpen = this.store.customizerOpen();
+      const requested = this.store.customizerProduct();
+      if (!isOpen) return;
+      if (!requested) {
+        this.activeStep.set(1);
+        return;
+      }
+      this.selectedCategory.set(requested.category);
+      this.selectedVariant.set(requested.variants[0]);
+      const maximum = requested.category === 'Cuadros'
+        ? FRAME_LIMITS[requested.variants[0]] ?? 4
+        : requested.maxFigures;
+      this.figures.set(Math.min(Math.max(this.figures(), requested.minFigures), maximum));
+      this.activeStep.set(2);
+    });
+  }
 
   openCustomizer(category?: Category): void {
+    this.store.customizerProduct.set(null);
     if (category) this.chooseCategory(category);
     this.activeStep.set(1);
     this.store.openCustomizer();
   }
 
   chooseCategory(category: Category): void {
+    this.store.customizerProduct.set(null);
     this.selectedCategory.set(category);
     this.selectedVariant.set(VARIANTS[category][0]);
     const maximum = category === 'Cuadros' ? 4 : this.formats.find((item) => item.name === category)?.maxFigures ?? 8;
