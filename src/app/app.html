@@ -1,24 +1,100 @@
 <div class="announcement">Hecho en Medellín · Envíos a toda Colombia</div>
 <header class="site-header">
   <a class="brand" routerLink="/" aria-label="Leart inicio" (click)="menuOpen.set(false)"><span class="brand-main">LEART</span><span class="brand-dot">.</span><span class="brand-store">STORE</span></a>
-  <button class="menu-button" type="button" aria-label="Abrir menú" (click)="menuOpen.update(value=>!value)"><span></span><span></span></button>
-  <nav [class.is-open]="menuOpen()"><a routerLink="/catalogo" routerLinkActive="active" (click)="menuOpen.set(false)">Catálogo</a><a routerLink="/" fragment="personaliza" (click)="menuOpen.set(false)">Personaliza</a><a routerLink="/" fragment="como-funciona" (click)="menuOpen.set(false)">Cómo funciona</a><a href="https://www.instagram.com/leart.store/" target="_blank" rel="noreferrer">Instagram ↗</a></nav>
-  <div class="header-actions"><button class="cart-button" type="button" aria-label="Abrir carrito" (click)="store.openCart()">Bolsa <span>{{store.cartCount()}}</span></button><button class="header-cta" type="button" (click)="openCustomizer()">Crear mi regalo <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+  <button class="menu-button" type="button" aria-label="Abrir menú" (click)="menuOpen.update(value => !value)"><span></span><span></span></button>
+  <nav [class.is-open]="menuOpen()">
+    <a routerLink="/catalogo" routerLinkActive="active" (click)="menuOpen.set(false)">Catálogo</a>
+    <a routerLink="/" fragment="como-funciona" (click)="menuOpen.set(false)">Cómo comprar</a>
+    <a routerLink="/personalizacion" routerLinkActive="active" (click)="menuOpen.set(false)">Ya hice mi pedido</a>
+    <a href="https://www.instagram.com/leart.store/" target="_blank" rel="noreferrer">Instagram ↗</a>
+  </nav>
+  <div class="header-actions">
+    <button class="cart-button" type="button" aria-label="Abrir cotización" (click)="store.openCart()">Cotización <span>{{store.cartCount()}}</span></button>
+    <button class="header-cta" type="button" (click)="openCustomizer()">Cotizar mi idea <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
 </header>
 
 <router-outlet />
 
-<footer><div class="footer-brand"><a class="brand" routerLink="/"><span class="brand-main">LEART</span><span class="brand-dot">.</span><span class="brand-store">STORE</span></a><p>Regalos personalizados que convierten personas y momentos en piezas para recordar.</p></div><div><strong>Explora</strong><a routerLink="/catalogo">Catálogo</a><button type="button" (click)="openCustomizer()">Personaliza</button><a routerLink="/" fragment="como-funciona">Cómo funciona</a></div><div><strong>Ayuda</strong><a routerLink="/" fragment="como-funciona">Proceso de compra</a><a routerLink="/" fragment="preguntas">Preguntas frecuentes</a><a routerLink="/" fragment="envios">Envíos</a></div><div><strong>Encuéntranos</strong><a href="https://www.instagram.com/leart.store/" target="_blank" rel="noreferrer">Instagram ↗</a><a [href]="store.whatsappUrl()" target="_blank" rel="noreferrer">WhatsApp ↗</a><small>Hecho con ♥ en Medellín, Colombia</small></div><div class="footer-bottom"><span>© 2026 Leart Store</span><span>Catálogo demostrativo</span></div></footer>
+<footer>
+  <div class="footer-brand"><a class="brand" routerLink="/"><span class="brand-main">LEART</span><span class="brand-dot">.</span><span class="brand-store">STORE</span></a><p>Regalos personalizados que convierten personas y momentos en piezas para recordar.</p></div>
+  <div><strong>Explora</strong><a routerLink="/catalogo">Catálogo</a><button type="button" (click)="openCustomizer()">Armar cotización</button><a routerLink="/" fragment="como-funciona">Cómo comprar</a></div>
+  <div><strong>Tu pedido</strong><a routerLink="/personalizacion">Personalizar después del pago</a><a routerLink="/" fragment="preguntas">Preguntas frecuentes</a><a routerLink="/" fragment="envios">Envíos</a></div>
+  <div><strong>Encuéntranos</strong><a href="https://www.instagram.com/leart.store/" target="_blank" rel="noreferrer">Instagram ↗</a><a [href]="store.whatsappUrl()" target="_blank" rel="noreferrer">WhatsApp ↗</a><small>Hecho con ♥ en Medellín, Colombia</small></div>
+  <div class="footer-bottom"><span>© 2026 Leart Store</span><span>Catálogo y cotización</span></div>
+</footer>
 
-@if(store.customizerOpen()){
-  <div class="modal-backdrop" (click)="store.closeCustomizer()"><section class="customizer" role="dialog" aria-modal="true" (click)="$event.stopPropagation()"><button class="modal-close" type="button" aria-label="Cerrar" (click)="store.closeCustomizer()">×</button><div class="customizer-head"><div class="eyebrow"><span></span> Personalizador visual</div><h2>Cuéntanos tu idea</h2><div class="progress"><i [class.done]="activeStep()>=1"></i><i [class.done]="activeStep()>=2"></i><i [class.done]="activeStep()>=3"></i></div><small>Paso {{activeStep()}} de 3</small></div>
-    <div class="customizer-body">
-      @if(activeStep()===1){<h3>1. Elige el formato</h3><p class="step-help">Empieza por el tipo de regalo que tienes en mente.</p><div class="visual-options format-options">@for(option of formats;track option.name){<button type="button" [class.selected]="selectedProduct()===option.name" (click)="selectedProduct.set(option.name)"><img [src]="option.image" [alt]="option.name"><span>{{option.name}}</span><b>✓</b></button>}</div>}
-      @if(activeStep()===2){<h3>2. ¿A quién vamos a representar?</h3><p class="step-help">Elige una referencia y sube hasta cuatro fotos para ayudarnos a capturar sus detalles.</p><div class="visual-options figure-options">@for(option of figureStyles;track option.name){<button type="button" [class.selected]="selectedFigure()===option.name" (click)="selectedFigure.set(option.name)"><img [src]="option.image" [alt]="option.name"><span>{{option.name}}</span><b>✓</b></button>}</div><div class="details-row"><div><label>Personas o mascotas</label><div class="counter"><button type="button" (click)="people.set(people()>1?people()-1:1)">−</button><strong>{{people()}}</strong><button type="button" (click)="people.update(value=>value+1)">+</button></div></div><div><label for="occasion">Ocasión</label><select id="occasion" [ngModel]="occasion()" (ngModelChange)="occasion.set($event)"><option>Aniversario</option><option>Cumpleaños</option><option>Graduación</option><option>Amistad</option><option>Otro momento</option></select></div></div><label class="upload-box"><input type="file" accept="image/*" multiple (change)="onPhotos($event)"><span>＋</span><strong>Subir fotos de referencia</strong><small>JPG o PNG · máximo 4 imágenes</small></label>@if(photoPreviews().length){<div class="photo-previews">@for(image of photoPreviews();track image){<img [src]="image" alt="Foto de referencia cargada">}</div>}}
-      @if(activeStep()===3){<h3>3. Elige una escena y agrega detalles</h3><p class="step-help">Esta selección sirve como punto de partida; Leart confirmará piezas y disponibilidad.</p><div class="visual-options scene-options">@for(option of scenes;track option.name){<button type="button" [class.selected]="selectedScene()===option.name" (click)="selectedScene.set(option.name)"><img [src]="option.image" [alt]="option.name"><span>{{option.name}}</span><b>✓</b></button>}</div><label for="notes">Nombres, frase, accesorios o indicaciones</label><textarea id="notes" rows="3" placeholder="Ej: Laura y Mateo, incluir un perrito blanco y la fecha 12.08.2022" [ngModel]="notes()" (ngModelChange)="notes.set($event)"></textarea><div class="summary-box"><span>{{selectedProduct()}} · {{selectedFigure()}} · {{selectedScene()}}</span><strong>{{people()}} figuras · {{occasion()}}</strong></div>}
-    </div><div class="customizer-actions">@if(activeStep()>1){<button class="back" type="button" (click)="previousStep()">Atrás</button>}@if(activeStep()<3){<button class="button button-dark" type="button" (click)="nextStep()">Continuar <span>→</span></button>}@else{<button class="button button-dark" type="button" (click)="addCustom()">Agregar selección <span>+</span></button>}</div></section></div>
+@if (store.customizerOpen()) {
+  <div class="modal-backdrop" (click)="store.closeCustomizer()">
+    <section class="customizer quote-builder" role="dialog" aria-modal="true" aria-label="Armar cotización" (click)="$event.stopPropagation()">
+      <button class="modal-close" type="button" aria-label="Cerrar" (click)="store.closeCustomizer()">×</button>
+      <div class="customizer-head">
+        <div class="eyebrow"><span></span> Cotizador visual</div>
+        <h2>Arma tu idea</h2>
+        <div class="progress"><i [class.done]="activeStep() >= 1"></i><i [class.done]="activeStep() >= 2"></i><i [class.done]="activeStep() >= 3"></i></div>
+        <small>Paso {{activeStep()}} de 3 · El valor final se confirma por WhatsApp</small>
+      </div>
+      <div class="customizer-body">
+        @if (activeStep() === 1) {
+          <h3>1. ¿Qué quieres regalar?</h3>
+          <p class="step-help">Elige una de las cinco líneas de Leart.</p>
+          <div class="visual-options format-options quote-formats">
+            @for (option of formats; track option.name) {
+              <button type="button" [class.selected]="selectedCategory() === option.name" (click)="chooseCategory(option.name)">
+                <img [src]="option.image" [alt]="option.name"><span>{{option.shortName}}</span><small>{{option.description}}</small><b>✓</b>
+              </button>
+            }
+          </div>
+        }
+        @if (activeStep() === 2) {
+          <h3>2. Define la presentación</h3>
+          <p class="step-help">Solo mostramos combinaciones que Leart puede revisar y cotizar.</p>
+          <label>Presentación</label>
+          <div class="variant-options">
+            @for (variant of variants(); track variant) {
+              <button type="button" [class.selected]="selectedVariant() === variant" (click)="selectedVariant.set(variant)">{{variant}}</button>
+            }
+          </div>
+          <div class="details-row quote-details">
+            <div><label>Minifiguras</label><div class="counter"><button type="button" (click)="changeFigures(-1)" [disabled]="figures() <= 1">−</button><strong>{{figures()}}</strong><button type="button" (click)="changeFigures(1)" [disabled]="figures() >= maxFigures()">+</button></div><small>Máximo para esta línea: {{maxFigures()}}</small></div>
+            <div><label>Mascotas</label><div class="counter"><button type="button" (click)="pets.set(pets() > 0 ? pets() - 1 : 0)" [disabled]="pets() === 0">−</button><strong>{{pets()}}</strong><button type="button" (click)="pets.update(value => value + 1)" [disabled]="selectedCategory() === 'Llaveros'">+</button></div><small>Perros y gatos genéricos, según disponibilidad.</small></div>
+          </div>
+          <label class="check-option"><input type="checkbox" [ngModel]="accessories()" (ngModelChange)="accessories.set($event)"><span>Quiero consultar por accesorios adicionales</span></label>
+          <p class="rule-note"><b>Regla:</b> {{selectedProduct()?.rule}}</p>
+        }
+        @if (activeStep() === 3) {
+          <h3>3. Cuéntanos lo esencial</h3>
+          <p class="step-help">Aquí preparas la cotización. Las fotos y elecciones detalladas se solicitan después del pago.</p>
+          <label for="occasion">Ocasión</label>
+          <select id="occasion" [ngModel]="occasion()" (ngModelChange)="occasion.set($event)">@for (item of occasions; track item) {<option [value]="item">{{item}}</option>}<option value="Otro momento">Otro momento</option></select>
+          <label for="notes">Idea, nombres o requerimientos especiales</label>
+          <textarea id="notes" rows="4" placeholder="Ej: regalo para una pareja, incluir un perrito blanco y elementos de ciclismo" [ngModel]="notes()" (ngModelChange)="notes.set($event)"></textarea>
+          <div class="summary-box"><span>{{selectedCategory()}} · {{selectedVariant()}}</span><strong>{{figures()}} figura(s)@if (pets()) { · {{pets()}} mascota(s)}</strong></div>
+          <div class="postpay-note"><b>Después del pago</b><span>Recibirás el enlace para subir fotos, elegir figuras y completar el diseño.</span></div>
+        }
+      </div>
+      <div class="customizer-actions">
+        @if (activeStep() > 1) {<button class="back" type="button" (click)="previousStep()">Atrás</button>}
+        @if (activeStep() < 3) {<button class="button button-dark" type="button" (click)="nextStep()">Continuar <span>→</span></button>}
+        @else {<button class="button button-dark" type="button" (click)="addCustom()">Agregar a cotización <span>+</span></button>}
+      </div>
+    </section>
+  </div>
 }
 
-@if(store.cartOpen()){
-  <div class="cart-backdrop" (click)="store.closeCart()"></div><aside class="cart-drawer" aria-label="Carrito de cotización"><div class="cart-head"><div><small>TU SELECCIÓN</small><h2>Bolsa ({{store.cartCount()}})</h2></div><button type="button" aria-label="Cerrar carrito" (click)="store.closeCart()">×</button></div><div class="cart-content">@for(line of store.cartLines();track line.product.id){<article class="cart-line"><img [src]="line.product.image" [alt]="line.product.name"><div><strong>{{line.product.name}}</strong><small>{{line.product.detail}}</small><div class="mini-counter"><button type="button" (click)="store.changeQuantity(line.product.id,-1)">−</button><span>{{line.quantity}}</span><button type="button" (click)="store.changeQuantity(line.product.id,1)">+</button></div><textarea rows="2" placeholder="Notas para este producto" [ngModel]="line.note" (ngModelChange)="store.updateNote(line.product.id,$event)"></textarea></div></article>}@empty{<div class="cart-empty"><span>□</span><h3>Tu bolsa está vacía</h3><p>Explora el catálogo y agrega los productos que quieras cotizar.</p><a routerLink="/catalogo" (click)="store.closeCart()">Ir al catálogo</a></div>}</div>@if(store.cartLines().length){<div class="cart-footer"><p>Tu selección se conserva aunque cierres la página. Leart confirmará disponibilidad y valor.</p><a [href]="store.whatsappUrl()" target="_blank" rel="noreferrer">Cotizar por WhatsApp <span>↗</span></a></div>}</aside>
+@if (store.cartOpen()) {
+  <div class="cart-backdrop" (click)="store.closeCart()"></div>
+  <aside class="cart-drawer" aria-label="Cotización">
+    <div class="cart-head"><div><small>TU SELECCIÓN</small><h2>Cotización ({{store.cartCount()}})</h2></div><button type="button" aria-label="Cerrar cotización" (click)="store.closeCart()">×</button></div>
+    <div class="cart-content">
+      @for (line of store.cartLines(); track line.product.id) {
+        <article class="cart-line"><img [src]="line.product.image" [alt]="line.product.name"><div><strong>{{line.product.name}}</strong><small>{{line.product.detail}}</small><div class="mini-counter"><button type="button" (click)="store.changeQuantity(line.product.id, -1)">−</button><span>{{line.quantity}}</span><button type="button" (click)="store.changeQuantity(line.product.id, 1)">+</button></div><textarea rows="2" placeholder="Notas para esta selección" [ngModel]="line.note" (ngModelChange)="store.updateNote(line.product.id, $event)"></textarea></div></article>
+      } @empty {
+        <div class="cart-empty"><span>□</span><h3>Tu cotización está vacía</h3><p>Explora el catálogo o arma una idea guiada para enviarla a Leart.</p><a routerLink="/catalogo" (click)="store.closeCart()">Ir al catálogo</a></div>
+      }
+    </div>
+    @if (store.cartLines().length) {
+      <div class="cart-footer"><p>Esta solicitud no genera un cobro. Leart confirmará disponibilidad, valor, envío y medios de pago por WhatsApp.</p><a [href]="store.whatsappUrl()" target="_blank" rel="noreferrer">Enviar cotización por WhatsApp <span>↗</span></a></div>
+    }
+  </aside>
 }

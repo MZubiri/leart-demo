@@ -1,18 +1,66 @@
 <main>
   <section class="hero" id="inicio">
     <div class="stud stud-one"></div><div class="stud stud-two"></div>
-    <div class="hero-copy"><div class="eyebrow"><span></span> Regalos que se sienten tuyos</div><h1>Tu historia,<br><span>pieza por pieza.</span></h1><p>Convertimos personas, recuerdos y momentos especiales en sets armables hechos para sorprender.</p><div class="hero-actions"><button class="button button-dark" type="button" (click)="store.openCustomizer()">Personalizar el mío</button><a class="text-link" routerLink="/catalogo">Ver catálogo <span>→</span></a></div><div class="hero-proof"><div class="avatars" aria-hidden="true"><i>JP</i><i>MF</i><i>AC</i></div><div><strong>Regalos con historia</strong><small>Hechos con detalle en Medellín</small></div></div></div>
-    <div class="hero-visual"><img src="/catalog-assets/sets/4af8d6ef-79eb-4bb0-8dce-915751a36f31.jpg" alt="Set armable personalizado real de Leart"><div class="floating-note note-top"><b>100%</b><span>personalizable</span></div><div class="floating-note note-bottom"><span>Hecho con</span><b>mucho detalle ♥</b></div></div>
+    <div class="hero-copy">
+      <div class="eyebrow"><span></span> Regalos que se sienten tuyos</div>
+      <h1>Tu historia,<br><span>pieza por pieza.</span></h1>
+      <p>Cuadros, sets, cajas y minifiguras personalizados para convertir personas y momentos en un regalo que sí cuenta su historia.</p>
+      <div class="hero-actions"><button class="button button-dark" type="button" (click)="store.openCustomizer()">Cotizar mi idea</button><a class="text-link" routerLink="/catalogo">Ver catálogo <span>→</span></a></div>
+      <div class="hero-proof"><div class="avatars" aria-hidden="true"><i>1</i><i>2</i><i>3</i></div><div><strong>Cotiza sin pagar en línea</strong><small>Te acompañamos por WhatsApp</small></div></div>
+    </div>
+    <div class="hero-visual"><img src="/catalog-assets/sets/4af8d6ef-79eb-4bb0-8dce-915751a36f31.jpg" alt="Producto personalizado real de Leart"><div class="floating-note note-top"><b>100%</b><span>personalizable</span></div><div class="floating-note note-bottom"><span>Hecho en</span><b>Medellín ♥</b></div></div>
   </section>
-  <section class="marquee"><div>PERSONAS <i>✦</i> MOMENTOS <i>✦</i> MASCOTAS <i>✦</i> HISTORIAS <i>✦</i> REGALOS QUE NO SE OLVIDAN <i>✦</i> PERSONAS <i>✦</i></div></section>
+
+  <section class="marquee"><div>CUADROS <i>✦</i> SETS <i>✦</i> CAJAS ACRÍLICAS <i>✦</i> LLAVEROS <i>✦</i> MINIFIGURAS <i>✦</i> HECHO PARA TI <i>✦</i></div></section>
+
+  <section class="lines section" id="productos">
+    <div class="section-heading"><div><div class="eyebrow"><span></span> Elige por dónde empezar</div><h2>Cinco formas de <em>hacerlo tuyo</em></h2></div><p>Cada línea tiene sus propias opciones y límites. Elige una y te ayudamos a cotizar la combinación adecuada.</p></div>
+    <div class="line-grid">
+      @for (item of categories; track item.name) {
+        <a routerLink="/catalogo" class="line-card"><div><img [src]="item.image" [alt]="item.name"><span>0{{$index + 1}}</span></div><h3>{{item.shortName}}</h3><p>{{item.description}}</p><b>Explorar →</b></a>
+      }
+    </div>
+  </section>
+
   <section class="catalog section home-featured">
-    <div class="section-heading"><div><div class="eyebrow"><span></span> Favoritos de Leart</div><h2>Ideas para <em>sorprender</em></h2></div><p>Modelos reales del catálogo que se convierten en únicos al agregar tus figuras y detalles.</p></div>
-    <div class="product-grid featured-grid">@for(product of featured;track product.id){<article class="product-card"><a class="product-image" [routerLink]="['/producto',product.id]">@if(product.tag){<span class="product-tag">{{product.tag}}</span>}<img [src]="product.image" [alt]="product.name"><span class="image-arrow">→</span></a><div class="product-info"><div><small>{{product.kicker}}</small><h3><a [routerLink]="['/producto',product.id]">{{product.name}}</a></h3></div><strong>{{product.detail}}</strong></div><button class="add-cart" type="button" (click)="store.add(product)">Agregar para cotizar <span>+</span></button></article>}</div>
+    <div class="section-heading"><div><div class="eyebrow"><span></span> Una muestra de cada línea</div><h2>Ideas para <em>sorprender</em></h2></div><p>Elige un punto de partida. Leart confirmará inventario, valor y posibilidades antes de recibir el pago.</p></div>
+    <div class="product-grid featured-grid">
+      @for (product of featured; track product.id) {
+        <article class="product-card"><a class="product-image" [routerLink]="['/producto', product.id]">@if (product.tag) {<span class="product-tag">{{product.tag}}</span>}<img [src]="product.image" [alt]="product.name"><span class="image-arrow">→</span></a><div class="product-info"><div><small>{{product.kicker}}</small><h3><a [routerLink]="['/producto', product.id]">{{product.name}}</a></h3></div><strong>{{product.detail}}</strong></div><button class="add-cart" type="button" (click)="store.add(product)">Agregar a cotización <span>+</span></button></article>
+      }
+    </div>
     <a class="load-more" routerLink="/catalogo">Explorar catálogo completo <span>→</span></a>
   </section>
-  <section class="personalize section" id="personaliza"><div class="personalize-collage"><div class="collage-main"><img src="/catalog-assets/sets/c0015487-850f-4e69-ba49-f0f11976840e.jpg" alt="Empaque personalizado real de Leart"></div><div class="collage-small"><img src="/catalog-assets/minifiguras/4037580f-c387-4ccd-b648-b61693339f95.jpg" alt="Minifiguras disponibles"></div><div class="tape">HECHO PARA TI</div></div><div class="personalize-copy"><div class="eyebrow light"><span></span> Tú imaginas, nosotros armamos</div><h2>Tan único como<br><em>quien lo recibe.</em></h2><p>Elige personajes, outfits, accesorios, escenario, frase y empaque. Puedes subir fotografías y dejar todas tus indicaciones desde el personalizador.</p><ul><li><b>01</b><span><strong>Elige el formato</strong><small>Minibox, set o minifiguras.</small></span></li><li><b>02</b><span><strong>Cuéntanos la historia</strong><small>Sube fotos y describe los detalles.</small></span></li><li><b>03</b><span><strong>Aprueba y sorprende</strong><small>Revisas la propuesta antes de producir.</small></span></li></ul><button class="button button-yellow" type="button" (click)="store.openCustomizer()">Empezar a personalizar</button></div></section>
-  <section class="steps section" id="como-funciona"><div class="section-heading compact"><div><div class="eyebrow"><span></span> Fácil y acompañado</div><h2>De tu idea a sus manos</h2></div><p>Validamos contigo cada decisión antes de armar tu pedido.</p></div><div class="steps-grid"><article><span>01</span><div class="step-icon">✎</div><h3>Cuéntanos tu idea</h3><p>Elige producto, figuras y ocasión.</p></article><article><span>02</span><div class="step-icon">◉</div><h3>Elige los detalles</h3><p>Rostros, accesorios, frase y presentación.</p></article><article><span>03</span><div class="step-icon">✓</div><h3>Aprueba el diseño</h3><p>Recibes una propuesta antes de producir.</p></article><article><span>04</span><div class="step-icon">♥</div><h3>Recíbelo</h3><p>Se arma y envía desde Medellín.</p></article></div></section>
-  <section class="testimonial section"><div class="quote-mark">“</div><blockquote>Cada persona tiene una historia. Nosotros la convertimos en algo que se puede armar, regalar y recordar.</blockquote><div class="quote-author"><span>L</span><div><strong>Leart Store</strong><small>Medellín, Colombia</small></div></div></section>
-  <section class="faq section" id="preguntas"><div class="section-heading"><div><div class="eyebrow"><span></span> Antes de empezar</div><h2>Preguntas frecuentes</h2></div><p>Los detalles definitivos se confirman al revisar tu selección y el inventario disponible.</p></div><div class="faq-list"><details open><summary>¿Qué se puede personalizar?<span>+</span></summary><p>Puedes elegir rostros, cabello, outfits, accesorios, mascotas, nombres, fechas, frases, fondo y empaque, según la disponibilidad indicada por Leart.</p></details><details><summary>¿Cómo se aprueba el diseño?<span>+</span></summary><p>Después de registrar la información del pedido recibirás una propuesta o inventario para elegir figuras. El ensamble final comienza después de tu aprobación.</p></details><details><summary>¿Cuánto tarda un pedido?<span>+</span></summary><p>El tiempo depende del producto, cantidad de figuras y disponibilidad de piezas. Leart confirma la fecha estimada antes de producir.</p></details><details id="envios"><summary>¿Realizan envíos?<span>+</span></summary><p>Los pedidos se elaboran en Medellín y pueden enviarse a otras ciudades de Colombia. El costo y la transportadora se confirman con la cotización.</p></details></div></section>
-  <section class="final-cta"><div><span>¿TIENES UNA IDEA?</span><h2>Vamos a armarla.</h2></div><button type="button" (click)="store.openCustomizer()">Crear mi regalo <b>→</b></button></section>
+
+  <section class="personalize section" id="personaliza">
+    <div class="personalize-collage"><div class="collage-main"><img src="/catalog-assets/sets/c0015487-850f-4e69-ba49-f0f11976840e.jpg" alt="Empaque personalizado real de Leart"></div><div class="collage-small"><img src="/catalog-assets/minifiguras/4037580f-c387-4ccd-b648-b61693339f95.jpg" alt="Catálogo de minifiguras"></div><div class="tape">DESPUÉS DEL PAGO</div></div>
+    <div class="personalize-copy"><div class="eyebrow light"><span></span> Personalización acompañada</div><h2>Primero cotizas.<br><em>Luego lo hacemos único.</em></h2><p>Cuando confirmemos tu pedido y recibamos el pago, te enviaremos el enlace para registrar fotos, historia, nombres, fondo y demás indicaciones.</p><ul><li><b>01</b><span><strong>Completa tus datos</strong><small>Con el enlace que recibes por WhatsApp.</small></span></li><li><b>02</b><span><strong>Elige las figuras</strong><small>Recibes propuesta o inventario disponible en 3 a 5 días hábiles.</small></span></li><li><b>03</b><span><strong>Aprueba el diseño</strong><small>El ensamble comienza cuando todo esté aprobado.</small></span></li></ul><a class="button button-yellow" routerLink="/personalizacion">Ya hice mi pedido</a></div>
+  </section>
+
+  <section class="steps section" id="como-funciona">
+    <div class="section-heading compact"><div><div class="eyebrow"><span></span> Fácil y acompañado</div><h2>Así hacemos tu pedido</h2></div><p>La compra se confirma por WhatsApp y la producción comienza con tus indicaciones completas.</p></div>
+    <div class="steps-grid process-grid">
+      <article><span>01</span><div class="step-icon">✎</div><h3>Define tu pedido</h3><p>Elige presentación, cantidad de figuras y extras.</p></article>
+      <article><span>02</span><div class="step-icon">↗</div><h3>Cotiza por WhatsApp</h3><p>Confirmamos valor, disponibilidad, envío y medios de pago.</p></article>
+      <article><span>03</span><div class="step-icon">▣</div><h3>Completa la información</h3><p>Después del pago recibes el enlace para registrar tu historia y fotos.</p></article>
+      <article><span>04</span><div class="step-icon">◉</div><h3>Elige tus figuras</h3><p>En 3 a 5 días hábiles recibes propuesta o inventario disponible.</p></article>
+      <article><span>05</span><div class="step-icon">✓</div><h3>Aprueba el diseño</h3><p>Revisas figuras y fondo antes del ensamble final.</p></article>
+      <article><span>06</span><div class="step-icon">♥</div><h3>Recibe tu regalo</h3><p>La elaboración tarda de 6 a 8 días hábiles y el transporte de 1 a 3 días.</p></article>
+    </div>
+  </section>
+
+  <section class="testimonial section"><div class="quote-mark">“</div><blockquote>La web te ayuda a elegir. Nosotros te acompañamos para que cada detalle sí se parezca a tu historia.</blockquote><div class="quote-author"><span>L</span><div><strong>Leart Store</strong><small>Medellín, Colombia</small></div></div></section>
+
+  <section class="faq section" id="preguntas">
+    <div class="section-heading"><div><div class="eyebrow"><span></span> Antes de empezar</div><h2>Preguntas frecuentes</h2></div><p>Las piezas cambian con el inventario, por eso cada cotización se revisa antes de recibir el pago.</p></div>
+    <div class="faq-list">
+      <details open><summary>¿La cotización me cobra algo?<span>+</span></summary><p>No. La selección de la web prepara un mensaje de WhatsApp. Leart confirma allí el valor, envío, disponibilidad y medios de pago.</p></details>
+      <details><summary>¿Cuándo envío las fotografías?<span>+</span></summary><p>Después del pago recibirás un enlace para registrar las fotos, nombres, historia y detalles necesarios para comenzar el diseño.</p></details>
+      <details><summary>¿Qué se puede personalizar?<span>+</span></summary><p>Puedes elegir cabello, rostro, outfit y accesorios según inventario. Las mascotas son figuras genéricas de perros o gatos y pueden recibir detalles pintados a mano.</p></details>
+      <details><summary>¿Cuánto tarda un pedido?<span>+</span></summary><p>La elaboración tarda entre 6 y 8 días hábiles, contados desde que completas la información. El transporte suele tomar entre 1 y 3 días adicionales.</p></details>
+      <details id="envios"><summary>¿Realizan envíos?<span>+</span></summary><p>Sí. Los pedidos se elaboran en Medellín y se envían a Colombia. El valor del transporte se incluye al confirmar la cotización.</p></details>
+    </div>
+  </section>
+
+  <section class="final-cta"><div><span>¿TIENES UNA IDEA?</span><h2>Vamos a cotizarla.</h2></div><button type="button" (click)="store.openCustomizer()">Armar mi selección <b>→</b></button></section>
 </main>

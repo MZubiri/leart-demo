@@ -1,0 +1,20 @@
+<main class="postpay-page">
+  <section class="postpay-hero">
+    <div><div class="eyebrow"><span></span> Solo para pedidos confirmados</div><h1>Ahora sí,<br><em>cuéntanos todo.</em></h1><p>Completa esta guía después de realizar el pago. Tus respuestas preparan el mensaje para Leart; las fotos se adjuntan directamente en WhatsApp.</p></div>
+    <aside><b>Antes de continuar</b><ol><li>Leart confirmó el producto y su valor.</li><li>Incluiste el envío dentro del pago.</li><li>Tienes a mano la referencia del pedido.</li></ol><a routerLink="/catalogo">Aún no he cotizado →</a></aside>
+  </section>
+
+  <section class="postpay-layout">
+    <div class="postpay-form">
+      <div class="form-section"><span>01</span><div><h2>Identifica tu pedido</h2><p>Usa el dato que acordaste con Leart por WhatsApp.</p><div class="field-grid"><label>Pedido o referencia *<input type="text" placeholder="Ej: Pedido Ana / 24-09" [ngModel]="order()" (ngModelChange)="order.set($event)"></label><label>Nombre completo *<input type="text" placeholder="Tu nombre" [ngModel]="name()" (ngModelChange)="name.set($event)"></label><label>WhatsApp<input type="tel" placeholder="Tu número de contacto" [ngModel]="phone()" (ngModelChange)="phone.set($event)"></label><label>Producto comprado *<select [ngModel]="product()" (ngModelChange)="product.set($event)"><option value="" disabled>Selecciona una opción</option>@for (item of categories; track item.name) {<option [value]="item.name">{{item.name}}</option>}</select></label></div></div></div>
+
+      <div class="form-section"><span>02</span><div><h2>Describe a quién representaremos</h2><p>Incluye personas, mascotas, rasgos y la historia del regalo.</p><label>Personas o mascotas<textarea rows="3" placeholder="Ej: Laura, Mateo y un perro blanco pequeño" [ngModel]="people()" (ngModelChange)="people.set($event)"></textarea></label><label>Historia u ocasión<textarea rows="4" placeholder="¿Qué momento quieres representar?" [ngModel]="story()" (ngModelChange)="story.set($event)"></textarea></label></div></div>
+
+      <div class="form-section"><span>03</span><div><h2>Agrega los detalles</h2><p>Las opciones finales se validan contra el inventario de cabello, rostros, outfits y accesorios.</p><label>Nombres, fecha o frase<input type="text" placeholder="Texto que debe aparecer en el diseño" [ngModel]="phrase()" (ngModelChange)="phrase.set($event)"></label><label>Requerimientos especiales<textarea rows="4" placeholder="Outfits, profesión, equipo, colores, accesorios..." [ngModel]="requirements()" (ngModelChange)="requirements.set($event)"></textarea></label><label class="upload-box postpay-upload"><input type="file" accept="image/*" multiple (change)="onPhotos($event)"><span>＋</span><strong>Seleccionar fotos de referencia</strong><small>Hasta 6 archivos · se adjuntan luego en WhatsApp</small></label>@if (photoNames().length) {<ul class="file-list">@for (file of photoNames(); track file) {<li>{{file}}</li>}</ul>}</div></div>
+
+      <div class="send-personalization"><div><b>La información está lista</b><p>WhatsApp abrirá un mensaje con tus respuestas. Adjunta allí las fotografías seleccionadas.</p></div><a [class.disabled]="!ready()" [attr.aria-disabled]="!ready()" [href]="ready() ? whatsappUrl() : null" target="_blank" rel="noreferrer">Enviar información <span>↗</span></a>@if (!ready()) {<small>Completa pedido, nombre y producto para continuar.</small>}</div>
+    </div>
+
+    <aside class="postpay-guide"><div class="guide-sticky"><span>¿QUÉ PASA DESPUÉS?</span><h2>Seguimos contigo por WhatsApp.</h2><ol><li><b>1–3 días</b><p>Leart revisa tus indicaciones y requerimientos.</p></li><li><b>3–5 días hábiles</b><p>Recibes propuesta o inventario para elegir minifiguras.</p></li><li><b>Aprobación</b><p>Confirmas figuras y fondo antes del ensamble.</p></li><li><b>6–8 días hábiles</b><p>Elaboración contada desde que completas la información.</p></li></ol><p class="guide-warning">Si necesitas una pieza muy específica, valida su disponibilidad antes de comprar.</p></div></aside>
+  </section>
+</main>
