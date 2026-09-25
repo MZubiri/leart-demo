@@ -47,6 +47,8 @@ export class App {
       ? FRAME_LIMITS[this.selectedVariant()] ?? 4
       : this.formats.find((item) => item.name === this.selectedCategory())?.maxFigures ?? 8,
   );
+  readonly capacityUsed = computed(() => this.figures() + this.pets());
+  readonly remainingCapacity = computed(() => Math.max(0, this.maxFigures() - this.capacityUsed()));
   readonly selectedProduct = computed(() => {
     const requested = this.store.customizerProduct();
     return requested?.category === this.selectedCategory()
@@ -69,6 +71,7 @@ export class App {
         ? FRAME_LIMITS[requested.variants[0]] ?? 4
         : requested.maxFigures;
       this.figures.set(Math.min(Math.max(this.figures(), requested.minFigures), maximum));
+      this.pets.set(Math.min(this.pets(), Math.max(0, maximum - this.figures())));
       this.activeStep.set(2);
     });
   }
@@ -86,6 +89,7 @@ export class App {
     this.selectedVariant.set(VARIANTS[category][0]);
     const maximum = category === 'Cuadros' ? 4 : this.formats.find((item) => item.name === category)?.maxFigures ?? 8;
     this.figures.set(Math.min(this.figures(), maximum));
+    this.pets.set(Math.min(this.pets(), Math.max(0, maximum - this.figures())));
     if (category === 'Llaveros') {
       this.figures.set(1);
       this.pets.set(0);
@@ -98,10 +102,18 @@ export class App {
       ? FRAME_LIMITS[variant] ?? 4
       : this.formats.find((item) => item.name === this.selectedCategory())?.maxFigures ?? 8;
     this.figures.set(Math.min(this.figures(), maximum));
+    this.pets.set(Math.min(this.pets(), Math.max(0, maximum - this.figures())));
   }
 
   changeFigures(change: number): void {
-    this.figures.set(Math.max(1, Math.min(this.maxFigures(), this.figures() + change)));
+    const availableForFigures = this.maxFigures() - this.pets();
+    this.figures.set(Math.max(1, Math.min(availableForFigures, this.figures() + change)));
+  }
+
+  changePets(change: number): void {
+    if (this.selectedCategory() === 'Llaveros') return;
+    const availableForPets = this.maxFigures() - this.figures();
+    this.pets.set(Math.max(0, Math.min(availableForPets, this.pets() + change)));
   }
 
   nextStep(): void {

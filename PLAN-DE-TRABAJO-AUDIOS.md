@@ -29,7 +29,7 @@ La primera versión no necesita pagos en línea. El cierre comercial seguirá oc
 - Nombre definitivo de cada línea de producto.
 - Lista de precios y reglas de cálculo.
 - Fotografías representativas de cada producto.
-- Dimensiones definitivas de los tres tamaños de cuadros. Los límites confirmados son S: 4, M: 6 y L: 8 minifiguras.
+- Dimensiones definitivas de los tres tamaños de cuadros. La capacidad total confirmada entre minifiguras y mascotas es S: 4, M: 6 y L: 8.
 - Grupos y precios de los sets.
 - Límite y variantes de las cajas acrílicas.
 - Opciones de llaveros, minifiguras, imanes y mascotas.
@@ -49,7 +49,7 @@ Crear una portada visual para las cinco líneas principales:
 1. **Cuadros personalizados**
    - Tamaños S, M y L, sujetos a confirmación.
    - Entre 1 y 8 minifiguras en total.
-   - Tamaño S: máximo 4 figuras; M: máximo 6; L: máximo 8.
+   - Capacidad conjunta de minifiguras y mascotas: S máximo 4; M máximo 6; L máximo 8.
    - Posibilidad de elegir un cuadro mayor aunque la cantidad de figuras sea menor.
    - Variables adicionales: mascotas y accesorios.
 

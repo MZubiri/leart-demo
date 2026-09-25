@@ -56,9 +56,10 @@
             }
           </div>
           <div class="details-row quote-details">
-            <div><label>Minifiguras</label><div class="counter"><button type="button" (click)="changeFigures(-1)" [disabled]="figures() <= 1">−</button><strong>{{figures()}}</strong><button type="button" (click)="changeFigures(1)" [disabled]="figures() >= maxFigures()">+</button></div><small>@if (selectedCategory() === 'Cuadros') {Máximo para {{selectedVariant()}}} @else {Máximo para esta línea: {{maxFigures()}}}</small></div>
-            <div><label>Mascotas</label><div class="counter"><button type="button" (click)="pets.set(pets() > 0 ? pets() - 1 : 0)" [disabled]="pets() === 0">−</button><strong>{{pets()}}</strong><button type="button" (click)="pets.update(value => value + 1)" [disabled]="selectedCategory() === 'Llaveros'">+</button></div><small>Perros y gatos genéricos, según disponibilidad.</small></div>
+            <div><label>Minifiguras</label><div class="counter"><button type="button" (click)="changeFigures(-1)" [disabled]="figures() <= 1">−</button><strong>{{figures()}}</strong><button type="button" (click)="changeFigures(1)" [disabled]="remainingCapacity() === 0">+</button></div><small>La capacidad se comparte con las mascotas.</small></div>
+            <div><label>Mascotas</label><div class="counter"><button type="button" (click)="changePets(-1)" [disabled]="pets() === 0">−</button><strong>{{pets()}}</strong><button type="button" (click)="changePets(1)" [disabled]="selectedCategory() === 'Llaveros' || remainingCapacity() === 0">+</button></div><small>Perros y gatos genéricos, según disponibilidad.</small></div>
           </div>
+          <div class="capacity-meter"><span><b>{{capacityUsed()}}</b> de {{maxFigures()}} espacios usados</span><i><b [style.width.%]="capacityUsed() / maxFigures() * 100"></b></i><small>Minifiguras y mascotas cuentan dentro del mismo límite.</small></div>
           <label class="check-option"><input type="checkbox" [ngModel]="accessories()" (ngModelChange)="accessories.set($event)"><span>Quiero consultar por accesorios adicionales</span></label>
           <p class="rule-note"><b>Regla:</b> {{selectedProduct()?.rule}}</p>
         }
