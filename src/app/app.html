@@ -52,11 +52,11 @@
           <label>Presentación</label>
           <div class="variant-options">
             @for (variant of variants(); track variant) {
-              <button type="button" [class.selected]="selectedVariant() === variant" (click)="selectedVariant.set(variant)">{{variant}}</button>
+              <button type="button" [class.selected]="selectedVariant() === variant" (click)="chooseVariant(variant)">{{variant}}</button>
             }
           </div>
           <div class="details-row quote-details">
-            <div><label>Minifiguras</label><div class="counter"><button type="button" (click)="changeFigures(-1)" [disabled]="figures() <= 1">−</button><strong>{{figures()}}</strong><button type="button" (click)="changeFigures(1)" [disabled]="figures() >= maxFigures()">+</button></div><small>Máximo para esta línea: {{maxFigures()}}</small></div>
+            <div><label>Minifiguras</label><div class="counter"><button type="button" (click)="changeFigures(-1)" [disabled]="figures() <= 1">−</button><strong>{{figures()}}</strong><button type="button" (click)="changeFigures(1)" [disabled]="figures() >= maxFigures()">+</button></div><small>@if (selectedCategory() === 'Cuadros') {Máximo para {{selectedVariant()}}} @else {Máximo para esta línea: {{maxFigures()}}}</small></div>
             <div><label>Mascotas</label><div class="counter"><button type="button" (click)="pets.set(pets() > 0 ? pets() - 1 : 0)" [disabled]="pets() === 0">−</button><strong>{{pets()}}</strong><button type="button" (click)="pets.update(value => value + 1)" [disabled]="selectedCategory() === 'Llaveros'">+</button></div><small>Perros y gatos genéricos, según disponibilidad.</small></div>
           </div>
           <label class="check-option"><input type="checkbox" [ngModel]="accessories()" (ngModelChange)="accessories.set($event)"><span>Quiero consultar por accesorios adicionales</span></label>

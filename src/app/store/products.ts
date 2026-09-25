@@ -115,7 +115,7 @@ const acrylicBox = (
 });
 
 export const CATEGORY_SHOWCASE: VisualChoice[] = [
-  { name: 'Cuadros', shortName: 'Cuadros', description: 'Tres tamaños y hasta 8 minifiguras.', image: IMAGES + 'cuadro-personalizado.png', maxFigures: 8 },
+  { name: 'Cuadros', shortName: 'Cuadros', description: 'S hasta 4 · M hasta 6 · L hasta 8.', image: IMAGES + 'cuadro-personalizado.png', maxFigures: 8 },
   { name: 'Sets armables', shortName: 'Sets', description: 'Escenas por grupos, figuras y extras.', image: SETS + '243775c4-7b83-46fe-9189-bcb9c7126e19.png', maxFigures: 8 },
   { name: 'Cajas acrílicas', shortName: 'Cajas', description: 'Escenas protegidas para máximo 4 figuras.', image: BOX + 'df814d06-067e-4b15-b7b5-9731d683f9ff.png', maxFigures: 4 },
   { name: 'Llaveros', shortName: 'Llaveros', description: 'Tu personaje favorito para llevar.', image: FIGS + '06bec1bd-01d5-4a30-8593-f3908d2b64bd.jpg', maxFigures: 1 },
@@ -135,10 +135,10 @@ export const PRODUCTS: Product[] = [
     description: 'Un cuadro diseñado alrededor de tu historia. El tamaño se elige según la cantidad de minifiguras, la composición y el espacio que quieras darle a la escena.',
     minFigures: 1,
     maxFigures: 8,
-    variants: ['Tamaño S', 'Tamaño M', 'Tamaño L'],
+    variants: ['Tamaño S · máximo 4', 'Tamaño M · máximo 6', 'Tamaño L · máximo 8'],
     allowsPets: true,
     allowsAccessories: true,
-    rule: 'El tamaño y su capacidad exacta se confirman con Leart antes del pago.',
+    rule: 'Tamaño S: máximo 4 figuras. Tamaño M: máximo 6. Tamaño L: máximo 8.',
   },
   set('set-cafe', 'Cita en el café', 'Un plan inolvidable', '140 piezas', '243775c4-7b83-46fe-9189-bcb9c7126e19.png', 'Grupo 3', ['Pareja', 'Aniversario']),
   acrylicBox('caja-taller', 'Caja acrílica Taller', 'Incluye mini set armable', '65 piezas', 'df814d06-067e-4b15-b7b5-9731d683f9ff.png', ['Profesiones', 'Cumpleaños']),

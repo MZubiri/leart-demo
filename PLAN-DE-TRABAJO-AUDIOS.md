@@ -29,7 +29,7 @@ La primera versión no necesita pagos en línea. El cierre comercial seguirá oc
 - Nombre definitivo de cada línea de producto.
 - Lista de precios y reglas de cálculo.
 - Fotografías representativas de cada producto.
-- Tres tamaños de cuadros, sus dimensiones y límites de minifiguras.
+- Dimensiones definitivas de los tres tamaños de cuadros. Los límites confirmados son S: 4, M: 6 y L: 8 minifiguras.
 - Grupos y precios de los sets.
 - Límite y variantes de las cajas acrílicas.
 - Opciones de llaveros, minifiguras, imanes y mascotas.
@@ -49,7 +49,7 @@ Crear una portada visual para las cinco líneas principales:
 1. **Cuadros personalizados**
    - Tamaños S, M y L, sujetos a confirmación.
    - Entre 1 y 8 minifiguras en total.
-   - Límite de figuras específico para cada tamaño.
+   - Tamaño S: máximo 4 figuras; M: máximo 6; L: máximo 8.
    - Posibilidad de elegir un cuadro mayor aunque la cantidad de figuras sea menor.
    - Variables adicionales: mascotas y accesorios.
 
@@ -141,7 +141,6 @@ El formulario debe generar una respuesta ordenada para el equipo de Leart. El ca
 ## Decisiones pendientes
 
 - Confirmar que los tamaños de cuadro se llaman S, M y L.
-- Definir cuántas figuras caben en cada tamaño.
 - Confirmar si “Minibox” y “caja acrílica” son el mismo producto.
 - Confirmar dónde encajan los imanes.
 - Definir si la web mostrará precios exactos o solo permitirá cotizar.
