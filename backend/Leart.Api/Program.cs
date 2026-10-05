@@ -19,7 +19,7 @@ builder.Services.AddOpenApi();
 
 // Database Context (MySQL with Pomelo)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? "Server=localhost;Port=3306;Database=leart_db;User=root;Password=root;";
+    ?? "Server=127.0.0.1;Port=3306;Database=leart_db;User=root;Password=root;AllowUserVariables=True;CharSet=utf8mb4;";
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -28,8 +28,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, serverVersion, mySqlOptions =>
     {
         mySqlOptions.EnableRetryOnFailure(
-            maxRetryCount: 5,
-            maxRetryDelay: TimeSpan.FromSeconds(5),
+            maxRetryCount: 10,
+            maxRetryDelay: TimeSpan.FromSeconds(3),
             errorNumbersToAdd: null);
     });
 });
@@ -110,21 +110,36 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 
-// Database Migration and Seeding on Startup
+// Database Migration and Seeding on Startup with Retries
 using (var scope = app.Services.CreateScope())
 {
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-    try
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    int retries = 8;
+    while (retries > 0)
     {
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        logger.LogInformation("Checking database connection and ensuring database schema...");
-        await db.Database.EnsureCreatedAsync();
-        await DbInitializer.SeedAsync(db, logger);
-        logger.LogInformation("Database ready.");
-    }
-    catch (Exception ex)
-    {
-        logger.LogWarning(ex, "Could not initialize database on startup. Ensure MySQL is running.");
+        try
+        {
+            logger.LogInformation("Conectando a MySQL y verificando esquema de base de datos...");
+            await db.Database.EnsureCreatedAsync();
+            await DbInitializer.SeedAsync(db, logger);
+            logger.LogInformation("Base de datos MySQL inicializada y lista con datos del catalogo.");
+            break;
+        }
+        catch (Exception ex)
+        {
+            retries--;
+            logger.LogWarning("Intento de conexion a MySQL fallido ({Retries} intentos restantes): {Message}", retries, ex.Message);
+            if (retries > 0)
+            {
+                await Task.Delay(2000);
+            }
+            else
+            {
+                logger.LogError(ex, "No se pudo conectar a MySQL tras varios intentos. Se continuara en modo seguro.");
+            }
+        }
     }
 }
 
