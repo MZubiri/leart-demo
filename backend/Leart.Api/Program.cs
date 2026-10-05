@@ -94,6 +94,7 @@ if (!Directory.Exists(uploadsPath))
     Directory.CreateDirectory(Path.Combine(uploadsPath, "products"));
     Directory.CreateDirectory(Path.Combine(uploadsPath, "orders"));
 }
+app.UseDefaultFiles();
 app.UseStaticFiles();
 
 if (app.Environment.IsDevelopment())
@@ -107,6 +108,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapFallbackToFile("index.html");
 
 // Database Migration and Seeding on Startup
 using (var scope = app.Services.CreateScope())

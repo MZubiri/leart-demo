@@ -26,7 +26,17 @@ public class PublicController : ControllerBase
     [HttpGet("settings")]
     public async Task<ActionResult<PublicSettingsDto>> GetSettings()
     {
-        var settings = await _context.SiteSettings.FirstOrDefaultAsync() ?? new SiteSetting();
+        SiteSetting settings;
+        try
+        {
+            settings = await _context.SiteSettings.FirstOrDefaultAsync() ?? new SiteSetting();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Could not fetch settings from MySQL, using defaults.");
+            settings = new SiteSetting();
+        }
+
         return Ok(new PublicSettingsDto(
             settings.StoreName,
             settings.WhatsAppNumber,
@@ -40,14 +50,26 @@ public class PublicController : ControllerBase
     [HttpGet("products")]
     public async Task<ActionResult<List<ProductDto>>> GetProducts([FromQuery] string? category = null, [FromQuery] string? occasion = null)
     {
-        var query = _context.Products.Where(p => p.IsActive);
-
-        if (!string.IsNullOrWhiteSpace(category) && category != "Todos")
+        List<Product> products;
+        try
         {
-            query = query.Where(p => p.Category == category);
+            var query = _context.Products.Where(p => p.IsActive);
+            if (!string.IsNullOrWhiteSpace(category) && category != "Todos")
+            {
+                query = query.Where(p => p.Category == category);
+            }
+            products = await query.OrderBy(p => p.DisplayOrder).ThenBy(p => p.Name).ToListAsync();
         }
-
-        var products = await query.OrderBy(p => p.DisplayOrder).ThenBy(p => p.Name).ToListAsync();
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Could not fetch products from MySQL, using initial seed fallback.");
+            var fallback = DbInitializer.GetInitialProducts();
+            if (!string.IsNullOrWhiteSpace(category) && category != "Todos")
+            {
+                fallback = fallback.Where(p => p.Category == category).ToList();
+            }
+            products = fallback;
+        }
 
         var result = products.Select(MapToDto).ToList();
 

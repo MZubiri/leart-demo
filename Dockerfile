@@ -1,4 +1,7 @@
-FROM node:22-alpine AS build
+# ==========================================
+# Etapa 1: Compilación de Frontend (Angular 21)
+# ==========================================
+FROM node:22-alpine AS frontend-build
 WORKDIR /app
 
 COPY package.json package-lock.json ./
@@ -7,13 +10,36 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM nginx:1.27-alpine
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /app/dist/leart-demo/browser /usr/share/nginx/html
+# ==========================================
+# Etapa 2: Compilación de Backend (.NET 9)
+# ==========================================
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS backend-build
+WORKDIR /src
 
+COPY ["backend/Leart.Api/Leart.Api.csproj", "backend/Leart.Api/"]
+RUN dotnet restore "backend/Leart.Api/Leart.Api.csproj"
+
+COPY backend/Leart.Api/ backend/Leart.Api/
+WORKDIR /src/backend/Leart.Api
+RUN dotnet publish "Leart.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# ==========================================
+# Etapa 3: Runtime Fullstack (.NET 9 + Angular)
+# ==========================================
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+WORKDIR /app
+
+# Copiar aplicación ASP.NET Core compilada
+COPY --from=backend-build /app/publish .
+
+# Copiar el bundle de Angular y sus activos directamente a wwwroot
+COPY --from=frontend-build /app/dist/leart-demo/browser ./wwwroot
+
+# Crear directorios para subida de fotos (productos y pedidos)
+RUN mkdir -p ./wwwroot/uploads/products ./wwwroot/uploads/orders
+
+ENV ASPNETCORE_URLS=http://+:80
+ENV ASPNETCORE_ENVIRONMENT=Production
 EXPOSE 80
 
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-  CMD wget -q --spider http://127.0.0.1/ || exit 1
-
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["dotnet", "Leart.Api.dll"]

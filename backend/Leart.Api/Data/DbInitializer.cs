@@ -59,7 +59,7 @@ public static class DbInitializer
         }
     }
 
-    private static List<Product> GetInitialProducts()
+    public static List<Product> GetInitialProducts()
     {
         const string sets = "/catalog-assets/sets/";
         const string figs = "/catalog-assets/minifiguras/";
