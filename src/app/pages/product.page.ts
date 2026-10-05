@@ -6,7 +6,7 @@ import { StoreService } from '../store/store.service';
 export class ProductPage {
   readonly id=signal('');
   readonly activeImage=signal('');
-  readonly product=computed(()=>this.store.products.find(item=>item.id===this.id()));
+  readonly product=computed(()=>this.store.productsSignal().find(item=>item.id===this.id()));
   readonly gallery=computed(()=>{
     const product=this.product();
     if(!product) return [];
@@ -17,8 +17,14 @@ export class ProductPage {
       'Llaveros':['/catalog-assets/minifiguras/9cc3d850-256f-4a59-b551-85b0a7fe033c.jpg'],
       'Minifiguras':['/catalog-assets/minifiguras/4037580f-c387-4ccd-b648-b61693339f95.jpg','/catalog-assets/minifiguras/9cc3d850-256f-4a59-b551-85b0a7fe033c.jpg'],
     };
-    return [product.image,...extras[product.category]].filter((image,index,all)=>all.indexOf(image)===index);
+    const extraList = extras[product.category] || [];
+    return [product.image, ...extraList].filter((image, index, all) => all.indexOf(image) === index);
   });
-  readonly related=computed(()=>this.store.products.filter(item=>item.category===this.product()?.category&&item.id!==this.product()?.id).slice(0,3));
-  constructor(private route:ActivatedRoute,readonly store:StoreService){this.route.paramMap.subscribe(params=>{this.id.set(params.get('id')||'');setTimeout(()=>this.activeImage.set(this.product()?.image||''));});}
+  readonly related=computed(()=>this.store.productsSignal().filter(item=>item.category===this.product()?.category&&item.id!==this.product()?.id).slice(0,3));
+  constructor(private route:ActivatedRoute,readonly store:StoreService){
+    this.route.paramMap.subscribe(params=>{
+      this.id.set(params.get('id')||'');
+      setTimeout(()=>this.activeImage.set(this.product()?.image||''));
+    });
+  }
 }
