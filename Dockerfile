@@ -42,10 +42,11 @@ RUN apt-get update && \
 COPY --from=backend-build /app/publish .
 
 # Copiar el bundle de Angular y sus activos directamente a wwwroot
-COPY --from=frontend-build /app/dist/leart-demo/browser ./wwwroot
+COPY --from=frontend-build /app/dist/leart-demo/browser/ /app/wwwroot/
 
-# Crear directorios para subida de fotos (productos y pedidos)
-RUN mkdir -p ./wwwroot/uploads/products ./wwwroot/uploads/orders /var/lib/mysql /var/run/mysqld
+# Crear directorios para subida de fotos y sockets de MariaDB
+RUN mkdir -p /app/wwwroot/uploads/products /app/wwwroot/uploads/orders /var/lib/mysql /var/run/mysqld && \
+    chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
 
 # Copiar y preparar script de inicio
 COPY entrypoint.sh /app/entrypoint.sh
