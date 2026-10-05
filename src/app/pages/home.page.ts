@@ -7,5 +7,7 @@ import { StoreService } from '../store/store.service';
 export class HomePage {
   readonly store=inject(StoreService);
   readonly categories=CATEGORY_SHOWCASE;
-  readonly featured=this.store.products.slice(0,5);
+  get featured() {
+    return this.store.productsSignal().slice(0, 5);
+  }
 }

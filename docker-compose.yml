@@ -1,0 +1,52 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: leart_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: leart_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend/Leart.Api
+      dockerfile: Dockerfile
+    container_name: leart_backend
+    restart: always
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=leart_db;User=root;Password=root;AllowUserVariables=True;CharSet=utf8mb4;
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Jwt__Secret=LeartSecureSuperSecretKey2026WithSufficientLengthForHmacSha256!
+      - Jwt__Issuer=LeartApi
+      - Jwt__Audience=LeartApp
+    ports:
+      - "5000:5000"
+    volumes:
+      - uploads_data:/app/wwwroot/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: leart_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
+  uploads_data:

@@ -11,6 +11,16 @@
 npm-debug.log
 yarn-error.log
 
+# .NET / C#
+bin/
+obj/
+*.user
+*.suo
+backend/**/bin/
+backend/**/obj/
+backend/**/wwwroot/uploads/*
+!backend/**/wwwroot/uploads/.gitkeep
+
 # IDEs and editors
 .idea/
 .project

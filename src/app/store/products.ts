@@ -22,6 +22,8 @@ export interface Product {
   allowsPets?: boolean;
   allowsAccessories?: boolean;
   rule: string;
+  isActive?: boolean;
+  displayOrder?: number;
 }
 
 export interface VisualChoice {

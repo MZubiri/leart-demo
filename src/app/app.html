@@ -1,28 +1,35 @@
-<div class="announcement">Hecho en Medellín · Envíos a toda Colombia</div>
-<header class="site-header">
-  <a class="brand" routerLink="/" aria-label="Leart inicio" (click)="menuOpen.set(false)"><span class="brand-main">LEART</span><span class="brand-dot">.</span><span class="brand-store">STORE</span></a>
-  <button class="menu-button" type="button" aria-label="Abrir menú" (click)="menuOpen.update(value => !value)"><span></span><span></span></button>
-  <nav [class.is-open]="menuOpen()">
-    <a routerLink="/catalogo" routerLinkActive="active" (click)="menuOpen.set(false)">Catálogo</a>
-    <a routerLink="/" fragment="como-funciona" (click)="menuOpen.set(false)">Cómo comprar</a>
-    <a routerLink="/personalizacion" routerLinkActive="active" (click)="menuOpen.set(false)">Ya hice mi pedido</a>
-    <a href="https://www.instagram.com/leart.store/" target="_blank" rel="noreferrer">Instagram ↗</a>
-  </nav>
-  <div class="header-actions">
-    <button class="cart-button" type="button" aria-label="Abrir cotización" (click)="store.openCart()">Cotización <span>{{store.cartCount()}}</span></button>
-    <button class="header-cta" type="button" (click)="openCustomizer()">Cotizar mi idea <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-  </div>
-</header>
+@if (!isAdminRoute()) {
+  <div class="announcement">{{settings().announcementText}}</div>
+  <header class="site-header">
+    <a class="brand" routerLink="/" aria-label="Leart inicio" (click)="menuOpen.set(false)"><span class="brand-main">LEART</span><span class="brand-dot">.</span><span class="brand-store">STORE</span></a>
+    <button class="menu-button" type="button" aria-label="Abrir menú" (click)="menuOpen.update(value => !value)"><span></span><span></span></button>
+    <nav [class.is-open]="menuOpen()">
+      <a routerLink="/catalogo" routerLinkActive="active" (click)="menuOpen.set(false)">Catálogo</a>
+      <a routerLink="/" fragment="como-funciona" (click)="menuOpen.set(false)">Cómo comprar</a>
+      <a routerLink="/personalizacion" routerLinkActive="active" (click)="menuOpen.set(false)">Ya hice mi pedido</a>
+      <a [href]="settings().instagramUrl" target="_blank" rel="noreferrer">Instagram ↗</a>
+    </nav>
+    <div class="header-actions">
+      <button class="cart-button" type="button" aria-label="Abrir cotización" (click)="store.openCart()">Cotización <span>{{store.cartCount()}}</span></button>
+      <button class="header-cta" type="button" (click)="openCustomizer()">Cotizar mi idea <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+  </header>
+}
 
 <router-outlet />
 
-<footer>
-  <div class="footer-brand"><a class="brand" routerLink="/"><span class="brand-main">LEART</span><span class="brand-dot">.</span><span class="brand-store">STORE</span></a><p>Regalos personalizados que convierten personas y momentos en piezas para recordar.</p></div>
-  <div><strong>Explora</strong><a routerLink="/catalogo">Catálogo</a><button type="button" (click)="openCustomizer()">Armar cotización</button><a routerLink="/" fragment="como-funciona">Cómo comprar</a></div>
-  <div><strong>Tu pedido</strong><a routerLink="/personalizacion">Personalizar después del pago</a><a routerLink="/" fragment="preguntas">Preguntas frecuentes</a><a routerLink="/" fragment="envios">Envíos</a></div>
-  <div><strong>Encuéntranos</strong><a href="https://www.instagram.com/leart.store/" target="_blank" rel="noreferrer">Instagram ↗</a><a [href]="store.whatsappUrl()" target="_blank" rel="noreferrer">WhatsApp ↗</a><small>Hecho con ♥ en Medellín, Colombia</small></div>
-  <div class="footer-bottom"><span>© 2026 Leart Store</span><span>Catálogo y cotización</span></div>
-</footer>
+@if (!isAdminRoute()) {
+  <footer>
+    <div class="footer-brand"><a class="brand" routerLink="/"><span class="brand-main">LEART</span><span class="brand-dot">.</span><span class="brand-store">STORE</span></a><p>Regalos personalizados que convierten personas y momentos en piezas para recordar.</p></div>
+    <div><strong>Explora</strong><a routerLink="/catalogo">Catálogo</a><button type="button" (click)="openCustomizer()">Armar cotización</button><a routerLink="/" fragment="como-funciona">Cómo comprar</a></div>
+    <div><strong>Tu pedido</strong><a routerLink="/personalizacion">Personalizar después del pago</a><a routerLink="/" fragment="preguntas">Preguntas frecuentes</a><a routerLink="/" fragment="envios">Envíos</a></div>
+    <div><strong>Encuéntranos</strong><a [href]="settings().instagramUrl" target="_blank" rel="noreferrer">Instagram ↗</a><a [href]="store.whatsappUrl()" target="_blank" rel="noreferrer">WhatsApp ↗</a><small>Hecho con ♥ en Medellín, Colombia</small></div>
+    <div class="footer-bottom">
+      <span>© 2026 Leart Store · Catálogo y cotización</span>
+      <a routerLink="/admin/login" style="color: inherit; opacity: 0.6; text-decoration: none; font-size: 0.75rem;">Acceso Admin 🔐</a>
+    </div>
+  </footer>
+}
 
 @if (store.customizerOpen()) {
   <div class="modal-backdrop" (click)="store.closeCustomizer()">

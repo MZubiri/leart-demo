@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, signal, untracked, ViewEncapsulation } from '@angular/core';
+import { Component, computed, effect, inject, signal, untracked, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
+import { SettingsService } from './core/services/settings.service';
 import { CATEGORY_SHOWCASE, Category, OCCASIONS } from './store/products';
 import { StoreService } from './store/store.service';
 
@@ -27,6 +29,14 @@ const FRAME_LIMITS: Record<string, number> = {
   encapsulation: ViewEncapsulation.None,
 })
 export class App {
+  private readonly router = inject(Router);
+  readonly settingsService = inject(SettingsService);
+  readonly store = inject(StoreService);
+
+  readonly settings = this.settingsService.settings;
+  readonly currentUrl = signal(this.router.url);
+  readonly isAdminRoute = computed(() => this.currentUrl().startsWith('/admin'));
+
   readonly formats = CATEGORY_SHOWCASE;
   readonly occasions = OCCASIONS;
   readonly menuOpen = signal(false);
@@ -38,17 +48,21 @@ export class App {
   readonly accessories = signal(false);
   readonly occasion = signal('Aniversario');
   readonly notes = signal('');
+
   readonly variants = computed(() => {
     const requested = this.store.customizerProduct();
     return requested?.category === this.selectedCategory() ? requested.variants : VARIANTS[this.selectedCategory()];
   });
+
   readonly maxFigures = computed(() =>
     this.selectedCategory() === 'Cuadros'
       ? FRAME_LIMITS[this.selectedVariant()] ?? 4
       : this.formats.find((item) => item.name === this.selectedCategory())?.maxFigures ?? 8,
   );
+
   readonly capacityUsed = computed(() => this.figures() + this.pets());
   readonly remainingCapacity = computed(() => Math.max(0, this.maxFigures() - this.capacityUsed()));
+
   readonly selectedProduct = computed(() => {
     const requested = this.store.customizerProduct();
     return requested?.category === this.selectedCategory()
@@ -56,7 +70,11 @@ export class App {
       : this.store.products.find((item) => item.category === this.selectedCategory());
   });
 
-  constructor(readonly store: StoreService) {
+  constructor() {
+    this.router.events.pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd)).subscribe((event) => {
+      this.currentUrl.set(event.urlAfterRedirects || event.url);
+    });
+
     effect(() => {
       const isOpen = this.store.customizerOpen();
       const requested = this.store.customizerProduct();
@@ -67,9 +85,8 @@ export class App {
       }
       this.selectedCategory.set(requested.category);
       this.selectedVariant.set(requested.variants[0]);
-      const maximum = requested.category === 'Cuadros'
-        ? FRAME_LIMITS[requested.variants[0]] ?? 4
-        : requested.maxFigures;
+      const maximum =
+        requested.category === 'Cuadros' ? FRAME_LIMITS[requested.variants[0]] ?? 4 : requested.maxFigures;
       const figures = Math.min(Math.max(untracked(this.figures), requested.minFigures), maximum);
       this.figures.set(figures);
       this.pets.set(Math.min(untracked(this.pets), Math.max(0, maximum - figures)));
@@ -99,9 +116,10 @@ export class App {
 
   chooseVariant(variant: string): void {
     this.selectedVariant.set(variant);
-    const maximum = this.selectedCategory() === 'Cuadros'
-      ? FRAME_LIMITS[variant] ?? 4
-      : this.formats.find((item) => item.name === this.selectedCategory())?.maxFigures ?? 8;
+    const maximum =
+      this.selectedCategory() === 'Cuadros'
+        ? FRAME_LIMITS[variant] ?? 4
+        : this.formats.find((item) => item.name === this.selectedCategory())?.maxFigures ?? 8;
     this.figures.set(Math.min(this.figures(), maximum));
     this.pets.set(Math.min(this.pets(), Math.max(0, maximum - this.figures())));
   }
@@ -127,16 +145,17 @@ export class App {
 
   addCustom(): void {
     const product = this.selectedProduct() ?? this.store.products[0];
-    const extras = [
-      this.pets() ? `${this.pets()} mascota(s)` : '',
-      this.accessories() ? 'con accesorios' : '',
-    ].filter(Boolean).join(', ');
+    const extras = [this.pets() ? `${this.pets()} mascota(s)` : '', this.accessories() ? 'con accesorios' : '']
+      .filter(Boolean)
+      .join(', ');
     const note = [
       `${this.selectedVariant()}, ${this.figures()} minifigura(s)`,
       extras,
       this.occasion(),
       this.notes(),
-    ].filter(Boolean).join(' · ');
+    ]
+      .filter(Boolean)
+      .join(' · ');
     this.store.closeCustomizer();
     this.store.add(product, note);
   }
