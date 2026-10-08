@@ -1,0 +1,1892 @@
+[
+  {
+    "id": "cuadro-personalizado",
+    "name": "Cuadro personalizado",
+    "kicker": "Tu historia enmarcada",
+    "category": "Cuadros",
+    "detail": "S (20x15), M (27x22) y L (32x23)",
+    "image": "/images/cuadro-personalizado.png",
+    "tag": "1 a 10 figuras",
+    "group": "Cuadros",
+    "occasion": [
+      "Pareja",
+      "Familia",
+      "Cumpleaños",
+      "Aniversario",
+      "Graduación"
+    ],
+    "description": "Un cuadro diseñado alrededor de tu historia. Medidas: S (20 x 15 cm, máx. 3 minifiguras), M (27 x 22 cm, máx. 6 minifiguras) y L (32 x 23 cm, máx. 10 minifiguras). Incluye cuadro, minifiguras tipo brick personalizadas, fondo temático a elección y empaque con diseño para regalo.",
+    "minFigures": 1,
+    "maxFigures": 10,
+    "variants": [
+      "Talla S (20x15 cm) · máx. 3",
+      "Talla M (27x22 cm) · máx. 6",
+      "Talla L (32x23 cm) · máx. 10"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Capacidad máxima con mascotas: S hasta 3, M hasta 6, L hasta 10.",
+    "basePrice": 96000,
+    "code": "CUADRO-PER"
+  },
+  {
+    "id": "caja-acrilica-personalizada",
+    "name": "Caja acrílica personalizada",
+    "kicker": "Escenas protegidas para recordar",
+    "category": "Cajas acrílicas",
+    "detail": "Caja Sencilla o Doble · máx. 4 figuras",
+    "image": "/catalog-assets/minibox/df814d06-067e-4b15-b7b5-9731d683f9ff.png",
+    "tag": "Caja acrílica",
+    "group": "Caja acrílica",
+    "occasion": [
+      "Pareja",
+      "Profesiones",
+      "Cumpleaños",
+      "Aniversario"
+    ],
+    "description": "Caja acrílica de exhibición para crear una escena personalizada con fondo temático, minifiguras y accesorios. Opciones: Caja Sencilla (máx. 1 figura y 1 mascota) o Caja Doble (hasta 4 figuras, o figuras con moto). Incluye accesorio de catálogo y empaque de regalo.",
+    "minFigures": 1,
+    "maxFigures": 4,
+    "variants": [
+      "Caja Sencilla · máx. 1",
+      "Caja Doble · máx. 4",
+      "Caja Doble + Moto"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Caja Sencilla máx. 1 figura; Caja Doble hasta 4 figuras o con moto. Fondo personalizado por $8.000 adicionales.",
+    "basePrice": 60000,
+    "code": "CAJA-ACR"
+  },
+  {
+    "id": "momento-con-luz",
+    "name": "Mini Momento con Luz",
+    "kicker": "Piezas tipo lego con iluminación",
+    "category": "Mini momentos",
+    "detail": "Piezas tipo lego + luz LED",
+    "image": "/catalog-assets/sets/4af8d6ef-79eb-4bb0-8dce-915751a36f31.jpg",
+    "tag": "Con Luz",
+    "group": "Con Luz",
+    "occasion": [
+      "Pareja",
+      "Aniversario",
+      "Cumpleaños"
+    ],
+    "description": "Escena decorativa en piezas armables tipo lego con sistema de luz cálida integrada. Personalización de minifiguras en cabello, rostro y outfit según inventario. Incluye empaque de regalo.",
+    "minFigures": 1,
+    "maxFigures": 6,
+    "variants": [
+      "Con luz (1 minifigura)",
+      "Con luz (2 minifiguras)"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "1 minifigura $184.000, 2 minifiguras $210.000. Minifigura adicional por $26.000.",
+    "basePrice": 184000,
+    "code": "MOM-LUZ"
+  },
+  {
+    "id": "momento-sin-luz",
+    "name": "Mini Momento sin Luz",
+    "kicker": "Piezas tipo lego decorativo",
+    "category": "Mini momentos",
+    "detail": "Piezas tipo lego para exhibición",
+    "image": "/catalog-assets/sets/c0015487-850f-4e69-ba49-f0f11976840e.jpg",
+    "tag": "Sin Luz",
+    "group": "Sin Luz",
+    "occasion": [
+      "Pareja",
+      "Amigos",
+      "Cumpleaños"
+    ],
+    "description": "Escena decorativa en piezas armables tipo lego sin luz. Ideal para repisas, escritorios y momentos especiales con figuras personalizadas.",
+    "minFigures": 1,
+    "maxFigures": 6,
+    "variants": [
+      "Sin luz (1 minifigura)",
+      "Sin luz (2 minifiguras)"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "1 minifigura $164.000, 2 minifiguras $190.000. Minifigura adicional por $26.000.",
+    "basePrice": 164000,
+    "code": "MOM-NOLUZ"
+  },
+  {
+    "id": "momento-mini-armable",
+    "name": "Mini Momento Micro Armable",
+    "kicker": "Piezas mini de alta precisión",
+    "category": "Mini momentos",
+    "detail": "Piezas mini armables compactas",
+    "image": "/catalog-assets/sets/243775c4-7b83-46fe-9189-bcb9c7126e19.png",
+    "tag": "Mini Armable",
+    "group": "Mini Armables",
+    "occasion": [
+      "Pareja",
+      "Cumpleaños",
+      "Detalle"
+    ],
+    "description": "Set armable en escala micro compacta con minifiguras personalizadas. Un detalle delicado y lleno de significado.",
+    "minFigures": 1,
+    "maxFigures": 4,
+    "variants": [
+      "Mini armables (1 minifigura)",
+      "Mini armables (2 minifiguras)"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "1 minifigura $134.000, 2 minifiguras $160.000. Minifigura adicional por $26.000.",
+    "basePrice": 134000,
+    "code": "MOM-MICRO"
+  },
+  {
+    "id": "set-altar-enamorados",
+    "name": "Altar Enamorados",
+    "kicker": "Para momentos que unen",
+    "category": "Sets armables",
+    "detail": "52 piezas · Grupo 1",
+    "image": "/catalog-assets/sets/915f5476-74ff-468e-92fc-3f73cd75edc5.png",
+    "tag": "Grupo 1",
+    "group": "Grupo 1",
+    "occasion": [
+      "Pareja",
+      "Aniversario"
+    ],
+    "description": "Altar Enamorados es un set armable decorativo (52 piezas · Grupo 1) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $158.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "MOC0049"
+  },
+  {
+    "id": "set-amor-rodante",
+    "name": "Amor Rodante",
+    "kicker": "Un viaje de a dos",
+    "category": "Sets armables",
+    "detail": "75 piezas · Grupo 2",
+    "image": "/catalog-assets/sets/520a314b-8ab9-418a-9550-1d013f1794fe.png",
+    "tag": "Grupo 2",
+    "group": "Grupo 2",
+    "occasion": [
+      "Pareja",
+      "Aniversario"
+    ],
+    "description": "Amor Rodante es un set armable decorativo (75 piezas · Grupo 2) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 2"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 2: 1 minifigura $140.000, 2 minifiguras $168.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 140000,
+    "code": "163273"
+  },
+  {
+    "id": "set-arbol-sakura",
+    "name": "Árbol Sakura",
+    "kicker": "Naturaleza y romance",
+    "category": "Sets armables",
+    "detail": "70 piezas · Grupo 1",
+    "image": "/catalog-assets/sets/84feb517-4fe2-494f-b7ed-4f8c7910d36d.png",
+    "tag": "Grupo 1",
+    "group": "Grupo 1",
+    "occasion": [
+      "Pareja",
+      "Cumpleaños"
+    ],
+    "description": "Árbol Sakura es un set armable decorativo (70 piezas · Grupo 1) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $158.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "CN00133-A"
+  },
+  {
+    "id": "set-barbacoa-con-amigos",
+    "name": "Barbacoa con Amigos",
+    "kicker": "El parche perfecto",
+    "category": "Sets armables",
+    "detail": "54 piezas · Grupo 1",
+    "image": "/catalog-assets/sets/28fb4712-de07-4428-b711-ac1fdc81068a.png",
+    "tag": "Grupo 1",
+    "group": "Grupo 1",
+    "occasion": [
+      "Amigos",
+      "Cumpleaños"
+    ],
+    "description": "Barbacoa con Amigos es un set armable decorativo (54 piezas · Grupo 1) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $158.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "MOC4034"
+  },
+  {
+    "id": "set-barberia-tradicional",
+    "name": "Barbería Tradicional",
+    "kicker": "Estilo y detalle",
+    "category": "Sets armables",
+    "detail": "85 piezas · Grupo 2",
+    "image": "/catalog-assets/sets/18f2f123-6c81-4c34-9c59-fb4d7074492d.png",
+    "tag": "Grupo 2",
+    "group": "Grupo 2",
+    "occasion": [
+      "Profesiones",
+      "Cumpleaños"
+    ],
+    "description": "Barbería Tradicional es un set armable decorativo (85 piezas · Grupo 2) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 2"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 2: 1 minifigura $140.000, 2 minifiguras $168.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 140000,
+    "code": "8974-4"
+  },
+  {
+    "id": "set-bateria",
+    "name": "Batería",
+    "kicker": "Para quien vive la música",
+    "category": "Sets armables",
+    "detail": "35 piezas · Grupo 1",
+    "image": "/catalog-assets/sets/55596977-1ab7-4b2b-9d96-282363e33081.png",
+    "tag": "Grupo 1",
+    "group": "Grupo 1",
+    "occasion": [
+      "Música",
+      "Cumpleaños"
+    ],
+    "description": "Batería es un set armable decorativo (35 piezas · Grupo 1) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $158.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "MOC4091"
+  },
+  {
+    "id": "set-bbc-cerveceria",
+    "name": "BBC Cervecería",
+    "kicker": "Celebrando los buenos momentos",
+    "category": "Sets armables",
+    "detail": "90 piezas · Grupo 2",
+    "image": "/catalog-assets/sets/332c4438-e7e6-4894-bc15-9624ff417095.png",
+    "tag": "Grupo 2",
+    "group": "Grupo 2",
+    "occasion": [
+      "Amigos",
+      "Cumpleaños"
+    ],
+    "description": "BBC Cervecería es un set armable decorativo (90 piezas · Grupo 2) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 2"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 2: 1 minifigura $140.000, 2 minifiguras $168.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 140000,
+    "code": "B10-74"
+  },
+  {
+    "id": "minibox-buena-vibra",
+    "name": "Buena Vibra",
+    "kicker": "Caja acrílica noche y música",
+    "category": "Mini Box",
+    "detail": "20 piezas · Mini Box",
+    "image": "/catalog-assets/minibox/f639f9d0-9aa9-4b9a-a278-594ce0a45ed2.png",
+    "tag": "Mini Box",
+    "group": "Mini Box",
+    "occasion": [
+      "Amigos",
+      "Cumpleaños"
+    ],
+    "description": "Buena Vibra es una escena protegida en caja acrílica que incluye mini set armable (20 piezas · Mini Box) y minifiguras personalizadas. Ideal para regalar y exhibir en escritorios o repisas.",
+    "minFigures": 1,
+    "maxFigures": 4,
+    "variants": [
+      "Caja con mini set"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Incluye caja acrílica, mini set y minifiguras. El valor se confirma según extras.",
+    "isActive": true,
+    "basePrice": 70000,
+    "code": "B21-44-2"
+  },
+  {
+    "id": "set-camping-aventura",
+    "name": "Camping Aventura",
+    "kicker": "Noche de fogata y tienda",
+    "category": "Sets armables",
+    "detail": "153 piezas · Grupo 4",
+    "image": "/catalog-assets/sets/49b5d8bf-3c18-4785-adfa-77d4574d13f1.png",
+    "tag": "Grupo 4",
+    "group": "Grupo 4",
+    "occasion": [
+      "Amigos",
+      "Cumpleaños"
+    ],
+    "description": "Camping Aventura es un set armable decorativo (153 piezas · Grupo 4) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 4"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 4: 1 minifigura $165.000, 2 minifiguras $195.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 165000,
+    "code": "96697378638"
+  },
+  {
+    "id": "set-cancha-de-basquet",
+    "name": "Cancha de Básquet",
+    "kicker": "Pasión por el juego",
+    "category": "Sets armables",
+    "detail": "48 piezas · Grupo 1",
+    "image": "/catalog-assets/sets/afd657cf-eae8-4c5d-88e3-09db8c3f61e8.png",
+    "tag": "Grupo 1",
+    "group": "Grupo 1",
+    "occasion": [
+      "Deportes",
+      "Cumpleaños"
+    ],
+    "description": "Cancha de Básquet es un set armable decorativo (48 piezas · Grupo 1) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $158.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "MOC4081-A"
+  },
+  {
+    "id": "set-cancha-de-futbol",
+    "name": "Cancha de Fútbol",
+    "kicker": "Para hinchas de verdad",
+    "category": "Sets armables",
+    "detail": "20 piezas · Grupo 1",
+    "image": "/catalog-assets/sets/1a75b290-9657-4c33-915c-76bd83113eb9.png",
+    "tag": "Grupo 1",
+    "group": "Grupo 1",
+    "occasion": [
+      "Deportes",
+      "Cumpleaños"
+    ],
+    "description": "Cancha de Fútbol es un set armable decorativo (20 piezas · Grupo 1) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $158.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "LEA-0001"
+  },
+  {
+    "id": "set-cascada-tropical",
+    "name": "Cascada Tropical",
+    "kicker": "Paraíso en miniatura",
+    "category": "Sets armables",
+    "detail": "130 piezas · Grupo 3",
+    "image": "/catalog-assets/sets/b2e82c07-cb1f-4445-be15-74f524d98985.png",
+    "tag": "Grupo 3",
+    "group": "Grupo 3",
+    "occasion": [
+      "Pareja",
+      "Vacaciones"
+    ],
+    "description": "Cascada Tropical es un set armable decorativo (130 piezas · Grupo 3) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 3"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 3: 1 minifigura $154.000, 2 minifiguras $184.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 154000,
+    "code": "4901131696"
+  },
+  {
+    "id": "set-cita-bajo-el-farol",
+    "name": "Cita bajo el Farol",
+    "kicker": "Cita bajo la luz tenue",
+    "category": "Sets armables",
+    "detail": "Set armable · Set Armable",
+    "image": "/catalog-assets/sets/c80919b7-55ac-4e2f-a021-fe6ca35ec9b2.jpg",
+    "tag": "Set Armable",
+    "group": "Grupo 1",
+    "occasion": [
+      "Pareja",
+      "Aniversario"
+    ],
+    "description": "Cita bajo el Farol es un set armable decorativo (Set armable · Set Armable) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $160.000. Minifigura adicional por $24.000.",
+    "isActive": false,
+    "basePrice": 130000,
+    "code": "MOC0017-A"
+  },
+  {
+    "id": "set-cita-en-el-cafe",
+    "name": "Cita en el Café",
+    "kicker": "Un plan inolvidable",
+    "category": "Sets armables",
+    "detail": "140 piezas · Grupo 3",
+    "image": "/catalog-assets/sets/243775c4-7b83-46fe-9189-bcb9c7126e19.png",
+    "tag": "Grupo 3",
+    "group": "Grupo 3",
+    "occasion": [
+      "Pareja",
+      "Aniversario"
+    ],
+    "description": "Cita en el Café es un set armable decorativo (140 piezas · Grupo 3) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 3"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 3: 1 minifigura $154.000, 2 minifiguras $184.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 154000,
+    "code": "401118404"
+  },
+  {
+    "id": "set-cita-en-el-hot-dog",
+    "name": "Cita en el Hot Dog",
+    "kicker": "Un clásico callejero",
+    "category": "Sets armables",
+    "detail": "100 piezas · Grupo 2",
+    "image": "/catalog-assets/sets/4158bd8a-a71e-4033-baaa-15fc1bccc947.png",
+    "tag": "Grupo 2",
+    "group": "Grupo 2",
+    "occasion": [
+      "Profesiones",
+      "Cumpleaños"
+    ],
+    "description": "Cita en el Hot Dog es un set armable decorativo (100 piezas · Grupo 2) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 2"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 2: 1 minifigura $140.000, 2 minifiguras $168.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 140000,
+    "code": "LEA-0004"
+  },
+  {
+    "id": "set-cita-en-otono",
+    "name": "Cita en Otoño",
+    "kicker": "Colores de temporada",
+    "category": "Sets armables",
+    "detail": "99 piezas · Grupo 3",
+    "image": "/catalog-assets/sets/0012f611-7622-45c5-bc55-fef41e6442dc.png",
+    "tag": "Grupo 3",
+    "group": "Grupo 3",
+    "occasion": [
+      "Pareja",
+      "Aniversario"
+    ],
+    "description": "Cita en Otoño es un set armable decorativo (99 piezas · Grupo 3) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 3"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 3: 1 minifigura $154.000, 2 minifiguras $184.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 154000,
+    "code": "99P-ZZ"
+  },
+  {
+    "id": "set-cita-entre-flores",
+    "name": "Cita entre Flores",
+    "kicker": "Detalles que florecen",
+    "category": "Sets armables",
+    "detail": "120 piezas · Grupo 3",
+    "image": "/catalog-assets/sets/fa4e6831-946a-475c-a866-f86409bf6ed2.png",
+    "tag": "Grupo 3",
+    "group": "Grupo 3",
+    "occasion": [
+      "Pareja",
+      "Aniversario"
+    ],
+    "description": "Cita entre Flores es un set armable decorativo (120 piezas · Grupo 3) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 3"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 3: 1 minifigura $154.000, 2 minifiguras $184.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 154000,
+    "code": "CFLS002"
+  },
+  {
+    "id": "set-columpio",
+    "name": "Columpio",
+    "kicker": "Tardes inolvidables",
+    "category": "Sets armables",
+    "detail": "65 piezas · Grupo 2",
+    "image": "/catalog-assets/sets/48f15862-6c36-493c-a0e7-b55d1fc54d8d.png",
+    "tag": "Grupo 2",
+    "group": "Grupo 2",
+    "occasion": [
+      "Pareja",
+      "Aniversario"
+    ],
+    "description": "Columpio es un set armable decorativo (65 piezas · Grupo 2) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 2"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 2: 1 minifigura $140.000, 2 minifiguras $168.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 140000,
+    "code": "MOC4145"
+  },
+  {
+    "id": "set-copa-mundial",
+    "name": "Copa Mundial",
+    "kicker": "La gloria del fútbol",
+    "category": "Sets armables",
+    "detail": "Set armable · Set Armable",
+    "image": "/catalog-assets/sets/1a75b290-9657-4c33-915c-76bd83113eb9.png",
+    "tag": "Set Armable",
+    "group": "Grupo 1",
+    "occasion": [
+      "Deportes",
+      "Coleccionistas"
+    ],
+    "description": "Copa Mundial es un set armable decorativo (Set armable · Set Armable) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $160.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "K96280"
+  },
+  {
+    "id": "set-corazon-latente",
+    "name": "Corazón Latente",
+    "kicker": "El corazón se mueve (late)",
+    "category": "Sets armables",
+    "detail": "105 piezas · Grupo 4",
+    "image": "/catalog-assets/sets/4af8d6ef-79eb-4bb0-8dce-915751a36f31.jpg",
+    "tag": "Grupo 4",
+    "group": "Grupo 4",
+    "occasion": [
+      "Pareja",
+      "Aniversario"
+    ],
+    "description": "Corazón Latente es un set armable decorativo (105 piezas · Grupo 4) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 4"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 4: 1 minifigura $165.000, 2 minifiguras $195.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 165000,
+    "code": "MOC169562"
+  },
+  {
+    "id": "set-escapada-natural",
+    "name": "Escapada Natural",
+    "kicker": "Desconexión total",
+    "category": "Sets armables",
+    "detail": "185 piezas · Grupo 4",
+    "image": "/catalog-assets/sets/c0015487-850f-4e69-ba49-f0f11976840e.jpg",
+    "tag": "Grupo 4",
+    "group": "Grupo 4",
+    "occasion": [
+      "Pareja",
+      "Amigos"
+    ],
+    "description": "Escapada Natural es un set armable decorativo (185 piezas · Grupo 4) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 4"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 4: 1 minifigura $165.000, 2 minifiguras $195.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 165000,
+    "code": "LEA-0006"
+  },
+  {
+    "id": "set-escritorio-gamer",
+    "name": "Escritorio Gamer",
+    "kicker": "El setup ideal",
+    "category": "Sets armables",
+    "detail": "85 piezas · Grupo 1",
+    "image": "/catalog-assets/sets/e1fee930-56e5-4d80-94e0-7127321c2974.png",
+    "tag": "Grupo 1",
+    "group": "Grupo 1",
+    "occasion": [
+      "Profesiones",
+      "Cumpleaños"
+    ],
+    "description": "Escritorio Gamer es un set armable decorativo (85 piezas · Grupo 1) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $158.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "353682"
+  },
+  {
+    "id": "minibox-mini-fitness",
+    "name": "Mini Fitness",
+    "kicker": "Caja acrílica de entrenamiento",
+    "category": "Mini Box",
+    "detail": "21 piezas · Mini Box",
+    "image": "/catalog-assets/minibox/462fcdf5-8fe1-48a2-8887-faa841811c09.png",
+    "tag": "Mini Box",
+    "group": "Mini Box",
+    "occasion": [
+      "Deportes",
+      "Cumpleaños"
+    ],
+    "description": "Mini Fitness es una escena protegida en caja acrílica que incluye mini set armable (21 piezas · Mini Box) y minifiguras personalizadas. Ideal para regalar y exhibir en escritorios o repisas.",
+    "minFigures": 1,
+    "maxFigures": 4,
+    "variants": [
+      "Caja con mini set"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Incluye caja acrílica, mini set y minifiguras. El valor se confirma según extras.",
+    "isActive": true,
+    "basePrice": 70000,
+    "code": "366726"
+  },
+  {
+    "id": "set-fogata-de-recuerdos",
+    "name": "Fogata de Recuerdos",
+    "kicker": "Bajo las estrellas",
+    "category": "Sets armables",
+    "detail": "45 piezas · Grupo 1",
+    "image": "/catalog-assets/sets/c72527d6-26c5-403d-8365-5ad6e2bd4d80.png",
+    "tag": "Grupo 1",
+    "group": "Grupo 1",
+    "occasion": [
+      "Amigos",
+      "Pareja"
+    ],
+    "description": "Fogata de Recuerdos es un set armable decorativo (45 piezas · Grupo 1) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $158.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "LEA-0002"
+  },
+  {
+    "id": "set-jardin-secreto",
+    "name": "Jardín Secreto",
+    "kicker": "Naturaleza en miniatura",
+    "category": "Sets armables",
+    "detail": "117 piezas · Grupo 2",
+    "image": "/catalog-assets/sets/48499fd1-79fc-4291-ad14-776a32ed285b.png",
+    "tag": "Grupo 2",
+    "group": "Grupo 2",
+    "occasion": [
+      "Pareja",
+      "Aniversario"
+    ],
+    "description": "Jardín Secreto es un set armable decorativo (117 piezas · Grupo 2) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 2"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 2: 1 minifigura $140.000, 2 minifiguras $168.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 140000,
+    "code": "52706390907"
+  },
+  {
+    "id": "set-lover-s-bridge",
+    "name": "Lover's Bridge",
+    "kicker": "Uniendo historias",
+    "category": "Sets armables",
+    "detail": "Set armable · Set Armable",
+    "image": "/catalog-assets/sets/a7673a75-6512-47dd-8dcd-0ec55ad872ed.png",
+    "tag": "Set Armable",
+    "group": "Grupo 1",
+    "occasion": [
+      "Pareja",
+      "Aniversario"
+    ],
+    "description": "Lover's Bridge es un set armable decorativo (Set armable · Set Armable) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $160.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "LEA-0003"
+  },
+  {
+    "id": "set-mini-parque",
+    "name": "Mini Parque",
+    "kicker": "Un rincón para dos",
+    "category": "Sets armables",
+    "detail": "60 piezas · Grupo 1",
+    "image": "/catalog-assets/sets/0ea7c0ee-26b7-4829-a278-1f271e68a988.png",
+    "tag": "Grupo 1",
+    "group": "Grupo 1",
+    "occasion": [
+      "Pareja",
+      "Aniversario"
+    ],
+    "description": "Mini Parque es un set armable decorativo (60 piezas · Grupo 1) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $158.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "MPA001"
+  },
+  {
+    "id": "set-mini-billar",
+    "name": "Mini Billar",
+    "kicker": "Para el salón de juegos",
+    "category": "Sets armables",
+    "detail": "72 piezas · Grupo 1",
+    "image": "/catalog-assets/sets/7bbb7996-777e-4368-8997-b600e6455116.png",
+    "tag": "Grupo 1",
+    "group": "Grupo 1",
+    "occasion": [
+      "Amigos",
+      "Cumpleaños"
+    ],
+    "description": "Mini Billar es un set armable decorativo (72 piezas · Grupo 1) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $158.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "62349712"
+  },
+  {
+    "id": "set-modo-aventura",
+    "name": "Modo Aventura",
+    "kicker": "Listos para explorar",
+    "category": "Sets armables",
+    "detail": "95 piezas · Grupo 2",
+    "image": "/catalog-assets/sets/84e1b978-41e4-4775-a1cf-f098dbeacb7c.png",
+    "tag": "Grupo 2",
+    "group": "Grupo 2",
+    "occasion": [
+      "Amigos",
+      "Cumpleaños"
+    ],
+    "description": "Modo Aventura es un set armable decorativo (95 piezas · Grupo 2) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 2"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 2: 1 minifigura $140.000, 2 minifiguras $168.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 140000,
+    "code": "163257"
+  },
+  {
+    "id": "set-modo-velocidad",
+    "name": "Modo Velocidad",
+    "kicker": "Pura adrenalina",
+    "category": "Sets armables",
+    "detail": "68 piezas · Grupo 1",
+    "image": "/catalog-assets/sets/ea4a113e-31c7-458d-921a-786a06bb88a2.png",
+    "tag": "Grupo 1",
+    "group": "Grupo 1",
+    "occasion": [
+      "Deportes",
+      "Cumpleaños"
+    ],
+    "description": "Modo Velocidad es un set armable decorativo (68 piezas · Grupo 1) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $158.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "316200"
+  },
+  {
+    "id": "set-motocicleta-clasica",
+    "name": "Motocicleta Clásica",
+    "kicker": "Aventura sobre dos ruedas",
+    "category": "Sets armables",
+    "detail": "Set armable · Set Armable",
+    "image": "/catalog-assets/sets/ea4a113e-31c7-458d-921a-786a06bb88a2.png",
+    "tag": "Set Armable",
+    "group": "Grupo 1",
+    "occasion": [
+      "Deportes",
+      "Coleccionistas"
+    ],
+    "description": "Motocicleta Clásica es un set armable decorativo (Set armable · Set Armable) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $160.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "MOC-103498"
+  },
+  {
+    "id": "set-navegando-juntos",
+    "name": "Navegando Juntos",
+    "kicker": "Rumbo a nuevas aventuras",
+    "category": "Sets armables",
+    "detail": "58 piezas · Grupo 1",
+    "image": "/catalog-assets/sets/96e3c92c-8c15-4b7b-ada3-fdfc4b88c2cd.png",
+    "tag": "Grupo 1",
+    "group": "Grupo 1",
+    "occasion": [
+      "Pareja",
+      "Aniversario"
+    ],
+    "description": "Navegando Juntos es un set armable decorativo (58 piezas · Grupo 1) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $158.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "886993675"
+  },
+  {
+    "id": "set-parque-de-los-novios",
+    "name": "Parque de los Novios",
+    "kicker": "Paseo al atardecer",
+    "category": "Sets armables",
+    "detail": "110 piezas · Grupo 3",
+    "image": "/catalog-assets/sets/a7673a75-6512-47dd-8dcd-0ec55ad872ed.png",
+    "tag": "Grupo 3",
+    "group": "Grupo 3",
+    "occasion": [
+      "Pareja",
+      "Aniversario"
+    ],
+    "description": "Parque de los Novios es un set armable decorativo (110 piezas · Grupo 3) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 3"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 3: 1 minifigura $154.000, 2 minifiguras $184.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 154000,
+    "code": "7788953028"
+  },
+  {
+    "id": "set-parque-de-diversiones",
+    "name": "Parque de Diversiones",
+    "kicker": "Diversión sin límites",
+    "category": "Sets armables",
+    "detail": "75 piezas · Grupo 1",
+    "image": "/catalog-assets/sets/3f210ffd-191a-43b4-90ae-3c160d917346.png",
+    "tag": "Grupo 1",
+    "group": "Grupo 1",
+    "occasion": [
+      "Familia",
+      "Cumpleaños"
+    ],
+    "description": "Parque de Diversiones es un set armable decorativo (75 piezas · Grupo 1) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $158.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "214030"
+  },
+  {
+    "id": "set-piano-de-cola",
+    "name": "Piano de Cola",
+    "kicker": "Música en cada nota",
+    "category": "Sets armables",
+    "detail": "62 piezas · Grupo 2",
+    "image": "/catalog-assets/sets/c0a1d640-6a3b-468d-8ac2-65b074e1e2aa.png",
+    "tag": "Grupo 2",
+    "group": "Grupo 2",
+    "occasion": [
+      "Música",
+      "Cumpleaños"
+    ],
+    "description": "Piano de Cola es un set armable decorativo (62 piezas · Grupo 2) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 2"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 2: 1 minifigura $140.000, 2 minifiguras $168.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 140000,
+    "code": "MOC0009"
+  },
+  {
+    "id": "set-pisciencanto",
+    "name": "Pisciencanto",
+    "kicker": "Vacaciones en miniatura",
+    "category": "Sets armables",
+    "detail": "125 piezas · Grupo 3",
+    "image": "/catalog-assets/sets/7ee002c8-dcd0-452b-afb3-c023d94cc4e6.png",
+    "tag": "Grupo 3",
+    "group": "Grupo 3",
+    "occasion": [
+      "Pareja",
+      "Vacaciones"
+    ],
+    "description": "Pisciencanto es un set armable decorativo (125 piezas · Grupo 3) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 3"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 3: 1 minifigura $154.000, 2 minifiguras $184.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 154000,
+    "code": "6704132905"
+  },
+  {
+    "id": "set-rayo-azul",
+    "name": "Rayo Azul",
+    "kicker": "Velocidad y estilo",
+    "category": "Sets armables",
+    "detail": "65 piezas · Grupo 1",
+    "image": "/catalog-assets/sets/1dd35a46-3c22-49ca-8b29-0b3598fc4ab9.png",
+    "tag": "Grupo 1",
+    "group": "Grupo 1",
+    "occasion": [
+      "Deportes",
+      "Cumpleaños"
+    ],
+    "description": "Rayo Azul es un set armable decorativo (65 piezas · Grupo 1) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $158.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "91401"
+  },
+  {
+    "id": "set-rayo-blanco",
+    "name": "Rayo Blanco",
+    "kicker": "Diseño impecable",
+    "category": "Sets armables",
+    "detail": "71 piezas · Grupo 1",
+    "image": "/catalog-assets/sets/46ad66c4-1926-4dbf-b79c-6577283e2596.png",
+    "tag": "Grupo 1",
+    "group": "Grupo 1",
+    "occasion": [
+      "Deportes",
+      "Cumpleaños"
+    ],
+    "description": "Rayo Blanco es un set armable decorativo (71 piezas · Grupo 1) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $158.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "91402"
+  },
+  {
+    "id": "set-rayo-rojo",
+    "name": "Rayo Rojo",
+    "kicker": "Fuerza y potencia",
+    "category": "Sets armables",
+    "detail": "69 piezas · Grupo 1",
+    "image": "/catalog-assets/sets/39883bba-ec0b-4a97-b51d-a867041ed255.png",
+    "tag": "Grupo 1",
+    "group": "Grupo 1",
+    "occasion": [
+      "Deportes",
+      "Cumpleaños"
+    ],
+    "description": "Rayo Rojo es un set armable decorativo (69 piezas · Grupo 1) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $158.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "91404"
+  },
+  {
+    "id": "set-rincon-del-lago",
+    "name": "Rincón del Lago",
+    "kicker": "Paz y contemplación",
+    "category": "Sets armables",
+    "detail": "248 piezas · Grupo 4",
+    "image": "/catalog-assets/sets/c0015487-850f-4e69-ba49-f0f11976840e.jpg",
+    "tag": "Grupo 4",
+    "group": "Grupo 4",
+    "occasion": [
+      "Pareja",
+      "Amigos"
+    ],
+    "description": "Rincón del Lago es un set armable decorativo (248 piezas · Grupo 4) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 4"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 4: 1 minifigura $165.000, 2 minifiguras $195.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 165000,
+    "code": "5503286775"
+  },
+  {
+    "id": "set-sala-de-juntas",
+    "name": "Sala de Juntas",
+    "kicker": "Grandes decisiones",
+    "category": "Sets armables",
+    "detail": "88 piezas · Grupo 3",
+    "image": "/catalog-assets/sets/cf62cf7f-4368-4195-a69d-ffbca41f12cd.png",
+    "tag": "Grupo 3",
+    "group": "Grupo 3",
+    "occasion": [
+      "Profesiones",
+      "Graduación"
+    ],
+    "description": "Sala de Juntas es un set armable decorativo (88 piezas · Grupo 3) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 3"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 3: 1 minifigura $154.000, 2 minifiguras $184.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 154000,
+    "code": "MOC4085"
+  },
+  {
+    "id": "set-sala-premium",
+    "name": "Sala Premium",
+    "kicker": "Espacios de distinción",
+    "category": "Sets armables",
+    "detail": "95 piezas · Grupo 3",
+    "image": "/catalog-assets/sets/9555fbdb-be08-4e14-a3f2-646b37d924fb.png",
+    "tag": "Grupo 3",
+    "group": "Grupo 3",
+    "occasion": [
+      "Profesiones",
+      "Graduación"
+    ],
+    "description": "Sala Premium es un set armable decorativo (95 piezas · Grupo 3) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 3"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 3: 1 minifigura $154.000, 2 minifiguras $184.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 154000,
+    "code": "1568056459"
+  },
+  {
+    "id": "set-salita-familiar",
+    "name": "Salita Familiar",
+    "kicker": "El calor del hogar",
+    "category": "Sets armables",
+    "detail": "78 piezas · Grupo 2",
+    "image": "/catalog-assets/sets/b9c3ab23-f237-4574-a4f7-5ef529361cb8.png",
+    "tag": "Grupo 2",
+    "group": "Grupo 2",
+    "occasion": [
+      "Familia",
+      "Cumpleaños"
+    ],
+    "description": "Salita Familiar es un set armable decorativo (78 piezas · Grupo 2) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 2"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 2: 1 minifigura $140.000, 2 minifiguras $168.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 140000,
+    "code": "MOC0021-P"
+  },
+  {
+    "id": "set-semillas-de-amor",
+    "name": "Semillas de Amor",
+    "kicker": "Cultivando recuerdos",
+    "category": "Sets armables",
+    "detail": "82 piezas · Grupo 2",
+    "image": "/catalog-assets/sets/f542f8e5-57a3-447a-8700-cb747558f0be.png",
+    "tag": "Grupo 2",
+    "group": "Grupo 2",
+    "occasion": [
+      "Pareja",
+      "Aniversario"
+    ],
+    "description": "Semillas de Amor es un set armable decorativo (82 piezas · Grupo 2) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 2"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 2: 1 minifigura $140.000, 2 minifiguras $168.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 140000,
+    "code": "T18741"
+  },
+  {
+    "id": "set-set-astronauta",
+    "name": "Set Astronauta",
+    "kicker": "Una aventura espacial",
+    "category": "Sets armables",
+    "detail": "152 piezas · Grupo 3",
+    "image": "/catalog-assets/sets/6fdb0ac4-426f-4e27-bac0-6ddaf70a4bd2.png",
+    "tag": "Grupo 3",
+    "group": "Grupo 3",
+    "occasion": [
+      "Profesiones",
+      "Graduación"
+    ],
+    "description": "Set Astronauta es un set armable decorativo (152 piezas · Grupo 3) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 3"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 3: 1 minifigura $154.000, 2 minifiguras $184.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 154000,
+    "code": "89644"
+  },
+  {
+    "id": "set-set-casita-up",
+    "name": "Set Casita UP",
+    "kicker": "Mecanismo de elevación",
+    "category": "Sets armables",
+    "detail": "686 piezas · Especial 686 pzs",
+    "image": "/catalog-assets/sets/4af8d6ef-79eb-4bb0-8dce-915751a36f31.jpg",
+    "tag": "Especial 686 pzs",
+    "group": "Edición Especial Casita UP",
+    "occasion": [
+      "Pareja",
+      "Familia",
+      "Aniversario"
+    ],
+    "description": "Set de 686 piezas inspirado en la Casita UP. Cuenta con un mecanismo especial para mantenerse elevada o apoyada en el piso. Incluye minifiguras personalizadas, caja personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Edición Especial Casita UP"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "1 minifigura $273.000, 2 minifiguras $295.000. Minifiguras adicionales por $24.000.",
+    "isActive": true,
+    "basePrice": 273000,
+    "code": "DK7025"
+  },
+  {
+    "id": "set-set-cocina",
+    "name": "Set Cocina",
+    "kicker": "El corazón del hogar",
+    "category": "Sets armables",
+    "detail": "135 piezas · Grupo 3",
+    "image": "/catalog-assets/sets/8d92d88a-5ef5-4abd-aa8d-d466d3460ec0.png",
+    "tag": "Grupo 3",
+    "group": "Grupo 3",
+    "occasion": [
+      "Familia",
+      "Cumpleaños"
+    ],
+    "description": "Set Cocina es un set armable decorativo (135 piezas · Grupo 3) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 3"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 3: 1 minifigura $154.000, 2 minifiguras $184.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 154000,
+    "code": "89698"
+  },
+  {
+    "id": "set-set-consultorio",
+    "name": "Set Consultorio",
+    "kicker": "Celebra su vocación médica",
+    "category": "Sets armables",
+    "detail": "158 piezas · Grupo 3",
+    "image": "/catalog-assets/sets/21c21329-083f-488c-8674-b193e95c1f2a.png",
+    "tag": "Grupo 3",
+    "group": "Grupo 3",
+    "occasion": [
+      "Profesiones",
+      "Graduación"
+    ],
+    "description": "Set Consultorio es un set armable decorativo (158 piezas · Grupo 3) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 3"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 3: 1 minifigura $154.000, 2 minifiguras $184.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 154000,
+    "code": "89695"
+  },
+  {
+    "id": "set-set-dentista",
+    "name": "Set Dentista",
+    "kicker": "Sonrisas perfectas",
+    "category": "Sets armables",
+    "detail": "145 piezas · Grupo 3",
+    "image": "/catalog-assets/sets/d61b635d-0599-4f0c-8050-bf935bf97428.png",
+    "tag": "Grupo 3",
+    "group": "Grupo 3",
+    "occasion": [
+      "Profesiones",
+      "Graduación"
+    ],
+    "description": "Set Dentista es un set armable decorativo (145 piezas · Grupo 3) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 3"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 3: 1 minifigura $154.000, 2 minifiguras $184.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 154000,
+    "code": "D610001"
+  },
+  {
+    "id": "set-set-estudio-de-arte",
+    "name": "Set Estudio de Arte",
+    "kicker": "Creatividad al máximo",
+    "category": "Sets armables",
+    "detail": "128 piezas · Grupo 3",
+    "image": "/catalog-assets/sets/34cc4235-9592-40ff-8ef2-0b470504ca8e.png",
+    "tag": "Grupo 3",
+    "group": "Grupo 3",
+    "occasion": [
+      "Profesiones",
+      "Graduación"
+    ],
+    "description": "Set Estudio de Arte es un set armable decorativo (128 piezas · Grupo 3) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 3"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 3: 1 minifigura $154.000, 2 minifiguras $184.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 154000,
+    "code": "89691"
+  },
+  {
+    "id": "set-set-fotografia",
+    "name": "Set Fotografía",
+    "kicker": "Para quienes capturan momentos",
+    "category": "Sets armables",
+    "detail": "167 piezas · Grupo 3",
+    "image": "/catalog-assets/sets/003c24d6-8918-4aec-8583-c4f59a045131.png",
+    "tag": "Grupo 3",
+    "group": "Grupo 3",
+    "occasion": [
+      "Profesiones",
+      "Graduación"
+    ],
+    "description": "Set Fotografía es un set armable decorativo (167 piezas · Grupo 3) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 3"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 3: 1 minifigura $154.000, 2 minifiguras $184.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 154000,
+    "code": "89697"
+  },
+  {
+    "id": "set-set-laboratorio",
+    "name": "Set Laboratorio",
+    "kicker": "Para mentes curiosas",
+    "category": "Sets armables",
+    "detail": "166 piezas · Grupo 3",
+    "image": "/catalog-assets/sets/28c7a5b5-6118-4db4-a29c-1fd288c86351.png",
+    "tag": "Grupo 3",
+    "group": "Grupo 3",
+    "occasion": [
+      "Profesiones",
+      "Graduación"
+    ],
+    "description": "Set Laboratorio es un set armable decorativo (166 piezas · Grupo 3) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 3"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 3: 1 minifigura $154.000, 2 minifiguras $184.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 154000,
+    "code": "89696"
+  },
+  {
+    "id": "set-set-mini-carreras",
+    "name": "Set Mini Carreras",
+    "kicker": "Pasión por los motores",
+    "category": "Sets armables",
+    "detail": "112 piezas · Grupo 3",
+    "image": "/catalog-assets/sets/10d4848f-a100-4327-8016-1524d33919d3.png",
+    "tag": "Grupo 3",
+    "group": "Grupo 3",
+    "occasion": [
+      "Deportes",
+      "Cumpleaños"
+    ],
+    "description": "Set Mini Carreras es un set armable decorativo (112 piezas · Grupo 3) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 3"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 3: 1 minifigura $154.000, 2 minifiguras $184.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 154000,
+    "code": "89692"
+  },
+  {
+    "id": "set-set-musico",
+    "name": "Set Músico",
+    "kicker": "Pasión en el escenario",
+    "category": "Sets armables",
+    "detail": "120 piezas · Grupo 3",
+    "image": "/catalog-assets/sets/53a912a7-d25e-4281-b2e1-f95cadbccf38.png",
+    "tag": "Grupo 3",
+    "group": "Grupo 3",
+    "occasion": [
+      "Música",
+      "Cumpleaños"
+    ],
+    "description": "Set Músico es un set armable decorativo (120 piezas · Grupo 3) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 3"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 3: 1 minifigura $154.000, 2 minifiguras $184.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 154000,
+    "code": "89693"
+  },
+  {
+    "id": "set-skyline-de-ciudades",
+    "name": "Skyline de Ciudades",
+    "kicker": "New York, París, Londres, Roma",
+    "category": "Sets armables",
+    "detail": "598 piezas · Skyline",
+    "image": "/catalog-assets/sets/4c0e83a7-4e34-4bfa-82ec-d0f8f3b15c39.jpg",
+    "tag": "Skyline",
+    "group": "Skyline",
+    "occasion": [
+      "Pareja",
+      "Familia",
+      "Graduación"
+    ],
+    "description": "Los Skylines representan lugares emblemáticos de ciudades del mundo (New York 598 pzs, París 649 pzs, Londres 468 pzs, Roma 373 pzs). Un viaje para no olvidar con minifiguras personalizadas.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "New York",
+      "París",
+      "Londres",
+      "Roma"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "1 minifigura $165.000, 2 minifiguras $195.000. Minifiguras adicionales por $24.000.",
+    "isActive": true,
+    "basePrice": 165000,
+    "code": "LEA-0005"
+  },
+  {
+    "id": "minibox-taller-de-papa",
+    "name": "Taller de Papá",
+    "kicker": "Caja acrílica con mini set",
+    "category": "Mini Box",
+    "detail": "65 piezas · Mini Box",
+    "image": "/catalog-assets/minibox/df814d06-067e-4b15-b7b5-9731d683f9ff.png",
+    "tag": "Mini Box",
+    "group": "Mini Box",
+    "occasion": [
+      "Profesiones",
+      "Familia",
+      "Cumpleaños"
+    ],
+    "description": "Taller de Papá es una escena protegida en caja acrílica que incluye mini set armable (65 piezas · Mini Box) y minifiguras personalizadas. Ideal para regalar y exhibir en escritorios o repisas.",
+    "minFigures": 1,
+    "maxFigures": 4,
+    "variants": [
+      "Caja con mini set"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Incluye caja acrílica, mini set y minifiguras. El valor se confirma según extras.",
+    "isActive": true,
+    "basePrice": 70000,
+    "code": "FRE-232806"
+  },
+  {
+    "id": "set-vaiven-del-amor",
+    "name": "Vaivén del Amor",
+    "kicker": "El sube y baja se mueve",
+    "category": "Sets armables",
+    "detail": "105 piezas · Grupo 4",
+    "image": "/catalog-assets/sets/4af8d6ef-79eb-4bb0-8dce-915751a36f31.jpg",
+    "tag": "Grupo 4",
+    "group": "Grupo 4",
+    "occasion": [
+      "Pareja",
+      "Aniversario"
+    ],
+    "description": "Vaivén del Amor es un set armable decorativo (105 piezas · Grupo 4) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 4"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 4: 1 minifigura $165.000, 2 minifiguras $195.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 165000,
+    "code": "MOC4098"
+  },
+  {
+    "id": "set-workspace-oficina",
+    "name": "Workspace Oficina",
+    "kicker": "Tu espacio de inspiración",
+    "category": "Sets armables",
+    "detail": "80 piezas · Grupo 1",
+    "image": "/catalog-assets/sets/3fa135ed-b2e9-47fa-a0c7-6fee7b38394d.png",
+    "tag": "Grupo 1",
+    "group": "Grupo 1",
+    "occasion": [
+      "Profesiones",
+      "Graduación"
+    ],
+    "description": "Workspace Oficina es un set armable decorativo (80 piezas · Grupo 1) tipo brick. Incluye set para armar, minifigura(s) personalizada(s) (cabello, rostro y outfit según inventario), base de exhibición, instrucciones, caja tipo LEGO personalizada y empaque especial.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Grupo 1"
+    ],
+    "allowsPets": true,
+    "allowsAccessories": true,
+    "rule": "Grupo 1: 1 minifigura $130.000, 2 minifiguras $158.000. Minifigura adicional por $24.000.",
+    "isActive": true,
+    "basePrice": 130000,
+    "code": "MOC0030-A"
+  },
+  {
+    "id": "llavero-personalizado",
+    "name": "Llavero personalizado",
+    "kicker": "Un personaje para llevar",
+    "category": "Llaveros",
+    "detail": "Una minifigura personalizada",
+    "image": "/catalog-assets/minifiguras/06bec1bd-01d5-4a30-8593-f3908d2b64bd.jpg",
+    "tag": "Llavero",
+    "group": "Llaveros",
+    "occasion": [
+      "Pareja",
+      "Amigos",
+      "Cumpleaños"
+    ],
+    "description": "Llavero con minifigura personalizada (cabello, rostro, outfit y accesorio según inventario disponible). Un detalle práctico y significativo para llevar todos los días.",
+    "minFigures": 1,
+    "maxFigures": 1,
+    "variants": [
+      "Llavero personalizado",
+      "Llavero de jugador",
+      "Llavero de personaje"
+    ],
+    "allowsPets": false,
+    "allowsAccessories": true,
+    "rule": "Una minifigura por llavero. Diseños y piezas sujetos al inventario disponible.",
+    "basePrice": 28000,
+    "code": "LLAV-PER"
+  },
+  {
+    "id": "fig-profesiones",
+    "name": "Profesiones y Oficios",
+    "kicker": "Minifiguras individuales e imanes",
+    "category": "Minifiguras",
+    "detail": "Figura individual o imán",
+    "image": "/catalog-assets/minifiguras/9cc3d850-256f-4a59-b551-85b0a7fe033c.jpg",
+    "tag": "Colección",
+    "group": "Minifiguras",
+    "occasion": [
+      "Profesiones",
+      "Graduación"
+    ],
+    "description": "Colección de minifiguras de Profesiones y Oficios. Más de 50 estilos de cabello y 80 rostros disponibles para combinar cabello, rostro, outfit y accesorios.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Figura individual",
+      "Imán decorativo"
+    ],
+    "allowsPets": false,
+    "allowsAccessories": true,
+    "rule": "Cabello, rostro, outfit y accesorios sujetos a disponibilidad de inventario.",
+    "basePrice": 24000,
+    "code": "FIG-PROFESIONES"
+  },
+  {
+    "id": "fig-futbol",
+    "name": "Futbolistas y Leyendas",
+    "kicker": "Minifiguras individuales e imanes",
+    "category": "Minifiguras",
+    "detail": "Figura individual o imán",
+    "image": "/catalog-assets/minifiguras/eb1d49cf-4e35-42d4-b02e-51b80ca3f7ed.jpg",
+    "tag": "Colección",
+    "group": "Minifiguras",
+    "occasion": [
+      "Deportes",
+      "Cumpleaños"
+    ],
+    "description": "Colección de minifiguras de Futbolistas y Leyendas. Más de 50 estilos de cabello y 80 rostros disponibles para combinar cabello, rostro, outfit y accesorios.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Figura individual",
+      "Imán decorativo"
+    ],
+    "allowsPets": false,
+    "allowsAccessories": true,
+    "rule": "Cabello, rostro, outfit y accesorios sujetos a disponibilidad de inventario.",
+    "basePrice": 24000,
+    "code": "FIG-FUTBOL"
+  },
+  {
+    "id": "fig-galaxia",
+    "name": "Colección Galaxia",
+    "kicker": "Minifiguras individuales e imanes",
+    "category": "Minifiguras",
+    "detail": "Figura individual o imán",
+    "image": "/catalog-assets/minifiguras/150e20c4-8ea9-4212-94c6-b7e094347ea1.jpg",
+    "tag": "Colección",
+    "group": "Minifiguras",
+    "occasion": [
+      "Coleccionistas",
+      "Cumpleaños"
+    ],
+    "description": "Colección de minifiguras de Colección Galaxia. Más de 50 estilos de cabello y 80 rostros disponibles para combinar cabello, rostro, outfit y accesorios.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Figura individual",
+      "Imán decorativo"
+    ],
+    "allowsPets": false,
+    "allowsAccessories": true,
+    "rule": "Cabello, rostro, outfit y accesorios sujetos a disponibilidad de inventario.",
+    "basePrice": 24000,
+    "code": "FIG-GALAXIA"
+  },
+  {
+    "id": "fig-magia",
+    "name": "Mundo Mágico",
+    "kicker": "Minifiguras individuales e imanes",
+    "category": "Minifiguras",
+    "detail": "Figura individual o imán",
+    "image": "/catalog-assets/minifiguras/35bd0e27-9e52-444d-a3bb-f6914b3ac144.jpg",
+    "tag": "Colección",
+    "group": "Minifiguras",
+    "occasion": [
+      "Coleccionistas",
+      "Cumpleaños"
+    ],
+    "description": "Colección de minifiguras de Mundo Mágico. Más de 50 estilos de cabello y 80 rostros disponibles para combinar cabello, rostro, outfit y accesorios.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Figura individual",
+      "Imán decorativo"
+    ],
+    "allowsPets": false,
+    "allowsAccessories": true,
+    "rule": "Cabello, rostro, outfit y accesorios sujetos a disponibilidad de inventario.",
+    "basePrice": 24000,
+    "code": "FIG-MAGIA"
+  },
+  {
+    "id": "fig-heroes",
+    "name": "Héroes y Villanos",
+    "kicker": "Minifiguras individuales e imanes",
+    "category": "Minifiguras",
+    "detail": "Figura individual o imán",
+    "image": "/catalog-assets/minifiguras/3b1a6036-5b2b-4a71-be55-7494a0c827cc.jpg",
+    "tag": "Colección",
+    "group": "Minifiguras",
+    "occasion": [
+      "Coleccionistas",
+      "Cumpleaños"
+    ],
+    "description": "Colección de minifiguras de Héroes y Villanos. Más de 50 estilos de cabello y 80 rostros disponibles para combinar cabello, rostro, outfit y accesorios.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Figura individual",
+      "Imán decorativo"
+    ],
+    "allowsPets": false,
+    "allowsAccessories": true,
+    "rule": "Cabello, rostro, outfit y accesorios sujetos a disponibilidad de inventario.",
+    "basePrice": 24000,
+    "code": "FIG-HEROES"
+  },
+  {
+    "id": "fig-aventura",
+    "name": "Personajes de Aventura",
+    "kicker": "Minifiguras individuales e imanes",
+    "category": "Minifiguras",
+    "detail": "Figura individual o imán",
+    "image": "/catalog-assets/minifiguras/326ff765-15db-4c90-b6e0-8e35b665f560.jpg",
+    "tag": "Colección",
+    "group": "Minifiguras",
+    "occasion": [
+      "Coleccionistas",
+      "Cumpleaños"
+    ],
+    "description": "Colección de minifiguras de Personajes de Aventura. Más de 50 estilos de cabello y 80 rostros disponibles para combinar cabello, rostro, outfit y accesorios.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Figura individual",
+      "Imán decorativo"
+    ],
+    "allowsPets": false,
+    "allowsAccessories": true,
+    "rule": "Cabello, rostro, outfit y accesorios sujetos a disponibilidad de inventario.",
+    "basePrice": 24000,
+    "code": "FIG-AVENTURA"
+  },
+  {
+    "id": "fig-animados",
+    "name": "Favoritos Animados",
+    "kicker": "Minifiguras individuales e imanes",
+    "category": "Minifiguras",
+    "detail": "Figura individual o imán",
+    "image": "/catalog-assets/minifiguras/ab2e970f-ffb1-43fe-b54a-9b5a77b572aa.jpg",
+    "tag": "Colección",
+    "group": "Minifiguras",
+    "occasion": [
+      "Coleccionistas",
+      "Cumpleaños"
+    ],
+    "description": "Colección de minifiguras de Favoritos Animados. Más de 50 estilos de cabello y 80 rostros disponibles para combinar cabello, rostro, outfit y accesorios.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Figura individual",
+      "Imán decorativo"
+    ],
+    "allowsPets": false,
+    "allowsAccessories": true,
+    "rule": "Cabello, rostro, outfit y accesorios sujetos a disponibilidad de inventario.",
+    "basePrice": 24000,
+    "code": "FIG-ANIMADOS"
+  },
+  {
+    "id": "fig-clasicos",
+    "name": "Dúos Clásicos",
+    "kicker": "Minifiguras individuales e imanes",
+    "category": "Minifiguras",
+    "detail": "Figura individual o imán",
+    "image": "/catalog-assets/minifiguras/263b7290-6417-4de0-ade4-cec663d73a55.jpg",
+    "tag": "Colección",
+    "group": "Minifiguras",
+    "occasion": [
+      "Pareja",
+      "Coleccionistas"
+    ],
+    "description": "Colección de minifiguras de Dúos Clásicos. Más de 50 estilos de cabello y 80 rostros disponibles para combinar cabello, rostro, outfit y accesorios.",
+    "minFigures": 1,
+    "maxFigures": 8,
+    "variants": [
+      "Figura individual",
+      "Imán decorativo"
+    ],
+    "allowsPets": false,
+    "allowsAccessories": true,
+    "rule": "Cabello, rostro, outfit y accesorios sujetos a disponibilidad de inventario.",
+    "basePrice": 24000,
+    "code": "FIG-CLASICOS"
+  }
+]

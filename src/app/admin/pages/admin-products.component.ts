@@ -585,8 +585,8 @@ export class AdminProductsComponent implements OnInit {
   readonly searchTerm = signal('');
   readonly selectedCategory = signal<string>('Todos');
 
-  readonly categories = ['Todos', 'Cuadros', 'Sets armables', 'Cajas acrílicas', 'Llaveros', 'Minifiguras'];
-  readonly realCategories: Category[] = ['Cuadros', 'Sets armables', 'Cajas acrílicas', 'Llaveros', 'Minifiguras'];
+  readonly categories = ['Todos', 'Cuadros', 'Sets armables', 'Cajas acrílicas', 'Mini momentos', 'Mini Box', 'Llaveros', 'Minifiguras'];
+  readonly realCategories: Category[] = ['Cuadros', 'Sets armables', 'Cajas acrílicas', 'Mini momentos', 'Mini Box', 'Llaveros', 'Minifiguras'];
 
   readonly filteredProducts = computed(() => {
     const term = this.searchTerm().trim().toLowerCase();

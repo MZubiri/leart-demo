@@ -80,6 +80,8 @@ public class AdminProductsController : ControllerBase
             Rule = dto.Rule?.Trim() ?? string.Empty,
             IsActive = dto.IsActive,
             DisplayOrder = dto.DisplayOrder,
+            BasePrice = dto.BasePrice,
+            Code = dto.Code?.Trim(),
             CreatedAt = DateTime.UtcNow
         };
 
@@ -114,6 +116,8 @@ public class AdminProductsController : ControllerBase
         product.Rule = dto.Rule?.Trim() ?? string.Empty;
         product.IsActive = dto.IsActive;
         product.DisplayOrder = dto.DisplayOrder;
+        product.BasePrice = dto.BasePrice;
+        product.Code = dto.Code?.Trim();
         product.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
@@ -197,7 +201,9 @@ public class AdminProductsController : ControllerBase
             AllowsAccessories = p.AllowsAccessories,
             Rule = p.Rule,
             IsActive = p.IsActive,
-            DisplayOrder = p.DisplayOrder
+            DisplayOrder = p.DisplayOrder,
+            BasePrice = p.BasePrice,
+            Code = p.Code
         };
     }
 }

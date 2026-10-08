@@ -201,7 +201,9 @@ public class PublicController : ControllerBase
             AllowsAccessories = p.AllowsAccessories,
             Rule = p.Rule,
             IsActive = p.IsActive,
-            DisplayOrder = p.DisplayOrder
+            DisplayOrder = p.DisplayOrder,
+            BasePrice = p.BasePrice,
+            Code = p.Code
         };
     }
 }

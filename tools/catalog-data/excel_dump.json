@@ -1,0 +1,1307 @@
+{
+  "GENERAL": [
+    {
+      "row": "1",
+      "cells": {
+        "A1": "CATEGORIAS",
+        "B1": "TIPO"
+      }
+    },
+    {
+      "row": "2",
+      "cells": {
+        "A2": "Personalizados",
+        "B2": "Cuadros"
+      }
+    },
+    {
+      "row": "3",
+      "cells": {
+        "B3": "Cajas Acrilicas"
+      }
+    },
+    {
+      "row": "4",
+      "cells": {
+        "B4": "Sets Armables"
+      }
+    },
+    {
+      "row": "5",
+      "cells": {
+        "B5": "Mini momentos"
+      }
+    },
+    {
+      "row": "6",
+      "cells": {
+        "B6": "Mini Box"
+      }
+    },
+    {
+      "row": "7",
+      "cells": {
+        "B7": "Llaveros"
+      }
+    },
+    {
+      "row": "8",
+      "cells": {
+        "B8": "Minimags"
+      }
+    },
+    {
+      "row": "9",
+      "cells": {
+        "B9": "Portallaveros"
+      }
+    },
+    {
+      "row": "10",
+      "cells": {
+        "B10": "Minifiguras Indiduales"
+      }
+    },
+    {
+      "row": "11",
+      "cells": {
+        "A11": "Jugadores",
+        "B11": "Cuadros"
+      }
+    },
+    {
+      "row": "12",
+      "cells": {
+        "B12": "Cajas Acrilicas"
+      }
+    },
+    {
+      "row": "13",
+      "cells": {
+        "B13": "Llaveros"
+      }
+    },
+    {
+      "row": "14",
+      "cells": {
+        "A14": "Personajes",
+        "B14": "Cuadros"
+      }
+    },
+    {
+      "row": "15",
+      "cells": {
+        "B15": "Cajas Acrilicas"
+      }
+    },
+    {
+      "row": "16",
+      "cells": {
+        "B16": "Llaveros"
+      }
+    },
+    {
+      "row": "20",
+      "cells": {
+        "A20": "Proceso Compra",
+        "B20": "Asi hacemos tu pedido"
+      }
+    },
+    {
+      "row": "22",
+      "cells": {
+        "A22": "Preguntas Frecuentes"
+      }
+    },
+    {
+      "row": "24",
+      "cells": {
+        "A24": "1. En que consiste la personalización"
+      }
+    },
+    {
+      "row": "25",
+      "cells": {
+        "A25": "2. Cuanto tarda un pedido"
+      }
+    },
+    {
+      "row": "26",
+      "cells": {
+        "A26": "3. Realizan Envios"
+      }
+    }
+  ],
+  "PCUADROS": [
+    {
+      "row": "1",
+      "cells": {
+        "A1": "CUADROS"
+      }
+    },
+    {
+      "row": "2",
+      "cells": {
+        "A2": "",
+        "B2": "",
+        "C2": "",
+        "D2": "",
+        "E2": ""
+      }
+    },
+    {
+      "row": "3",
+      "cells": {
+        "A3": "VARIABLES",
+        "B3": "Tamaño",
+        "C3": "Maximo Minig con Mascota",
+        "D3": ""
+      }
+    },
+    {
+      "row": "4",
+      "cells": {
+        "B4": "S",
+        "C4": "3",
+        "D4": ""
+      }
+    },
+    {
+      "row": "5",
+      "cells": {
+        "B5": "M",
+        "C5": "6",
+        "G5": ""
+      }
+    },
+    {
+      "row": "6",
+      "cells": {
+        "B6": "L",
+        "C6": "10",
+        "G6": ""
+      }
+    },
+    {
+      "row": "7",
+      "cells": {
+        "A7": "",
+        "B7": "",
+        "G7": ""
+      }
+    },
+    {
+      "row": "8",
+      "cells": {
+        "A8": "Mascota",
+        "B8": "15000",
+        "G8": ""
+      }
+    },
+    {
+      "row": "9",
+      "cells": {
+        "A9": "Bebe",
+        "B9": "14000",
+        "G9": ""
+      }
+    },
+    {
+      "row": "10",
+      "cells": {
+        "B10": "",
+        "G10": ""
+      }
+    },
+    {
+      "row": "11",
+      "cells": {
+        "A11": "Adicionales",
+        "B11": "Accesorios",
+        "G11": ""
+      }
+    },
+    {
+      "row": "12",
+      "cells": {
+        "C12": "14000",
+        "D12": "30000",
+        "G12": ""
+      }
+    },
+    {
+      "row": "13",
+      "cells": {
+        "B13": "20 x 15",
+        "C13": "27 x 22",
+        "D13": "32 x23",
+        "G13": ""
+      }
+    },
+    {
+      "row": "14",
+      "cells": {
+        "A14": "Minifiguras",
+        "B14": "Talla S",
+        "C14": "Talla M",
+        "D14": "Talla L"
+      }
+    },
+    {
+      "row": "15",
+      "cells": {
+        "A15": "1",
+        "B15": "96000"
+      }
+    },
+    {
+      "row": "16",
+      "cells": {
+        "A16": "2",
+        "B16": "124000",
+        "C16": "138000",
+        "F16": ""
+      }
+    },
+    {
+      "row": "17",
+      "cells": {
+        "A17": "3",
+        "B17": "146000",
+        "C17": "160000",
+        "D17": "190000"
+      }
+    },
+    {
+      "row": "18",
+      "cells": {
+        "A18": "4",
+        "B18": "N/A",
+        "C18": "180000",
+        "D18": "210000"
+      }
+    },
+    {
+      "row": "19",
+      "cells": {
+        "A19": "5",
+        "B19": "N/A",
+        "C19": "200000",
+        "D19": "230000"
+      }
+    },
+    {
+      "row": "20",
+      "cells": {
+        "A20": "6",
+        "B20": "N/A",
+        "C20": "220000",
+        "D20": "250000"
+      }
+    },
+    {
+      "row": "21",
+      "cells": {
+        "A21": "7",
+        "B21": "N/A",
+        "C21": "N/A",
+        "D21": "270000"
+      }
+    },
+    {
+      "row": "22",
+      "cells": {
+        "A22": "8",
+        "B22": "N/A",
+        "C22": "N/A",
+        "D22": "290000"
+      }
+    },
+    {
+      "row": "23",
+      "cells": {
+        "A23": "9",
+        "B23": "N/A",
+        "C23": "N/A",
+        "D23": "310000"
+      }
+    },
+    {
+      "row": "24",
+      "cells": {
+        "A24": "10",
+        "B24": "N/A",
+        "C24": "N/A",
+        "D24": "330000"
+      }
+    },
+    {
+      "row": "27",
+      "cells": {
+        "A27": "Incluye"
+      }
+    },
+    {
+      "row": "28",
+      "cells": {
+        "A28": "🖼️ Cuadro talla S o M o L"
+      }
+    },
+    {
+      "row": "29",
+      "cells": {
+        "A29": "👕 minifiguras tipo brick personalizadas (cabello, rostro y outfit según disponibilidad)"
+      }
+    },
+    {
+      "row": "30",
+      "cells": {
+        "A30": "🐾 1 mascota genérica 🐶🐱 con rasgos destacados"
+      }
+    },
+    {
+      "row": "31",
+      "cells": {
+        "A31": "👶🏻 1 bebé estándar (rosado, azul, salmón o verde)"
+      }
+    },
+    {
+      "row": "32",
+      "cells": {
+        "A32": "🎨 Fondo temático a elección (puedes agregar frase o idea)"
+      }
+    },
+    {
+      "row": "33",
+      "cells": {
+        "A33": "📦 Empaque con diseño regalo"
+      }
+    }
+  ],
+  "CAJAS ACRILICAS": [
+    {
+      "row": "1",
+      "cells": {
+        "A1": "Incluye"
+      }
+    },
+    {
+      "row": "3",
+      "cells": {
+        "A3": "Mascota",
+        "B3": "15000"
+      }
+    },
+    {
+      "row": "4",
+      "cells": {
+        "A4": "Accesorios",
+        "B4": "Según Catalogo"
+      }
+    },
+    {
+      "row": "5",
+      "cells": {
+        "B5": "Minifiguras",
+        "C5": "Mascotas\nMaximo",
+        "D5": "Valor"
+      }
+    },
+    {
+      "row": "6",
+      "cells": {
+        "A6": "Caja Sencilla",
+        "B6": "1",
+        "C6": "1",
+        "D6": "60000"
+      }
+    },
+    {
+      "row": "7",
+      "cells": {
+        "A7": "Caja Doble",
+        "B7": "1",
+        "C7": "4",
+        "D7": "70000"
+      }
+    },
+    {
+      "row": "8",
+      "cells": {
+        "A8": "Caja Doble",
+        "B8": "2",
+        "C8": "3",
+        "D8": "90000"
+      }
+    },
+    {
+      "row": "9",
+      "cells": {
+        "A9": "Caja Doble",
+        "B9": "3",
+        "C9": "1",
+        "D9": "114000",
+        "E9": ""
+      }
+    },
+    {
+      "row": "10",
+      "cells": {
+        "A10": "Caja Doble",
+        "B10": "4",
+        "C10": "0",
+        "D10": "138000"
+      }
+    },
+    {
+      "row": "11",
+      "cells": {
+        "A11": "Caja Doble",
+        "B11": "1 + Moto",
+        "D11": "88000"
+      }
+    },
+    {
+      "row": "12",
+      "cells": {
+        "A12": "Caja Doble",
+        "B12": "2 + Moto",
+        "D12": "106000",
+        "E12": "Maximo"
+      }
+    },
+    {
+      "row": "14",
+      "cells": {
+        "A14": "Adicionales"
+      }
+    },
+    {
+      "row": "15",
+      "cells": {
+        "A15": "Moto",
+        "B15": "18000"
+      }
+    },
+    {
+      "row": "16",
+      "cells": {
+        "A16": "Ladrillo Nombre",
+        "B16": "8000"
+      }
+    },
+    {
+      "row": "17",
+      "cells": {
+        "A17": "Pared Universidad o Empresa",
+        "B17": "18000"
+      }
+    },
+    {
+      "row": "18",
+      "cells": {
+        "A18": "Accesorios",
+        "B18": "Según Catalogo"
+      }
+    },
+    {
+      "row": "21",
+      "cells": {
+        "A21": "✨ Incluye:"
+      }
+    },
+    {
+      "row": "22",
+      "cells": {
+        "A22": "🧰 Caja acrílica"
+      }
+    },
+    {
+      "row": "23",
+      "cells": {
+        "A23": "🧸 1 accesorio del catálogo Grupo 1"
+      }
+    },
+    {
+      "row": "24",
+      "cells": {
+        "A24": "🎨 Fondo temático prediseñado"
+      }
+    },
+    {
+      "row": "26",
+      "cells": {
+        "A26": "➕ ¿Quieres hacerlo aún más especial?"
+      }
+    },
+    {
+      "row": "27",
+      "cells": {
+        "A27": "🎨 Fondo personalizado: $8.000 adicionales"
+      }
+    }
+  ],
+  "SETS ARMABLES": [
+    {
+      "row": "1",
+      "cells": {
+        "A1": "Adicionals",
+        "B1": "Mascota",
+        "C1": "15000"
+      }
+    },
+    {
+      "row": "2",
+      "cells": {
+        "B2": "Minifigura",
+        "C2": "24000"
+      }
+    },
+    {
+      "row": "3",
+      "cells": {
+        "B3": "Accesorios",
+        "C3": "Según catalog"
+      }
+    },
+    {
+      "row": "5",
+      "cells": {
+        "A5": "GRUPO",
+        "B5": "CATEGORIA",
+        "C5": "CODIGO",
+        "D5": "NOMBRE",
+        "E5": "1 MINIFIGURA",
+        "F5": "2 \nMINIFIGURAS",
+        "G5": "> 3 MINIF"
+      }
+    },
+    {
+      "row": "6",
+      "cells": {
+        "A6": "1",
+        "B6": "SET",
+        "C6": "MOC0049",
+        "D6": "Altar enomarados",
+        "E6": "130000",
+        "F6": "158000"
+      }
+    },
+    {
+      "row": "7",
+      "cells": {
+        "A7": "2",
+        "B7": "SET",
+        "C7": "163273",
+        "D7": "Amor Rodante",
+        "E7": "140000",
+        "F7": "168000"
+      }
+    },
+    {
+      "row": "8",
+      "cells": {
+        "A8": "1",
+        "B8": "SET",
+        "C8": "CN00133-A",
+        "D8": "Arbol Sakura",
+        "E8": "130000",
+        "F8": "158000"
+      }
+    },
+    {
+      "row": "9",
+      "cells": {
+        "A9": "1",
+        "B9": "SET",
+        "C9": "MOC4034",
+        "D9": "Barbacoa",
+        "E9": "130000",
+        "F9": "158000"
+      }
+    },
+    {
+      "row": "10",
+      "cells": {
+        "A10": "2",
+        "B10": "SET",
+        "C10": "8974-4",
+        "D10": "Barbería",
+        "E10": "140000",
+        "F10": "168000"
+      }
+    },
+    {
+      "row": "11",
+      "cells": {
+        "A11": "1",
+        "B11": "SET",
+        "C11": "MOC4091",
+        "D11": "Bateria",
+        "E11": "130000",
+        "F11": "158000"
+      }
+    },
+    {
+      "row": "12",
+      "cells": {
+        "A12": "2",
+        "B12": "SET",
+        "C12": "B10-74",
+        "D12": "BBC",
+        "E12": "140000",
+        "F12": "168000"
+      }
+    },
+    {
+      "row": "13",
+      "cells": {
+        "A13": "",
+        "B13": "MINIBOX",
+        "C13": "B21-44-2",
+        "D13": "Buena Vibra"
+      }
+    },
+    {
+      "row": "14",
+      "cells": {
+        "A14": "4",
+        "B14": "SET",
+        "C14": "96697378638",
+        "D14": "Camping",
+        "E14": "165000",
+        "F14": "195000"
+      }
+    },
+    {
+      "row": "15",
+      "cells": {
+        "A15": "1",
+        "B15": "SET",
+        "C15": "MOC4081-A",
+        "D15": "Cancha Basquet",
+        "E15": "130000",
+        "F15": "158000"
+      }
+    },
+    {
+      "row": "16",
+      "cells": {
+        "A16": "1",
+        "B16": "SET",
+        "C16": "LEA-0001",
+        "D16": "Cancha Futbol",
+        "E16": "130000",
+        "F16": "158000"
+      }
+    },
+    {
+      "row": "17",
+      "cells": {
+        "A17": "3",
+        "B17": "SET",
+        "C17": "4901131696",
+        "D17": "Cascada Tropical",
+        "E17": "154000",
+        "F17": "182000",
+        "H17": ""
+      }
+    },
+    {
+      "row": "18",
+      "cells": {
+        "A18": "INACTIVO",
+        "B18": "SET",
+        "C18": "MOC0017-A",
+        "D18": "Cita bajo el Farol"
+      }
+    },
+    {
+      "row": "19",
+      "cells": {
+        "A19": "3",
+        "B19": "SET",
+        "C19": "401118404",
+        "D19": "Cita en el Cafe",
+        "E19": "154000",
+        "F19": "182000"
+      }
+    },
+    {
+      "row": "20",
+      "cells": {
+        "A20": "2",
+        "B20": "SET",
+        "C20": "LEA-0004",
+        "D20": "Cita en el HotDog",
+        "E20": "140000",
+        "F20": "168000"
+      }
+    },
+    {
+      "row": "21",
+      "cells": {
+        "A21": "3",
+        "B21": "SET",
+        "C21": "99P-ZZ",
+        "D21": "Cita en Otoño",
+        "E21": "154000",
+        "F21": "182000"
+      }
+    },
+    {
+      "row": "22",
+      "cells": {
+        "A22": "3",
+        "B22": "SET",
+        "C22": "CFLS002",
+        "D22": "Cita entre Flores",
+        "E22": "154000",
+        "F22": "182000"
+      }
+    },
+    {
+      "row": "23",
+      "cells": {
+        "A23": "2",
+        "B23": "SET",
+        "C23": "MOC4145",
+        "D23": "COLUMPIO",
+        "E23": "140000",
+        "F23": "168000"
+      }
+    },
+    {
+      "row": "24",
+      "cells": {
+        "A24": "Copa Mundial",
+        "B24": "SET",
+        "C24": "K96280",
+        "D24": "Copa Mundial"
+      }
+    },
+    {
+      "row": "25",
+      "cells": {
+        "A25": "4",
+        "B25": "SET",
+        "C25": "MOC169562",
+        "D25": "Corazón Latente",
+        "E25": "165000",
+        "F25": "195000"
+      }
+    },
+    {
+      "row": "26",
+      "cells": {
+        "A26": "4",
+        "B26": "SET",
+        "C26": "LEA-0006",
+        "D26": "Escapada Natural",
+        "E26": "165000",
+        "F26": "195000"
+      }
+    },
+    {
+      "row": "27",
+      "cells": {
+        "A27": "1",
+        "B27": "SET",
+        "C27": "353682",
+        "D27": "Escritorio Gamer",
+        "E27": "130000",
+        "F27": "158000"
+      }
+    },
+    {
+      "row": "28",
+      "cells": {
+        "A28": "",
+        "B28": "SET",
+        "C28": "366726",
+        "D28": "Fitness"
+      }
+    },
+    {
+      "row": "29",
+      "cells": {
+        "A29": "1",
+        "B29": "SET",
+        "C29": "LEA-0002",
+        "D29": "Fogata de Recuerdos",
+        "E29": "130000",
+        "F29": "158000"
+      }
+    },
+    {
+      "row": "30",
+      "cells": {
+        "A30": "2",
+        "B30": "SET",
+        "C30": "52706390907",
+        "D30": "Jardin Secreto",
+        "E30": "140000",
+        "F30": "168000"
+      }
+    },
+    {
+      "row": "31",
+      "cells": {
+        "A31": "",
+        "B31": "SET",
+        "C31": "LEA-0003",
+        "D31": "Lover's Bridge"
+      }
+    },
+    {
+      "row": "32",
+      "cells": {
+        "A32": "1",
+        "B32": "SET",
+        "C32": "MPA001",
+        "D32": "Mini Parque",
+        "E32": "130000",
+        "F32": "158000"
+      }
+    },
+    {
+      "row": "33",
+      "cells": {
+        "A33": "1",
+        "B33": "SET",
+        "C33": "62349712",
+        "D33": "Minibillar",
+        "E33": "130000",
+        "F33": "158000"
+      }
+    },
+    {
+      "row": "34",
+      "cells": {
+        "A34": "2",
+        "B34": "SET",
+        "C34": "163257",
+        "D34": "Modo Aventura",
+        "E34": "140000",
+        "F34": "168000"
+      }
+    },
+    {
+      "row": "35",
+      "cells": {
+        "A35": "1",
+        "B35": "SET",
+        "C35": "316200",
+        "D35": "Modo Velocidad",
+        "E35": "130000",
+        "F35": "158000"
+      }
+    },
+    {
+      "row": "36",
+      "cells": {
+        "A36": "",
+        "B36": "SET",
+        "C36": "MOC-103498",
+        "D36": "Motocicleta"
+      }
+    },
+    {
+      "row": "37",
+      "cells": {
+        "A37": "1",
+        "B37": "SET",
+        "C37": "886993675",
+        "D37": "Navegando Juntos",
+        "E37": "130000",
+        "F37": "158000"
+      }
+    },
+    {
+      "row": "38",
+      "cells": {
+        "A38": "3",
+        "B38": "SET",
+        "C38": "7788953028",
+        "D38": "Parque de los Novios",
+        "E38": "154000",
+        "F38": "182000"
+      }
+    },
+    {
+      "row": "39",
+      "cells": {
+        "A39": "1",
+        "B39": "SET",
+        "C39": "214030",
+        "D39": "Parque Diversiones",
+        "E39": "130000",
+        "F39": "158000"
+      }
+    },
+    {
+      "row": "40",
+      "cells": {
+        "A40": "2",
+        "B40": "SET",
+        "C40": "MOC0009",
+        "D40": "Piano",
+        "E40": "140000",
+        "F40": "168000"
+      }
+    },
+    {
+      "row": "41",
+      "cells": {
+        "A41": "3",
+        "B41": "SET",
+        "C41": "6704132905",
+        "D41": "Pisciencanto",
+        "E41": "154000",
+        "F41": "182000"
+      }
+    },
+    {
+      "row": "42",
+      "cells": {
+        "A42": "1",
+        "B42": "SET",
+        "C42": "91401",
+        "D42": "Rayo Azul",
+        "E42": "130000",
+        "F42": "158000"
+      }
+    },
+    {
+      "row": "43",
+      "cells": {
+        "A43": "1",
+        "B43": "SET",
+        "C43": "91402",
+        "D43": "Rayo Blanco",
+        "E43": "130000",
+        "F43": "158000"
+      }
+    },
+    {
+      "row": "44",
+      "cells": {
+        "A44": "1",
+        "B44": "SET",
+        "C44": "91404",
+        "D44": "Rayo Rojo",
+        "E44": "130000",
+        "F44": "158000"
+      }
+    },
+    {
+      "row": "45",
+      "cells": {
+        "A45": "4",
+        "B45": "SET",
+        "C45": "5503286775",
+        "D45": "Rincon del Lago",
+        "E45": "165000",
+        "F45": "195000"
+      }
+    },
+    {
+      "row": "46",
+      "cells": {
+        "A46": "3",
+        "B46": "SET",
+        "C46": "MOC4085",
+        "D46": "Sala Juntas",
+        "E46": "154000",
+        "F46": "182000"
+      }
+    },
+    {
+      "row": "47",
+      "cells": {
+        "A47": "3",
+        "B47": "SET",
+        "C47": "1568056459",
+        "D47": "Sala Premium",
+        "E47": "154000",
+        "F47": "182000"
+      }
+    },
+    {
+      "row": "48",
+      "cells": {
+        "A48": "2",
+        "B48": "SET",
+        "C48": "MOC0021-P",
+        "D48": "Salita familiar",
+        "E48": "140000",
+        "F48": "168000"
+      }
+    },
+    {
+      "row": "49",
+      "cells": {
+        "A49": "2",
+        "B49": "SET",
+        "C49": "T18741",
+        "D49": "Semillas de Amor",
+        "E49": "140000",
+        "F49": "168000"
+      }
+    },
+    {
+      "row": "50",
+      "cells": {
+        "A50": "3",
+        "B50": "SET",
+        "C50": "89644",
+        "D50": "Set Astronauta",
+        "E50": "154000",
+        "F50": "182000"
+      }
+    },
+    {
+      "row": "51",
+      "cells": {
+        "A51": "Casita UP",
+        "B51": "SET",
+        "C51": "DK7025",
+        "D51": "Set Casita UP",
+        "E51": "273000",
+        "F51": "295000"
+      }
+    },
+    {
+      "row": "52",
+      "cells": {
+        "A52": "3",
+        "B52": "SET",
+        "C52": "89698",
+        "D52": "Set Cocina",
+        "E52": "154000",
+        "F52": "182000"
+      }
+    },
+    {
+      "row": "53",
+      "cells": {
+        "A53": "3",
+        "B53": "SET",
+        "C53": "89695",
+        "D53": "Set Consultorio",
+        "E53": "154000",
+        "F53": "182000"
+      }
+    },
+    {
+      "row": "54",
+      "cells": {
+        "A54": "3",
+        "B54": "SET",
+        "C54": "D610001",
+        "D54": "Set Dentista",
+        "E54": "154000",
+        "F54": "182000"
+      }
+    },
+    {
+      "row": "55",
+      "cells": {
+        "A55": "3",
+        "B55": "SET",
+        "C55": "89691",
+        "D55": "Set Estudio Arte",
+        "E55": "154000",
+        "F55": "182000"
+      }
+    },
+    {
+      "row": "56",
+      "cells": {
+        "A56": "3",
+        "B56": "SET",
+        "C56": "89697",
+        "D56": "Set Fotografía",
+        "E56": "154000",
+        "F56": "182000"
+      }
+    },
+    {
+      "row": "57",
+      "cells": {
+        "A57": "3",
+        "B57": "SET",
+        "C57": "89696",
+        "D57": "Set Laboratorio",
+        "E57": "154000",
+        "F57": "182000"
+      }
+    },
+    {
+      "row": "58",
+      "cells": {
+        "A58": "3",
+        "B58": "SET",
+        "C58": "89692",
+        "D58": "Set Mini Carreras",
+        "E58": "154000",
+        "F58": "182000"
+      }
+    },
+    {
+      "row": "59",
+      "cells": {
+        "A59": "3",
+        "B59": "SET",
+        "C59": "89693",
+        "D59": "Set Musico",
+        "E59": "154000",
+        "F59": "182000"
+      }
+    },
+    {
+      "row": "60",
+      "cells": {
+        "A60": "",
+        "B60": "SET",
+        "C60": "LEA-0005",
+        "D60": "Sky Line NW"
+      }
+    },
+    {
+      "row": "61",
+      "cells": {
+        "A61": "",
+        "B61": "MINIBOX",
+        "C61": "FRE-232806",
+        "D61": "Taller de papá"
+      }
+    },
+    {
+      "row": "62",
+      "cells": {
+        "A62": "4",
+        "B62": "SET",
+        "C62": "MOC4098",
+        "D62": "Vaiven del Amor",
+        "E62": "165000",
+        "F62": "195000"
+      }
+    },
+    {
+      "row": "63",
+      "cells": {
+        "A63": "1",
+        "B63": "SET",
+        "C63": "MOC0030-A",
+        "D63": "Work Space",
+        "E63": "130000",
+        "F63": "158000"
+      }
+    },
+    {
+      "row": "66",
+      "cells": {
+        "A66": "Incluye"
+      }
+    }
+  ],
+  "MINI MOMENTOS": [
+    {
+      "row": "4",
+      "cells": {
+        "A4": "Mini Momento"
+      }
+    },
+    {
+      "row": "6",
+      "cells": {
+        "A6": "1. Piezas tipo lego + luz"
+      }
+    },
+    {
+      "row": "7",
+      "cells": {
+        "A7": "1. Minifigura",
+        "B7": "184000"
+      }
+    },
+    {
+      "row": "8",
+      "cells": {
+        "A8": "2 Minifiguras",
+        "B8": "210000",
+        "C8": "26000"
+      }
+    },
+    {
+      "row": "10",
+      "cells": {
+        "A10": " 2. Piezas tipo lego sin luz"
+      }
+    },
+    {
+      "row": "11",
+      "cells": {
+        "A11": "1. Minifigura",
+        "B11": "164000"
+      }
+    },
+    {
+      "row": "12",
+      "cells": {
+        "A12": "2 Minifiguras",
+        "B12": "190000",
+        "C12": "26000"
+      }
+    },
+    {
+      "row": "14",
+      "cells": {
+        "A14": " 3. Piezas mini armables"
+      }
+    },
+    {
+      "row": "15",
+      "cells": {
+        "A15": "1. Minifigura",
+        "B15": "134000"
+      }
+    },
+    {
+      "row": "16",
+      "cells": {
+        "A16": "2 Minifiguras",
+        "B16": "160000",
+        "C16": "26000"
+      }
+    }
+  ],
+  "MINI BOX": [
+    {
+      "row": "1",
+      "cells": {
+        "A1": "NUEVO"
+      }
+    },
+    {
+      "row": "4",
+      "cells": {
+        "A4": "Taller de Herramientas"
+      }
+    },
+    {
+      "row": "5",
+      "cells": {
+        "A5": "Mini Fitness"
+      }
+    },
+    {
+      "row": "6",
+      "cells": {
+        "A6": "Mini DJ"
+      }
+    }
+  ],
+  "VARIOS": []
+}

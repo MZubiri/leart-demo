@@ -62,4 +62,38 @@ public class AdminAuthController : ControllerBase
 
         return Ok(new UserDto(user.Id, user.Username, user.Email, user.Role));
     }
+
+    [HttpPost("change-password")]
+    [Authorize]
+    public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequestDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.CurrentPassword) || string.IsNullOrWhiteSpace(dto.NewPassword))
+        {
+            return BadRequest(new { message = "La contraseña actual y la nueva son requeridas." });
+        }
+
+        if (dto.NewPassword.Length < 8)
+        {
+            return BadRequest(new { message = "La nueva contraseña debe tener al menos 8 caracteres." });
+        }
+
+        var username = User.FindFirstValue(ClaimTypes.Name) ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(username))
+            return Unauthorized();
+
+        var user = await _context.AdminUsers.FirstOrDefaultAsync(u => u.Username == username);
+        if (user == null)
+            return NotFound(new { message = "Usuario no encontrado." });
+
+        if (!BCrypt.Net.BCrypt.Verify(dto.CurrentPassword, user.PasswordHash))
+        {
+            return BadRequest(new { message = "La contraseña actual es incorrecta." });
+        }
+
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "Contraseña actualizada exitosamente." });
+    }
 }
+

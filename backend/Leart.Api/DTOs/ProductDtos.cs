@@ -20,6 +20,8 @@ public class ProductDto
     public string Rule { get; set; } = string.Empty;
     public bool IsActive { get; set; }
     public int DisplayOrder { get; set; }
+    public int? BasePrice { get; set; }
+    public string? Code { get; set; }
 }
 
 public class ProductCreateOrUpdateDto
@@ -42,4 +44,6 @@ public class ProductCreateOrUpdateDto
     public string Rule { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
     public int DisplayOrder { get; set; } = 0;
+    public int? BasePrice { get; set; }
+    public string? Code { get; set; }
 }

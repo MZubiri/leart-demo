@@ -15,22 +15,35 @@ public class FileStorageService : IFileStorageService
         _env = env;
     }
 
+    private const long MaxFileSizeBytes = 20 * 1024 * 1024; // 20 MB max
+    private static readonly HashSet<string> AllowedExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".jpg", ".jpeg", ".png", ".webp", ".gif", ".pdf"
+    };
+
     public async Task<(string relativePath, string storedFileName, long sizeBytes)> SaveFileAsync(IFormFile file, string subFolder)
     {
         if (file == null || file.Length == 0)
             throw new ArgumentException("El archivo es inválido o está vacío.", nameof(file));
 
-        var uploadsRoot = Path.Combine(_env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"), "uploads", subFolder);
+        if (file.Length > MaxFileSizeBytes)
+            throw new ArgumentException($"El archivo supera el tamaño máximo permitido de {MaxFileSizeBytes / (1024 * 1024)} MB.", nameof(file));
+
+        // Sanitize subFolder name (only alphanumeric and hyphens)
+        var sanitizedSubFolder = System.Text.RegularExpressions.Regex.Replace(subFolder ?? "general", @"[^a-zA-Z0-9_-]", "");
+        if (string.IsNullOrWhiteSpace(sanitizedSubFolder))
+            sanitizedSubFolder = "general";
+
+        var uploadsRoot = Path.Combine(_env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"), "uploads", sanitizedSubFolder);
         if (!Directory.Exists(uploadsRoot))
         {
             Directory.CreateDirectory(uploadsRoot);
         }
 
         var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp", ".gif", ".pdf" };
-        if (!allowedExtensions.Contains(ext))
+        if (!AllowedExtensions.Contains(ext))
         {
-            ext = ".png";
+            throw new ArgumentException($"Tipo de archivo '{ext}' no permitido. Extensiones válidas: {string.Join(", ", AllowedExtensions)}");
         }
 
         var storedFileName = $"{Guid.NewGuid():N}{ext}";
@@ -41,7 +54,7 @@ public class FileStorageService : IFileStorageService
             await file.CopyToAsync(stream);
         }
 
-        var relativePath = $"/uploads/{subFolder}/{storedFileName}";
+        var relativePath = $"/uploads/{sanitizedSubFolder}/{storedFileName}";
         return (relativePath, storedFileName, file.Length);
     }
 
@@ -49,11 +62,18 @@ public class FileStorageService : IFileStorageService
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(relativePath) || !relativePath.StartsWith("/uploads/"))
+            if (string.IsNullOrWhiteSpace(relativePath) || !relativePath.StartsWith("/uploads/", StringComparison.OrdinalIgnoreCase))
                 return false;
 
+            var webRoot = _env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            var uploadsBase = Path.GetFullPath(Path.Combine(webRoot, "uploads"));
+
             var trimmed = relativePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
-            var fullPath = Path.Combine(_env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"), trimmed);
+            var fullPath = Path.GetFullPath(Path.Combine(webRoot, trimmed));
+
+            // Prevent Path Traversal attacks (must remain inside uploadsBase)
+            if (!fullPath.StartsWith(uploadsBase, StringComparison.OrdinalIgnoreCase))
+                return false;
 
             if (File.Exists(fullPath))
             {

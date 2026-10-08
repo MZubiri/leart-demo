@@ -59,6 +59,10 @@ export class AuthService {
     );
   }
 
+  changePassword(data: { currentPassword: string; newPassword: string }): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${environment.apiUrl}/admin/auth/change-password`, data);
+  }
+
   logout(): void {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
@@ -68,3 +72,4 @@ export class AuthService {
     this.router.navigate(['/admin/login']);
   }
 }
+

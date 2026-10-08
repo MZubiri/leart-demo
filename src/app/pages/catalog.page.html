@@ -31,7 +31,18 @@
         @for (product of shown(); track product.id) {
           <article class="product-card">
             <a class="product-image" [routerLink]="['/producto', product.id]">@if (product.tag) {<span class="product-tag">{{product.tag}}</span>}<img [src]="product.image" [alt]="product.name"><span class="image-arrow">→</span></a>
-            <div class="product-info"><div><small>{{product.kicker}}</small><h3><a [routerLink]="['/producto', product.id]">{{product.name}}</a></h3></div><strong>{{product.detail}}</strong></div>
+            <div class="product-info">
+              <div>
+                <small>{{product.kicker}}</small>
+                <h3><a [routerLink]="['/producto', product.id]">{{product.name}}</a></h3>
+              </div>
+              <div style="text-align: right;">
+                @if (product.basePrice) {
+                  <div style="font-weight: 800; font-size: 13px; color: var(--ink);">Desde {{formatPrice(product.basePrice)}}</div>
+                }
+                <small style="display: block; color: #666; font-size: 10px;">{{product.detail}}</small>
+              </div>
+            </div>
             <p class="product-rule">{{product.rule}}</p>
             <button class="add-cart" type="button" (click)="store.openCustomizer(product)">Configurar y cotizar <span>→</span></button>
           </article>

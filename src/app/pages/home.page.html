@@ -26,7 +26,26 @@
     <div class="section-heading"><div><div class="eyebrow"><span></span> Una muestra de cada línea</div><h2>Ideas para <em>sorprender</em></h2></div><p>Elige un punto de partida. Leart confirmará inventario, valor y posibilidades antes de recibir el pago.</p></div>
     <div class="product-grid featured-grid">
       @for (product of featured; track product.id) {
-        <article class="product-card"><a class="product-image" [routerLink]="['/producto', product.id]">@if (product.tag) {<span class="product-tag">{{product.tag}}</span>}<img [src]="product.image" [alt]="product.name"><span class="image-arrow">→</span></a><div class="product-info"><div><small>{{product.kicker}}</small><h3><a [routerLink]="['/producto', product.id]">{{product.name}}</a></h3></div><strong>{{product.detail}}</strong></div><button class="add-cart" type="button" (click)="store.openCustomizer(product)">Configurar y cotizar <span>→</span></button></article>
+        <article class="product-card">
+          <a class="product-image" [routerLink]="['/producto', product.id]">
+            @if (product.tag) {<span class="product-tag">{{product.tag}}</span>}
+            <img [src]="product.image" [alt]="product.name">
+            <span class="image-arrow">→</span>
+          </a>
+          <div class="product-info">
+            <div>
+              <small>{{product.kicker}}</small>
+              <h3><a [routerLink]="['/producto', product.id]">{{product.name}}</a></h3>
+            </div>
+            <div style="text-align: right;">
+              @if (product.basePrice) {
+                <div style="font-weight: 800; font-size: 13px; color: var(--ink);">Desde {{formatPrice(product.basePrice)}}</div>
+              }
+              <small style="display: block; color: #666; font-size: 10px;">{{product.detail}}</small>
+            </div>
+          </div>
+          <button class="add-cart" type="button" (click)="store.openCustomizer(product)">Configurar y cotizar <span>→</span></button>
+        </article>
       }
     </div>
     <a class="load-more" routerLink="/catalogo">Explorar catálogo completo <span>→</span></a>
@@ -40,25 +59,25 @@
   <section class="steps section" id="como-funciona">
     <div class="section-heading compact"><div><div class="eyebrow"><span></span> Fácil y acompañado</div><h2>Así hacemos tu pedido</h2></div><p>La compra se confirma por WhatsApp y la producción comienza con tus indicaciones completas.</p></div>
     <div class="steps-grid process-grid">
-      <article><span>01</span><div class="step-icon">✎</div><h3>Define tu pedido</h3><p>Elige presentación, cantidad de figuras y extras.</p></article>
-      <article><span>02</span><div class="step-icon">↗</div><h3>Cotiza por WhatsApp</h3><p>Confirmamos valor, disponibilidad, envío y medios de pago.</p></article>
-      <article><span>03</span><div class="step-icon">▣</div><h3>Completa la información</h3><p>Después del pago recibes el enlace para registrar tu historia y fotos.</p></article>
-      <article><span>04</span><div class="step-icon">◉</div><h3>Elige tus figuras</h3><p>En 3 a 5 días hábiles recibes propuesta o inventario disponible.</p></article>
-      <article><span>05</span><div class="step-icon">✓</div><h3>Aprueba el diseño</h3><p>Revisas figuras y fondo antes del ensamble final.</p></article>
-      <article><span>06</span><div class="step-icon">♥</div><h3>Recibe tu regalo</h3><p>La elaboración tarda de 6 a 8 días hábiles y el transporte de 1 a 3 días.</p></article>
+      <article><span>01</span><div class="step-icon">✎</div><h3>Define tu pedido</h3><p>Elige tu producto (cuadros, sets, cajas, momentos), cantidad de figuras y extras.</p></article>
+      <article><span>02</span><div class="step-icon">↗</div><h3>Cotiza por WhatsApp</h3><p>Revisamos disponibilidad, valor final, envío a tu ciudad y medios de pago.</p></article>
+      <article><span>03</span><div class="step-icon">▣</div><h3>Completa la información</h3><p>Tras el pago, recibes el enlace para registrar tu historia, dedicatoria y fotos.</p></article>
+      <article><span>04</span><div class="step-icon">◉</div><h3>Elige tus figuras</h3><p>En 3 a 5 días hábiles recibes la propuesta de cabello, rostro y outfit según inventario.</p></article>
+      <article><span>05</span><div class="step-icon">✓</div><h3>Aprueba el diseño</h3><p>Revisas minifiguras, fondo y caja personalizada antes de ensamble final.</p></article>
+      <article><span>06</span><div class="step-icon">♥</div><h3>Recibe tu regalo</h3><p>La elaboración tarda de 6 a 8 días hábiles y el transporte nacional de 1 a 3 días.</p></article>
     </div>
   </section>
 
   <section class="testimonial section"><div class="quote-mark">“</div><blockquote>La web te ayuda a elegir. Nosotros te acompañamos para que cada detalle sí se parezca a tu historia.</blockquote><div class="quote-author"><span>L</span><div><strong>Leart Store</strong><small>Medellín, Colombia</small></div></div></section>
 
   <section class="faq section" id="preguntas">
-    <div class="section-heading"><div><div class="eyebrow"><span></span> Antes de empezar</div><h2>Preguntas frecuentes</h2></div><p>Las piezas cambian con el inventario, por eso cada cotización se revisa antes de recibir el pago.</p></div>
+    <div class="section-heading"><div><div class="eyebrow"><span></span> Antes de empezar</div><h2>Preguntas frecuentes</h2></div><p>Resolvemos tus dudas principales sobre personalización, tiempos de entrega y envíos.</p></div>
     <div class="faq-list">
-      <details open><summary>¿La cotización me cobra algo?<span>+</span></summary><p>No. La selección de la web prepara un mensaje de WhatsApp. Leart confirma allí el valor, envío, disponibilidad y medios de pago.</p></details>
-      <details><summary>¿Cuándo envío las fotografías?<span>+</span></summary><p>Después del pago recibirás un enlace para registrar las fotos, nombres, historia y detalles necesarios para comenzar el diseño.</p></details>
-      <details><summary>¿Qué se puede personalizar?<span>+</span></summary><p>Puedes elegir cabello, rostro, outfit y accesorios según inventario. Las mascotas son figuras genéricas de perros o gatos y pueden recibir detalles pintados a mano.</p></details>
-      <details><summary>¿Cuánto tarda un pedido?<span>+</span></summary><p>La elaboración tarda entre 6 y 8 días hábiles, contados desde que completas la información. El transporte suele tomar entre 1 y 3 días adicionales.</p></details>
-      <details id="envios"><summary>¿Realizan envíos?<span>+</span></summary><p>Sí. Los pedidos se elaboran en Medellín y se envían a Colombia. El valor del transporte se incluye al confirmar la cotización.</p></details>
+      <details open><summary>1. ¿En qué consiste la personalización?<span>+</span></summary><p>La personalización consiste en elegir cabello, rostro y outfit según el inventario disponible. Contamos con más de 50 estilos de cabello y más de 80 tipos de rostros. Los outfits se basan en los estilos publicados en redes; pueden ser unicolor o con diseños. Si nos envías una foto, te asesoramos y enviamos sugerencias para lograr la mayor similitud posible. Además, las mascotas son figuras genéricas (perro o gato) con rasgos destacados pintados a mano.</p></details>
+      <details><summary>2. ¿Cuánto tarda un pedido?<span>+</span></summary><p>La elaboración tarda entre 6 y 8 días hábiles, contados desde que completas y apruebas toda la información y diseño. El transporte suele tomar entre 1 y 3 días hábiles adicionales según tu ciudad.</p></details>
+      <details id="envios"><summary>3. ¿Realizan envíos?<span>+</span></summary><p>¡Sí! Todos nuestros productos se elaboran con amor en Medellín y realizamos envíos a toda Colombia. El valor del transporte se confirma directamente al momento de cotizar por WhatsApp.</p></details>
+      <details><summary>4. ¿Qué incluye cada producto?<span>+</span></summary><p>Todos nuestros productos incluyen empaque especial con diseño para regalo. Los cuadros incluyen fondo temático y minifiguras tipo brick (talla S hasta 3, M hasta 6 y L hasta 10 entre figuras y mascotas). Los sets armables incluyen el set completo, minifiguras, caja tipo LEGO personalizada, base de exhibición (grupos 1 y 2) y manual de instrucciones. Las cajas acrílicas incluyen accesorio de catálogo y fondo temático.</p></details>
+      <details><summary>5. ¿La cotización en la web genera algún cobro?<span>+</span></summary><p>No. La selección en la web es 100% gratuita y te muestra un valor estimado de referencia según tus figuras y extras. Al finalizar, genera un mensaje para WhatsApp donde confirmamos disponibilidad de piezas, valor final y opciones de pago antes de iniciar.</p></details>
     </div>
   </section>
 

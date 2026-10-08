@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AdminService, UpdateSettingsRequest } from '../../core/services/admin.service';
+import { AuthService } from '../../core/services/auth.service';
 import { SettingsService } from '../../core/services/settings.service';
 
 @Component({
@@ -172,6 +173,74 @@ import { SettingsService } from '../../core/services/settings.service';
             </button>
           </div>
         </form>
+      </div>
+
+      <!-- Security Section: Change Password -->
+      <div class="settings-card" style="margin-top: 1.5rem;">
+        <div class="settings-form">
+          <div class="section-box">
+            <div class="section-title">
+              <span class="icon">🔒</span>
+              <div>
+                <h2>Seguridad de la Cuenta</h2>
+                <p>Cambia la contraseña de acceso al Panel de Administración.</p>
+              </div>
+            </div>
+
+            @if (passwordNotification()) {
+              <div class="notification-toast" style="margin: 1rem 0;">
+                <span>✓</span>
+                <span>¡Contraseña actualizada exitosamente!</span>
+              </div>
+            }
+
+            @if (passwordError()) {
+              <div class="error-banner" style="margin: 1rem 0;">
+                <span>⚠️</span>
+                <span>{{ passwordError() }}</span>
+              </div>
+            }
+
+            <form (ngSubmit)="submitPasswordChange()" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+              <div class="form-grid">
+                <div class="field-group">
+                  <label for="currentPassword">Contraseña Actual</label>
+                  <input
+                    id="currentPassword"
+                    type="password"
+                    name="currentPassword"
+                    required
+                    [ngModel]="currentPassword()"
+                    (ngModelChange)="currentPassword.set($event)"
+                    placeholder="••••••••"
+                  />
+                </div>
+                <div class="field-group">
+                  <label for="newPassword">Nueva Contraseña (mínimo 8 caracteres)</label>
+                  <input
+                    id="newPassword"
+                    type="password"
+                    name="newPassword"
+                    required
+                    [ngModel]="newPassword()"
+                    (ngModelChange)="newPassword.set($event)"
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+                <button type="submit" [disabled]="changingPassword()" class="btn-save" style="background: #374151;">
+                  @if (changingPassword()) {
+                    <span>Actualizando...</span>
+                  } @else {
+                    <span>🔐 Actualizar Contraseña</span>
+                  }
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   `,
@@ -440,6 +509,7 @@ import { SettingsService } from '../../core/services/settings.service';
 export class AdminSettingsComponent implements OnInit {
   private readonly admin = inject(AdminService);
   private readonly publicSettings = inject(SettingsService);
+  private readonly auth = inject(AuthService);
 
   readonly storeName = signal('Leart Store');
   readonly whatsAppNumber = signal('573000000000');
@@ -510,4 +580,44 @@ export class AdminSettingsComponent implements OnInit {
       },
     });
   }
+
+  readonly currentPassword = signal('');
+  readonly newPassword = signal('');
+  readonly changingPassword = signal(false);
+  readonly passwordNotification = signal(false);
+  readonly passwordError = signal('');
+
+  submitPasswordChange(): void {
+    if (!this.currentPassword() || !this.newPassword()) {
+      this.passwordError.set('Por favor completa ambos campos de contraseña.');
+      return;
+    }
+
+    if (this.newPassword().length < 8) {
+      this.passwordError.set('La nueva contraseña debe tener al menos 8 caracteres.');
+      return;
+    }
+
+    this.changingPassword.set(true);
+    this.passwordNotification.set(false);
+    this.passwordError.set('');
+
+    this.auth.changePassword({
+      currentPassword: this.currentPassword(),
+      newPassword: this.newPassword()
+    }).subscribe({
+      next: () => {
+        this.changingPassword.set(false);
+        this.passwordNotification.set(true);
+        this.currentPassword.set('');
+        this.newPassword.set('');
+        setTimeout(() => this.passwordNotification.set(false), 5000);
+      },
+      error: (err) => {
+        this.changingPassword.set(false);
+        this.passwordError.set(err?.error?.message || 'Error al actualizar la contraseña.');
+      }
+    });
+  }
 }
+

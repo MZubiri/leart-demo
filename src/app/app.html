@@ -68,6 +68,17 @@
           </div>
           <div class="capacity-meter"><span><b>{{capacityUsed()}}</b> de {{maxFigures()}} espacios usados</span><i><b [style.width.%]="capacityUsed() / maxFigures() * 100"></b></i><small>Minifiguras y mascotas cuentan dentro del mismo límite.</small></div>
           <label class="check-option"><input type="checkbox" [ngModel]="accessories()" (ngModelChange)="accessories.set($event)"><span>Quiero consultar por accesorios adicionales</span></label>
+          <div class="price-quote-preview" style="margin-top: 18px; padding: 14px; background: #fff; border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink);">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <span style="font-size: 11px; font-weight: 800; text-transform: uppercase;">Precio estimado:</span>
+              <strong style="font-size: 18px; color: var(--ink);">{{formattedEstimatedPrice()}}</strong>
+            </div>
+            <div style="margin-top: 6px; font-size: 10px; color: #666; line-height: 1.4;">
+              @for (note of priceQuote().notes; track note) {
+                <span>{{note}}@if (!$last) { · }</span>
+              }
+            </div>
+          </div>
           <p class="rule-note"><b>Regla:</b> {{selectedProduct()?.rule}}</p>
         }
         @if (activeStep() === 3) {
@@ -77,7 +88,16 @@
           <select id="occasion" [ngModel]="occasion()" (ngModelChange)="occasion.set($event)">@for (item of occasions; track item) {<option [value]="item">{{item}}</option>}<option value="Otro momento">Otro momento</option></select>
           <label for="notes">Idea, nombres o requerimientos especiales</label>
           <textarea id="notes" rows="4" placeholder="Ej: regalo para una pareja, incluir un perrito blanco y elementos de ciclismo" [ngModel]="notes()" (ngModelChange)="notes.set($event)"></textarea>
-          <div class="summary-box"><span>{{selectedCategory()}} · {{selectedVariant()}}</span><strong>{{figures()}} figura(s)@if (pets()) { · {{pets()}} mascota(s)}</strong></div>
+          <div class="summary-box">
+            <div>
+              <span>{{selectedCategory()}} · {{selectedVariant()}}</span>
+              <strong>{{figures()}} figura(s)@if (pets()) { · {{pets()}} mascota(s)}</strong>
+            </div>
+            <div style="text-align: right;">
+              <small style="display: block; font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em;">Estimado de referencia</small>
+              <strong style="font-size: 16px; font-weight: 800;">{{formattedEstimatedPrice()}}</strong>
+            </div>
+          </div>
           <div class="postpay-note"><b>Después del pago</b><span>Recibirás el enlace para subir fotos, elegir figuras y completar el diseño.</span></div>
         }
       </div>

@@ -39,7 +39,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.frontend
     container_name: leart_frontend
     restart: always
     ports:

@@ -1,37 +1,64 @@
 import { Routes } from '@angular/router';
-import { AdminLayoutComponent } from './admin/admin-layout.component';
-import { AdminDashboardComponent } from './admin/pages/admin-dashboard.component';
-import { AdminLoginComponent } from './admin/pages/admin-login.component';
-import { AdminOrdersComponent } from './admin/pages/admin-orders.component';
-import { AdminProductsComponent } from './admin/pages/admin-products.component';
-import { AdminSettingsComponent } from './admin/pages/admin-settings.component';
 import { adminAuthGuard } from './core/guards/admin-auth.guard';
-import { CatalogPage } from './pages/catalog.page';
-import { HomePage } from './pages/home.page';
-import { PersonalizationPage } from './pages/personalization.page';
-import { ProductPage } from './pages/product.page';
 
 export const routes: Routes = [
-  // Public Routes
-  { path: '', component: HomePage, title: 'Leart Store — Tu historia, pieza por pieza' },
-  { path: 'catalogo', component: CatalogPage, title: 'Catálogo | Leart Store' },
-  { path: 'personalizacion', component: PersonalizationPage, title: 'Personaliza tu pedido | Leart Store' },
-  { path: 'producto/:id', component: ProductPage, title: 'Producto | Leart Store' },
+  // Public Routes (Lazy Loaded)
+  {
+    path: '',
+    loadComponent: () => import('./pages/home.page').then((m) => m.HomePage),
+    title: 'Leart Store — Tu historia, pieza por pieza',
+  },
+  {
+    path: 'catalogo',
+    loadComponent: () => import('./pages/catalog.page').then((m) => m.CatalogPage),
+    title: 'Catálogo | Leart Store',
+  },
+  {
+    path: 'personalizacion',
+    loadComponent: () => import('./pages/personalization.page').then((m) => m.PersonalizationPage),
+    title: 'Personaliza tu pedido | Leart Store',
+  },
+  {
+    path: 'producto/:id',
+    loadComponent: () => import('./pages/product.page').then((m) => m.ProductPage),
+    title: 'Producto | Leart Store',
+  },
 
-  // Admin Routes
-  { path: 'admin/login', component: AdminLoginComponent, title: 'Acceso Admin | Leart Store' },
+  // Admin Routes (Lazy Loaded)
+  {
+    path: 'admin/login',
+    loadComponent: () => import('./admin/pages/admin-login.component').then((m) => m.AdminLoginComponent),
+    title: 'Acceso Admin | Leart Store',
+  },
   {
     path: 'admin',
-    component: AdminLayoutComponent,
+    loadComponent: () => import('./admin/admin-layout.component').then((m) => m.AdminLayoutComponent),
     canActivate: [adminAuthGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: AdminDashboardComponent, title: 'Dashboard | Leart Admin' },
-      { path: 'configuracion', component: AdminSettingsComponent, title: 'Configuración WhatsApp | Leart Admin' },
-      { path: 'productos', component: AdminProductsComponent, title: 'Productos | Leart Admin' },
-      { path: 'pedidos', component: AdminOrdersComponent, title: 'Pedidos y Fotos | Leart Admin' },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./admin/pages/admin-dashboard.component').then((m) => m.AdminDashboardComponent),
+        title: 'Dashboard | Leart Admin',
+      },
+      {
+        path: 'configuracion',
+        loadComponent: () => import('./admin/pages/admin-settings.component').then((m) => m.AdminSettingsComponent),
+        title: 'Configuración WhatsApp | Leart Admin',
+      },
+      {
+        path: 'productos',
+        loadComponent: () => import('./admin/pages/admin-products.component').then((m) => m.AdminProductsComponent),
+        title: 'Productos | Leart Admin',
+      },
+      {
+        path: 'pedidos',
+        loadComponent: () => import('./admin/pages/admin-orders.component').then((m) => m.AdminOrdersComponent),
+        title: 'Pedidos y Fotos | Leart Admin',
+      },
     ],
   },
 
   { path: '**', redirectTo: '' },
 ];
+

@@ -5,16 +5,17 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    Args = args,
+    WebRootPath = "wwwroot"
+});
 
-// Explicitly configure WebRoot to ensure static files and index.html are served reliably
-var contentRoot = builder.Environment.ContentRootPath;
-var webRootPath = Path.Combine(contentRoot, "wwwroot");
+var webRootPath = builder.Environment.WebRootPath ?? Path.Combine(builder.Environment.ContentRootPath, "wwwroot");
 if (!Directory.Exists(webRootPath))
 {
     Directory.CreateDirectory(webRootPath);
 }
-builder.WebHost.UseWebRoot(webRootPath);
 
 // Controllers with JSON formatting
 builder.Services.AddControllers()
@@ -32,8 +33,16 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    // Use MariaDB 10.11 compatibility (standard for Debian/Docker runtimes, also compatible with MySQL)
-    var serverVersion = new MariaDbServerVersion(new Version(10, 11, 0));
+    ServerVersion serverVersion;
+    try
+    {
+        serverVersion = ServerVersion.AutoDetect(connectionString);
+    }
+    catch
+    {
+        serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
+    }
+
     options.UseMySql(connectionString, serverVersion, mySqlOptions =>
     {
         mySqlOptions.EnableRetryOnFailure(

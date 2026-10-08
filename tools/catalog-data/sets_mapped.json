@@ -1,0 +1,582 @@
+[
+  {
+    "row": "6",
+    "codigo": "MOC0049",
+    "nombre": "Altar enomarados",
+    "grupo": "1",
+    "cat": "SET",
+    "p1": "130000",
+    "p2": "158000",
+    "img": null
+  },
+  {
+    "row": "7",
+    "codigo": "163273",
+    "nombre": "Amor Rodante",
+    "grupo": "2",
+    "cat": "SET",
+    "p1": "140000",
+    "p2": "168000",
+    "img": null
+  },
+  {
+    "row": "8",
+    "codigo": "CN00133-A",
+    "nombre": "Arbol Sakura",
+    "grupo": "1",
+    "cat": "SET",
+    "p1": "130000",
+    "p2": "158000",
+    "img": null
+  },
+  {
+    "row": "9",
+    "codigo": "MOC4034",
+    "nombre": "Barbacoa",
+    "grupo": "1",
+    "cat": "SET",
+    "p1": "130000",
+    "p2": "158000",
+    "img": "/catalog-assets/sets/28fb4712-de07-4428-b711-ac1fdc81068a.png"
+  },
+  {
+    "row": "10",
+    "codigo": "8974-4",
+    "nombre": "Barbería",
+    "grupo": "2",
+    "cat": "SET",
+    "p1": "140000",
+    "p2": "168000",
+    "img": null
+  },
+  {
+    "row": "11",
+    "codigo": "MOC4091",
+    "nombre": "Bateria",
+    "grupo": "1",
+    "cat": "SET",
+    "p1": "130000",
+    "p2": "158000",
+    "img": "/catalog-assets/sets/55596977-1ab7-4b2b-9d96-282363e33081.png"
+  },
+  {
+    "row": "12",
+    "codigo": "B10-74",
+    "nombre": "BBC",
+    "grupo": "2",
+    "cat": "SET",
+    "p1": "140000",
+    "p2": "168000",
+    "img": null
+  },
+  {
+    "row": "13",
+    "codigo": "B21-44-2",
+    "nombre": "Buena Vibra",
+    "grupo": "",
+    "cat": "MINIBOX",
+    "p1": "",
+    "p2": "",
+    "img": null
+  },
+  {
+    "row": "14",
+    "codigo": "96697378638",
+    "nombre": "Camping",
+    "grupo": "4",
+    "cat": "SET",
+    "p1": "165000",
+    "p2": "195000",
+    "img": null
+  },
+  {
+    "row": "15",
+    "codigo": "MOC4081-A",
+    "nombre": "Cancha Basquet",
+    "grupo": "1",
+    "cat": "SET",
+    "p1": "130000",
+    "p2": "158000",
+    "img": null
+  },
+  {
+    "row": "16",
+    "codigo": "LEA-0001",
+    "nombre": "Cancha Futbol",
+    "grupo": "1",
+    "cat": "SET",
+    "p1": "130000",
+    "p2": "158000",
+    "img": "/catalog-assets/sets/1a75b290-9657-4c33-915c-76bd83113eb9.png"
+  },
+  {
+    "row": "17",
+    "codigo": "4901131696",
+    "nombre": "Cascada Tropical",
+    "grupo": "3",
+    "cat": "SET",
+    "p1": "154000",
+    "p2": "182000",
+    "img": null
+  },
+  {
+    "row": "18",
+    "codigo": "MOC0017-A",
+    "nombre": "Cita bajo el Farol",
+    "grupo": "INACTIVO",
+    "cat": "SET",
+    "p1": "",
+    "p2": "",
+    "img": null
+  },
+  {
+    "row": "19",
+    "codigo": "401118404",
+    "nombre": "Cita en el Cafe",
+    "grupo": "3",
+    "cat": "SET",
+    "p1": "154000",
+    "p2": "182000",
+    "img": null
+  },
+  {
+    "row": "20",
+    "codigo": "LEA-0004",
+    "nombre": "Cita en el HotDog",
+    "grupo": "2",
+    "cat": "SET",
+    "p1": "140000",
+    "p2": "168000",
+    "img": "/catalog-assets/sets/4158bd8a-a71e-4033-baaa-15fc1bccc947.png"
+  },
+  {
+    "row": "21",
+    "codigo": "99P-ZZ",
+    "nombre": "Cita en Otoño",
+    "grupo": "3",
+    "cat": "SET",
+    "p1": "154000",
+    "p2": "182000",
+    "img": null
+  },
+  {
+    "row": "22",
+    "codigo": "CFLS002",
+    "nombre": "Cita entre Flores",
+    "grupo": "3",
+    "cat": "SET",
+    "p1": "154000",
+    "p2": "182000",
+    "img": null
+  },
+  {
+    "row": "23",
+    "codigo": "MOC4145",
+    "nombre": "COLUMPIO",
+    "grupo": "2",
+    "cat": "SET",
+    "p1": "140000",
+    "p2": "168000",
+    "img": null
+  },
+  {
+    "row": "24",
+    "codigo": "K96280",
+    "nombre": "Copa Mundial",
+    "grupo": "Copa Mundial",
+    "cat": "SET",
+    "p1": "",
+    "p2": "",
+    "img": null
+  },
+  {
+    "row": "25",
+    "codigo": "MOC169562",
+    "nombre": "Corazón Latente",
+    "grupo": "4",
+    "cat": "SET",
+    "p1": "165000",
+    "p2": "195000",
+    "img": null
+  },
+  {
+    "row": "26",
+    "codigo": "LEA-0006",
+    "nombre": "Escapada Natural",
+    "grupo": "4",
+    "cat": "SET",
+    "p1": "165000",
+    "p2": "195000",
+    "img": null
+  },
+  {
+    "row": "27",
+    "codigo": "353682",
+    "nombre": "Escritorio Gamer",
+    "grupo": "1",
+    "cat": "SET",
+    "p1": "130000",
+    "p2": "158000",
+    "img": null
+  },
+  {
+    "row": "28",
+    "codigo": "366726",
+    "nombre": "Fitness",
+    "grupo": "",
+    "cat": "SET",
+    "p1": "",
+    "p2": "",
+    "img": null
+  },
+  {
+    "row": "29",
+    "codigo": "LEA-0002",
+    "nombre": "Fogata de Recuerdos",
+    "grupo": "1",
+    "cat": "SET",
+    "p1": "130000",
+    "p2": "158000",
+    "img": null
+  },
+  {
+    "row": "30",
+    "codigo": "52706390907",
+    "nombre": "Jardin Secreto",
+    "grupo": "2",
+    "cat": "SET",
+    "p1": "140000",
+    "p2": "168000",
+    "img": null
+  },
+  {
+    "row": "31",
+    "codigo": "LEA-0003",
+    "nombre": "Lover's Bridge",
+    "grupo": "",
+    "cat": "SET",
+    "p1": "",
+    "p2": "",
+    "img": null
+  },
+  {
+    "row": "32",
+    "codigo": "MPA001",
+    "nombre": "Mini Parque",
+    "grupo": "1",
+    "cat": "SET",
+    "p1": "130000",
+    "p2": "158000",
+    "img": null
+  },
+  {
+    "row": "33",
+    "codigo": "62349712",
+    "nombre": "Minibillar",
+    "grupo": "1",
+    "cat": "SET",
+    "p1": "130000",
+    "p2": "158000",
+    "img": "/catalog-assets/sets/7bbb7996-777e-4368-8997-b600e6455116.png"
+  },
+  {
+    "row": "34",
+    "codigo": "163257",
+    "nombre": "Modo Aventura",
+    "grupo": "2",
+    "cat": "SET",
+    "p1": "140000",
+    "p2": "168000",
+    "img": null
+  },
+  {
+    "row": "35",
+    "codigo": "316200",
+    "nombre": "Modo Velocidad",
+    "grupo": "1",
+    "cat": "SET",
+    "p1": "130000",
+    "p2": "158000",
+    "img": null
+  },
+  {
+    "row": "36",
+    "codigo": "MOC-103498",
+    "nombre": "Motocicleta",
+    "grupo": "",
+    "cat": "SET",
+    "p1": "",
+    "p2": "",
+    "img": null
+  },
+  {
+    "row": "37",
+    "codigo": "886993675",
+    "nombre": "Navegando Juntos",
+    "grupo": "1",
+    "cat": "SET",
+    "p1": "130000",
+    "p2": "158000",
+    "img": null
+  },
+  {
+    "row": "38",
+    "codigo": "7788953028",
+    "nombre": "Parque de los Novios",
+    "grupo": "3",
+    "cat": "SET",
+    "p1": "154000",
+    "p2": "182000",
+    "img": null
+  },
+  {
+    "row": "39",
+    "codigo": "214030",
+    "nombre": "Parque Diversiones",
+    "grupo": "1",
+    "cat": "SET",
+    "p1": "130000",
+    "p2": "158000",
+    "img": null
+  },
+  {
+    "row": "40",
+    "codigo": "MOC0009",
+    "nombre": "Piano",
+    "grupo": "2",
+    "cat": "SET",
+    "p1": "140000",
+    "p2": "168000",
+    "img": null
+  },
+  {
+    "row": "41",
+    "codigo": "6704132905",
+    "nombre": "Pisciencanto",
+    "grupo": "3",
+    "cat": "SET",
+    "p1": "154000",
+    "p2": "182000",
+    "img": "/catalog-assets/sets/7ee002c8-dcd0-452b-afb3-c023d94cc4e6.png"
+  },
+  {
+    "row": "42",
+    "codigo": "91401",
+    "nombre": "Rayo Azul",
+    "grupo": "1",
+    "cat": "SET",
+    "p1": "130000",
+    "p2": "158000",
+    "img": null
+  },
+  {
+    "row": "43",
+    "codigo": "91402",
+    "nombre": "Rayo Blanco",
+    "grupo": "1",
+    "cat": "SET",
+    "p1": "130000",
+    "p2": "158000",
+    "img": null
+  },
+  {
+    "row": "44",
+    "codigo": "91404",
+    "nombre": "Rayo Rojo",
+    "grupo": "1",
+    "cat": "SET",
+    "p1": "130000",
+    "p2": "158000",
+    "img": null
+  },
+  {
+    "row": "45",
+    "codigo": "5503286775",
+    "nombre": "Rincon del Lago",
+    "grupo": "4",
+    "cat": "SET",
+    "p1": "165000",
+    "p2": "195000",
+    "img": null
+  },
+  {
+    "row": "46",
+    "codigo": "MOC4085",
+    "nombre": "Sala Juntas",
+    "grupo": "3",
+    "cat": "SET",
+    "p1": "154000",
+    "p2": "182000",
+    "img": null
+  },
+  {
+    "row": "47",
+    "codigo": "1568056459",
+    "nombre": "Sala Premium",
+    "grupo": "3",
+    "cat": "SET",
+    "p1": "154000",
+    "p2": "182000",
+    "img": null
+  },
+  {
+    "row": "48",
+    "codigo": "MOC0021-P",
+    "nombre": "Salita familiar",
+    "grupo": "2",
+    "cat": "SET",
+    "p1": "140000",
+    "p2": "168000",
+    "img": null
+  },
+  {
+    "row": "49",
+    "codigo": "T18741",
+    "nombre": "Semillas de Amor",
+    "grupo": "2",
+    "cat": "SET",
+    "p1": "140000",
+    "p2": "168000",
+    "img": null
+  },
+  {
+    "row": "50",
+    "codigo": "89644",
+    "nombre": "Set Astronauta",
+    "grupo": "3",
+    "cat": "SET",
+    "p1": "154000",
+    "p2": "182000",
+    "img": null
+  },
+  {
+    "row": "51",
+    "codigo": "DK7025",
+    "nombre": "Set Casita UP",
+    "grupo": "Casita UP",
+    "cat": "SET",
+    "p1": "273000",
+    "p2": "295000",
+    "img": null
+  },
+  {
+    "row": "52",
+    "codigo": "89698",
+    "nombre": "Set Cocina",
+    "grupo": "3",
+    "cat": "SET",
+    "p1": "154000",
+    "p2": "182000",
+    "img": null
+  },
+  {
+    "row": "53",
+    "codigo": "89695",
+    "nombre": "Set Consultorio",
+    "grupo": "3",
+    "cat": "SET",
+    "p1": "154000",
+    "p2": "182000",
+    "img": null
+  },
+  {
+    "row": "54",
+    "codigo": "D610001",
+    "nombre": "Set Dentista",
+    "grupo": "3",
+    "cat": "SET",
+    "p1": "154000",
+    "p2": "182000",
+    "img": null
+  },
+  {
+    "row": "55",
+    "codigo": "89691",
+    "nombre": "Set Estudio Arte",
+    "grupo": "3",
+    "cat": "SET",
+    "p1": "154000",
+    "p2": "182000",
+    "img": null
+  },
+  {
+    "row": "56",
+    "codigo": "89697",
+    "nombre": "Set Fotografía",
+    "grupo": "3",
+    "cat": "SET",
+    "p1": "154000",
+    "p2": "182000",
+    "img": null
+  },
+  {
+    "row": "57",
+    "codigo": "89696",
+    "nombre": "Set Laboratorio",
+    "grupo": "3",
+    "cat": "SET",
+    "p1": "154000",
+    "p2": "182000",
+    "img": null
+  },
+  {
+    "row": "58",
+    "codigo": "89692",
+    "nombre": "Set Mini Carreras",
+    "grupo": "3",
+    "cat": "SET",
+    "p1": "154000",
+    "p2": "182000",
+    "img": null
+  },
+  {
+    "row": "59",
+    "codigo": "89693",
+    "nombre": "Set Musico",
+    "grupo": "3",
+    "cat": "SET",
+    "p1": "154000",
+    "p2": "182000",
+    "img": null
+  },
+  {
+    "row": "60",
+    "codigo": "LEA-0005",
+    "nombre": "Sky Line NW",
+    "grupo": "",
+    "cat": "SET",
+    "p1": "",
+    "p2": "",
+    "img": null
+  },
+  {
+    "row": "61",
+    "codigo": "FRE-232806",
+    "nombre": "Taller de papá",
+    "grupo": "",
+    "cat": "MINIBOX",
+    "p1": "",
+    "p2": "",
+    "img": null
+  },
+  {
+    "row": "62",
+    "codigo": "MOC4098",
+    "nombre": "Vaiven del Amor",
+    "grupo": "4",
+    "cat": "SET",
+    "p1": "165000",
+    "p2": "195000",
+    "img": null
+  },
+  {
+    "row": "63",
+    "codigo": "MOC0030-A",
+    "nombre": "Work Space",
+    "grupo": "1",
+    "cat": "SET",
+    "p1": "130000",
+    "p2": "158000",
+    "img": null
+  }
+]
