@@ -27,21 +27,6 @@ public static class DbInitializer
                 await context.SaveChangesAsync();
             }
 
-            // Seed Admin User if missing
-            if (!await context.AdminUsers.AnyAsync())
-            {
-                logger.LogInformation("Seeding default AdminUser (admin / Leart2026!)...");
-                context.AdminUsers.Add(new AdminUser
-                {
-                    Username = "admin",
-                    Email = "admin@leart.store",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Leart2026!"),
-                    Role = "Admin",
-                    CreatedAt = DateTime.UtcNow
-                });
-                await context.SaveChangesAsync();
-            }
-
             // Upsert / Seed Products
             logger.LogInformation("Verificando y sincronizando catálogo completo de productos en MySQL...");
             var oldCuadro = await context.Products.FindAsync("cuadro-personalizado");

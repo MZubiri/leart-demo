@@ -11,6 +11,9 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
     WebRootPath = "wwwroot"
 });
 
+var jwtSecret = SecurityConfiguration.GetJwtSecret(builder.Configuration);
+var connectionString = SecurityConfiguration.GetConnectionString(builder.Configuration);
+
 var webRootPath = builder.Environment.WebRootPath ?? Path.Combine(builder.Environment.ContentRootPath, "wwwroot");
 if (!Directory.Exists(webRootPath))
 {
@@ -28,8 +31,6 @@ builder.Services.AddControllers()
 builder.Services.AddOpenApi();
 
 // Database Context (MariaDB / MySQL with Pomelo)
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? "Server=127.0.0.1;Port=3306;Database=leart_db;User=root;Password=root;AllowUserVariables=True;CharSet=utf8mb4;";
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -57,7 +58,6 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 
 // JWT Authentication
-var jwtSecret = builder.Configuration["Jwt:Secret"] ?? "LeartSecureSuperSecretKey2026WithSufficientLengthForHmacSha256!";
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "LeartApi";
 var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "LeartApp";
 
@@ -189,10 +189,13 @@ using (var scope = app.Services.CreateScope())
         {
             logger.LogInformation("Conectando a MariaDB/MySQL y verificando esquema de base de datos...");
             await db.Database.EnsureCreatedAsync();
+            await AdminBootstrap.InitializeAsync(db, builder.Configuration, args.Contains("--reset-admin-password"));
+            if (args.Contains("--reset-admin-password")) return;
             await DbInitializer.SeedAsync(db, logger);
             logger.LogInformation("Base de datos inicializada y lista con datos del catalogo.");
             break;
         }
+        catch (BootstrapConfigurationException) { throw; }
         catch (Exception ex)
         {
             retries--;

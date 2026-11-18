@@ -20,9 +20,27 @@ Incluye:
 ## 🔐 Acceso al Panel de Administración
 
 * **Ruta**: `/admin/login` (o desde el enlace discreto en el pie de página).
-* **Usuario inicial**: `admin`
-* **Contraseña inicial**: `Leart2026!`
-* **Cambio de clave**: Disponible en `/admin/configuracion` > *Seguridad de la Cuenta*.
+No hay credenciales predeterminadas. El primer inicio requiere las variables
+`BootstrapAdmin__Username`, `BootstrapAdmin__Email` y `BootstrapAdmin__Password`
+(contraseña nueva de al menos 12 caracteres, hasta 72 bytes). Retíralas después del alta.
+El arranque normal conserva la cuenta existente.
+
+Configura `Jwt__Secret` con una clave aleatoria nueva de al menos 32 bytes y
+`ConnectionStrings__DefaultConnection` con un usuario limitado a la base de la aplicación.
+Se rechazan las claves JWT publicadas anteriormente y las conexiones como root.
+Genera valores independientes con `openssl rand -hex 32`; no los subas a Git.
+
+Para una instalación existente, rota la clave JWT, cambia la cuenta de base de datos y
+restablece la contraseña inicial publicada antes de habilitar el acceso. Con las variables
+BootstrapAdmin configuradas para un administrador existente, ejecuta una sola vez:
+
+```bash
+dotnet run --project backend/Leart.Api -- --reset-admin-password
+```
+
+Este comando actualiza la contraseña y termina sin iniciar el servidor. La contraseña
+inicial publicada ya no permite iniciar sesión. Retira después las variables de bootstrap.
+* **Cambio posterior de clave**: `/admin/configuracion` > *Seguridad de la Cuenta*.
 
 ---
 
@@ -32,10 +50,12 @@ Incluye:
 Puedes usar una instancia local de MySQL (puerto 3306) o levantar el contenedor de MySQL:
 
 ```bash
+cp .env.example .env
+# Completa .env con secretos nuevos y la cuenta inicial antes de continuar.
 docker compose up -d mysql
 ```
 
-*Configuración local*: El backend lee [appsettings.Development.json](backend/Leart.Api/appsettings.Development.json). Si tu MySQL local usa una contraseña diferente, ajústala allí.
+El contenedor MySQL solo se expone en la red interna de Compose. Para desarrollo local, usa una instancia propia con el usuario limitado `leart`, o ejecuta también la API mediante Compose. Configura secretos mediante variables de entorno o `dotnet user-secrets`; los archivos de configuración versionados no contienen contraseñas.
 
 ### 2. Iniciar Backend (ASP.NET Core 9)
 
@@ -71,15 +91,15 @@ docker compose up -d --build
 ```
 
 * **Frontend y Tienda**: `http://localhost` (puerto 80).
-* **Backend API**: `http://localhost:5000/api`
-* **Base de datos MySQL**: `localhost:3306` (`user: root`, `password: root`, `database: leart_db`).
+* **Backend API**: `/api`, mediante el proxy del frontend.
+* **MySQL**: red interna, base `leart_db`, usuario `leart` y contraseña propia de `.env`.
 
 ### Opción 2: Contenedor Autónomo Todo-en-Uno (Coolify / Single VPS)
-Si prefieres un solo contenedor que incluya MariaDB + .NET 9 + Angular en el mismo proceso:
+Si prefieres el contenedor con MariaDB, configura un archivo local `.env.runtime` con `Jwt__Secret`, `ConnectionStrings__DefaultConnection` (usuario `leart` en `127.0.0.1`), `MYSQL_PASSWORD` y las variables `BootstrapAdmin__*`. Para este modo, la contraseña de MySQL debe ser aleatoria y alfanumérica de al menos 24 caracteres.
 
 ```bash
 docker build -t leart-store -f Dockerfile .
-docker run -d -p 80:80 --name leart-store leart-store
+docker run -d -p 80:80 --env-file .env.runtime --name leart-store leart-store
 ```
 
 ---

@@ -10,7 +10,7 @@
 - **Cobertura:** código, configuración, despliegue, pruebas, scripts y datos del catálogo; 225 archivos versionados y 75 productos iniciales.
 - **Método:** revisión estática y comprobaciones en copias temporales, navegador, Nginx y MySQL locales desechables.
 - **Límite:** los resultados describen ese commit y sus configuraciones declaradas. La configuración efectiva del hosting, el comportamiento bajo carga y las métricas reales de experiencia web quedan pendientes de validación.
-- **Autorización actual:** documentar el análisis y establecer seguimiento. No se ha autorizado implementar las correcciones por el hecho de crear este documento.
+- **Autorización actual:** el usuario autorizó implementar las correcciones una por una, validarlas y hacer un commit por corrección. Las mejoras opcionales siguen fuera del alcance hasta una decisión específica.
 
 La auditoría inicial no modificó archivos del repositorio. Esta entrega agrega este informe y las instrucciones de seguimiento de [AGENTS.md](AGENTS.md); no implementa correcciones de la aplicación.
 
@@ -67,7 +67,7 @@ Confirmado significa reproducido en el entorno local descrito o demostrado por u
 
 | ID | Prioridad e impacto | Hallazgo y evidencia | Tarea accionable y esfuerzo |
 | --- | --- | --- | --- |
-| H01 | **P0 · Crítico:** control administrativo y de datos. | Hay una clave JWT fija en [appsettings.json:14](backend/Leart.Api/appsettings.json#L14), un administrador con contraseña conocida en [DbInitializer.cs:30](backend/Leart.Api/Data/DbInitializer.cs#L30) y acceso MySQL como root con contraseña fija y puerto publicado en [docker-compose.yml:6](docker-compose.yml#L6). En local, el login predeterminado y un JWT firmado con la clave publicada obtuvieron acceso administrativo HTTP 200. | Rotar secretos, exigir configuración segura al arrancar, sustituir el administrador automático por un alta inicial controlada, usar un usuario de BD limitado y retirar su exposición pública. **1–2 d**. |
+| H01 | **P0 · Crítico:** control administrativo y de datos. | Completado | R003 |
 | H02 | **P0 · Crítico:** confidencialidad de fotografías. | Los adjuntos se guardan dentro del directorio público en [FileStorageService.cs:37](backend/Leart.Api/Services/FileStorageService.cs#L37), servido mediante archivos estáticos en [Program.cs:147](backend/Leart.Api/Program.cs#L147). Una URL conocida se pudo leer sin token. El GUID dificulta adivinarla, pero no autoriza su acceso. | Guardar fotos de pedidos fuera del directorio público y entregarlas mediante un endpoint autorizado. Separarlas de las imágenes públicas del catálogo. **1–2 d**. |
 | H03 | **P1 · Alto:** exposición de información interna. | El manejador global devuelve mensaje, excepción completa y stack trace también en producción: [Program.cs:114](backend/Leart.Api/Program.cs#L114). Una entrada demasiado larga produjo HTTP 500 con detalles de Entity Framework y rutas del servidor. | Devolver errores estructurados y genéricos con identificador de correlación. Conservar el detalle en logs internos. **0,5 d**. |
 | H04 | **P1 · Alto:** abuso del login y almacenamiento. | El login en [AdminAuthController.cs:24](backend/Leart.Api/Controllers/AdminAuthController.cs#L24) y la recepción pública de pedidos y archivos en [PublicController.cs:94](backend/Leart.Api/Controllers/PublicController.cs#L94) carecen de limitación de frecuencia y cuotas de aplicación. La referencia del pedido es texto libre, sin comprobación de pedido confirmado. | Limitar intentos y concurrencia, establecer cuotas de almacenamiento y protección contra envíos automatizados. Definir si la personalización requerirá una invitación vinculada al pedido. **1–2 d**. |
@@ -173,7 +173,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 
 ## 9. Seguimiento de ítems
 
-**Situación inicial:** 0 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. La auditoría y la creación de esta documentación no cuentan como correcciones implementadas.
+**Situación vigente:** 0 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
 
 | ID | Fase | Estado vigente | Última entrada de avance o validación |
 | --- | --- | --- | --- |
@@ -224,6 +224,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Estado de correcciones:** H01–H26 siguen pendientes; O01–O05 siguen sin programar.
 - **Pendiente:** ejecutar las fases cuando se autorice su implementación; registrar aquí cada avance y validación.
 - **Commit o PR de esta entrega:** no creado.
+
+### R002 — 2026-11-18 — Inicio de correcciones secuenciales y configuración segura
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H01; Hay una clave JWT fija en [appsettings.json:14](backend/Leart.Api/appsettings.json#L14), un administrador con contraseña conocida en [DbInitializer.cs:30](backend/Leart.Api/Data/DbInitializer.cs#L30) y acceso MySQL como root con contraseña fija y puerto publicado en [docker-compose.yml:6](docker-compose.yml#L6). En local, el login predeterminado y un JWT firmado con la clave publicada obtuvieron acceso administrativo HTTP 200. → En curso.
+- **Avance y alcance:** Autorizada la implementación una por una, con validación y commit por hallazgo. Se versionó la línea base documental en 1fe840e y se inicia H01: secretos externos, alta inicial controlada y usuario de BD limitado.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** Revisión de configuración, arranque, bootstrap, despliegue y pruebas existentes. Sin correcciones verificadas todavía.
+- **Pendientes o límites:** Implementar y comprobar H01; no se han intervenido instalaciones productivas.
+- **Próximo paso:** Validar configuración segura, bootstrap y despliegue antes del commit H01.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R003 — 2026-11-18 — H01 — Secretos externos y alta inicial controlada
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H01; En curso → Completado.
+- **Avance y alcance:** JWT y conexión requieren configuración explícita y rechazan claves publicadas, root y contraseñas predeterminadas. El administrador se crea solo con credenciales de bootstrap y su restablecimiento es un comando explícito que termina sin servir HTTP. La contraseña inicial publicada deja de permitir login. Compose usa cuenta limitada, sin publicar BD/API; se retiraron secretos del código, login, archivos de configuración y arranque MariaDB.
+- **Archivos y evidencia:** [SecurityConfiguration.cs](backend/Leart.Api/Services/SecurityConfiguration.cs), [AdminBootstrap.cs](backend/Leart.Api/Services/AdminBootstrap.cs), [Program.cs](backend/Leart.Api/Program.cs), [AdminAuthController.cs](backend/Leart.Api/Controllers/AdminAuthController.cs), [SecurityConfigurationTests.cs](backend/Leart.Api.Tests/SecurityConfigurationTests.cs), [AdminBootstrapTests.cs](backend/Leart.Api.Tests/AdminBootstrapTests.cs), [docker-compose.yml](docker-compose.yml), [entrypoint.sh](entrypoint.sh), [.env.example](.env.example), [README.md](README.md)
+- **Validación:** dotnet test: 17/17 pasan, incluidos rechazo de claves antiguas y bootstrap sin reinicialización; npm run build correcto; bash -n entrypoint.sh y git diff --check correctos. docker compose config validado con secretos efímeros; API y MySQL no publican puertos. El conflicto EF previo sigue pendiente en H21.
+- **Pendientes o límites:** Las instalaciones existentes deben aplicar el procedimiento de rotación/restablecimiento documentado; no se accedió a producción.
+- **Próximo paso:** H02: sacar fotos de pedidos del directorio público y autorizar su lectura.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada
 

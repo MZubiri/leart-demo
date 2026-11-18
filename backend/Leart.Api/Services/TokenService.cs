@@ -22,7 +22,7 @@ public class TokenService : ITokenService
 
     public (string token, DateTime expiresAt) GenerateToken(AdminUser user)
     {
-        var secret = _config["Jwt:Secret"] ?? "LeartSecretKeyMustBeLongEnoughForHmacSha256Security12345!";
+        var secret = SecurityConfiguration.GetJwtSecret(_config);
         var issuer = _config["Jwt:Issuer"] ?? "LeartApi";
         var audience = _config["Jwt:Audience"] ?? "LeartApp";
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));

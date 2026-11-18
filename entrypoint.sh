@@ -5,7 +5,9 @@ echo "=========================================================="
 echo "    Iniciando Leart Store (ASP.NET Core 9 + MariaDB)      "
 echo "=========================================================="
 
-DB_CONN="${ConnectionStrings__DefaultConnection}"
+DB_CONN="${ConnectionStrings__DefaultConnection:-}"
+: "${Jwt__Secret:?Configure Jwt__Secret}"
+: "${ConnectionStrings__DefaultConnection:?Configure ConnectionStrings__DefaultConnection}"
 
 if [ -z "$DB_CONN" ] || [[ "$DB_CONN" == *"localhost"* ]] || [[ "$DB_CONN" == *"127.0.0.1"* ]]; then
     echo "==> Configurando servidor MariaDB/MySQL interno..."
@@ -32,14 +34,21 @@ if [ -z "$DB_CONN" ] || [[ "$DB_CONN" == *"localhost"* ]] || [[ "$DB_CONN" == *"
         sleep 1
     done
 
-    # Configurar base de datos y permisos de usuario
-    echo "==> Configurando base de datos 'leart_db' y credenciales..."
-    mariadb -e "CREATE DATABASE IF NOT EXISTS leart_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" || true
-    mariadb -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;" || true
-    mariadb -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'127.0.0.1' IDENTIFIED BY 'root' WITH GRANT OPTION;" || true
-    mariadb -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY 'root' WITH GRANT OPTION;" || true
-    mariadb -e "FLUSH PRIVILEGES;" || true
-    echo "==> MariaDB configurado exitosamente."
+    # Cuenta exclusiva de esta base; las credenciales internas deben ser aleatorias.
+    if [[ ! "${MYSQL_PASSWORD:-}" =~ ^[a-zA-Z0-9_-]{24,}$ ]]; then
+        echo "Configure MYSQL_PASSWORD con al menos 24 caracteres aleatorios (openssl rand -hex 32)." >&2
+        exit 1
+    fi
+    mariadb --protocol=socket <<SQL
+CREATE DATABASE IF NOT EXISTS leart_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER IF NOT EXISTS 'leart'@'127.0.0.1' IDENTIFIED BY '$MYSQL_PASSWORD';
+ALTER USER 'leart'@'127.0.0.1' IDENTIFIED BY '$MYSQL_PASSWORD';
+GRANT ALL PRIVILEGES ON leart_db.* TO 'leart'@'127.0.0.1';
+CREATE USER IF NOT EXISTS 'leart'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD';
+ALTER USER 'leart'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD';
+GRANT ALL PRIVILEGES ON leart_db.* TO 'leart'@'localhost';
+SQL
+
 fi
 
 echo "==> Iniciando aplicación Leart (ASP.NET Core 9 Web API + Angular)..."

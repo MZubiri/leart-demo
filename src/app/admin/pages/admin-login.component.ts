@@ -64,7 +64,7 @@ import { AuthService } from '../../core/services/auth.service';
         </form>
 
         <div class="login-footer">
-          <small>Credenciales iniciales: <code>admin</code> / <code>Leart2026!</code></small>
+          <small>Usa la cuenta habilitada por el responsable de la tienda.</small>
           <a routerLink="/" class="back-link">← Volver a la tienda</a>
         </div>
       </div>

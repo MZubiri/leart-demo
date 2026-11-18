@@ -6,3 +6,7 @@ dist
 *.log
 tmp
 scripts
+
+.env
+.env.*
+!.env.example
