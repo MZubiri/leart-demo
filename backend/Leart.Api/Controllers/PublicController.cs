@@ -164,7 +164,7 @@ public class PublicController : ControllerBase
             {
                 Id = a.Id,
                 OriginalFileName = a.OriginalFileName,
-                Url = a.FilePath,
+                Url = string.Empty,
                 ContentType = a.ContentType,
                 FileSizeBytes = a.FileSizeBytes,
                 UploadedAt = a.UploadedAt

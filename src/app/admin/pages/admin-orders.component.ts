@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { AdminService, OrderAdmin } from '../../core/services/admin.service';
 
@@ -170,19 +171,22 @@ import { AdminService, OrderAdmin } from '../../core/services/admin.service';
               <!-- Photos Gallery -->
               <div class="info-block">
                 <h3>Fotos de Referencia Adjuntas ({{ o.attachments.length }})</h3>
+                @if (attachmentError()) { <p role="alert">{{ attachmentError() }}</p> }
                 @if (o.attachments.length === 0) {
                   <p class="no-photos">El cliente no adjuntó fotos en este formulario (se enviaron por chat).</p>
                 } @else {
                   <div class="photos-grid">
                     @for (att of o.attachments; track att.id) {
                       <div class="photo-card">
-                        <a [href]="att.url" target="_blank" title="Abrir en tamaño completo">
-                          <img [src]="att.url" [alt]="att.originalFileName" />
+                        @if (attachmentUrls()[att.id]) {
+                        <a [href]="attachmentUrls()[att.id]" target="_blank" title="Abrir en tamaño completo">
+                          <img [src]="attachmentUrls()[att.id]" [alt]="att.originalFileName" />
                         </a>
                         <div class="photo-meta">
                           <small>{{ att.originalFileName }}</small>
-                          <a [href]="att.url" target="_blank" class="download-link">Descargar ⬇</a>
+                          <a [href]="att.url" [download]="att.originalFileName" class="download-link">Descargar ⬇</a>
                         </div>
+                        } @else { <p>Foto pendiente de carga.</p> }
                       </div>
                     }
                   </div>
@@ -478,13 +482,16 @@ import { AdminService, OrderAdmin } from '../../core/services/admin.service';
     }
   `],
 })
-export class AdminOrdersComponent implements OnInit {
+export class AdminOrdersComponent implements OnInit, OnDestroy {
   private readonly admin = inject(AdminService);
 
   readonly statusList = ['Todos', 'Pendiente', 'En producción', 'Completado'];
   readonly selectedStatus = signal('Todos');
   readonly orders = signal<OrderAdmin[]>([]);
   readonly loading = signal(true);
+  readonly attachmentUrls = signal<Record<number, string>>({});
+  readonly attachmentError = signal('');
+  private previewRequests: Subscription[] = [];
   readonly activeOrder = signal<OrderAdmin | null>(null);
 
   ngOnInit(): void {
@@ -528,12 +535,30 @@ export class AdminOrdersComponent implements OnInit {
   }
 
   openDetailModal(order: OrderAdmin): void {
+    this.closeDetailModal();
     this.activeOrder.set(order);
+    for (const attachment of order.attachments) {
+      this.previewRequests.push(this.admin.getAttachment(attachment.id).subscribe({
+        next: (blob) => {
+          const type = /^image\/(png|jpeg|webp|gif)$/.test(attachment.contentType) ? attachment.contentType : 'application/octet-stream';
+          const preview = new Blob([blob], { type });
+          this.attachmentUrls.update((urls) => ({ ...urls, [attachment.id]: URL.createObjectURL(preview) }));
+        },
+        error: () => this.attachmentError.set('No se pudo cargar una foto. Cierra y vuelve a abrir el pedido para reintentar.'),
+      }));
+    }
   }
 
   closeDetailModal(): void {
+    this.previewRequests.forEach((request) => request.unsubscribe());
+    this.previewRequests = [];
+    Object.values(this.attachmentUrls()).forEach((url) => URL.revokeObjectURL(url));
+    this.attachmentUrls.set({});
+    this.attachmentError.set('');
     this.activeOrder.set(null);
   }
+
+  ngOnDestroy(): void { this.closeDetailModal(); }
 
   buildCustomerWhatsAppUrl(order: OrderAdmin): string {
     const cleanPhone = order.phone.replace(/\D/g, '');

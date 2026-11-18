@@ -88,12 +88,26 @@ public class FileStorageServiceTests : IDisposable
         var (relativePath, storedName, sizeBytes) = await _storageService.SaveFileAsync(formFile, "orders");
 
         // Assert
-        Assert.StartsWith("/uploads/orders/", relativePath);
+        Assert.StartsWith("/private/orders/", relativePath);
+        Assert.False(File.Exists(Path.Combine(_tempDir, "wwwroot", relativePath.TrimStart('/'))));
+        using (var stored = _storageService.OpenOrderFile(relativePath)) Assert.NotNull(stored);
         Assert.EndsWith(".png", storedName);
         Assert.Equal(content.Length, sizeBytes);
 
         // Delete test
         var deleted = _storageService.DeleteFile(relativePath);
         Assert.True(deleted);
+    }
+    [Fact]
+    public void LegacyOrdersAreMovedOutOfThePublicRoot()
+    {
+        var folder = Path.Combine(_tempDir, "wwwroot", "uploads", "orders");
+        Directory.CreateDirectory(folder);
+        File.WriteAllText(Path.Combine(folder, "legacy.png"), "legacy-data");
+        _storageService.MigrateLegacyOrderFiles();
+        Assert.False(File.Exists(Path.Combine(folder, "legacy.png")));
+        using var stored = _storageService.OpenOrderFile("/uploads/orders/legacy.png");
+        Assert.NotNull(stored);
+        Assert.Null(_storageService.OpenOrderFile("/private/orders/../secret"));
     }
 }

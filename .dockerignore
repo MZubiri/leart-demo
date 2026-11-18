@@ -10,3 +10,8 @@ scripts
 .env
 .env.*
 !.env.example
+
+backend/**/storage
+backend/**/wwwroot/uploads
+backend/**/bin
+backend/**/obj

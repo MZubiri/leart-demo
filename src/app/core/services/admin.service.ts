@@ -93,6 +93,10 @@ export class AdminService {
     return this.http.post<{ url: string }>(`${this.baseUrl}/products/upload-image`, formData);
   }
 
+  getAttachment(id: number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/orders/attachments/${id}`, { responseType: 'blob' });
+  }
+
   // Orders
   getOrders(status?: string): Observable<OrderAdmin[]> {
     const params = status && status !== 'Todos' ? `?status=${encodeURIComponent(status)}` : '';

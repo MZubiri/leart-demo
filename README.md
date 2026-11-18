@@ -111,3 +111,7 @@ docker run -d -p 80:80 --env-file .env.runtime --name leart-store leart-store
 3. En el campo **"Número Oficial de WhatsApp"**, ingresa el número con código de país (ejemplo: `573001234567`).
 4. Haz clic en **"Guardar Configuración"**.
 5. ¡Listo! Todos los botones de "Cotizar", "Enviar por WhatsApp" y enlaces de la tienda se actualizarán de inmediato sin necesidad de recompilar.
+
+## Almacenamiento de fotografías
+
+Las imágenes del catálogo son públicas. Las fotos de pedidos se guardan en `storage/orders` (configurable con `Storage__Root`) y solo se descargan mediante la API administrativa autenticada. Compose monta `private_data` en `/app/storage`. Incluye este volumen y `uploads_data` junto a MySQL en las copias de seguridad. En el primer arranque se trasladan los archivos antiguos de `wwwroot/uploads/orders` a almacenamiento privado; si hay una colisión con contenido distinto, el inicio se detiene para revisión. Las URLs públicas antiguas devuelven 404.

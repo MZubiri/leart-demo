@@ -68,7 +68,7 @@ Confirmado significa reproducido en el entorno local descrito o demostrado por u
 | ID | Prioridad e impacto | Hallazgo y evidencia | Tarea accionable y esfuerzo |
 | --- | --- | --- | --- |
 | H01 | **P0 · Crítico:** control administrativo y de datos. | Completado | R003 |
-| H02 | **P0 · Crítico:** confidencialidad de fotografías. | Los adjuntos se guardan dentro del directorio público en [FileStorageService.cs:37](backend/Leart.Api/Services/FileStorageService.cs#L37), servido mediante archivos estáticos en [Program.cs:147](backend/Leart.Api/Program.cs#L147). Una URL conocida se pudo leer sin token. El GUID dificulta adivinarla, pero no autoriza su acceso. | Guardar fotos de pedidos fuera del directorio público y entregarlas mediante un endpoint autorizado. Separarlas de las imágenes públicas del catálogo. **1–2 d**. |
+| H02 | **P0 · Crítico:** confidencialidad de fotografías. | Completado | R005 |
 | H03 | **P1 · Alto:** exposición de información interna. | El manejador global devuelve mensaje, excepción completa y stack trace también en producción: [Program.cs:114](backend/Leart.Api/Program.cs#L114). Una entrada demasiado larga produjo HTTP 500 con detalles de Entity Framework y rutas del servidor. | Devolver errores estructurados y genéricos con identificador de correlación. Conservar el detalle en logs internos. **0,5 d**. |
 | H04 | **P1 · Alto:** abuso del login y almacenamiento. | El login en [AdminAuthController.cs:24](backend/Leart.Api/Controllers/AdminAuthController.cs#L24) y la recepción pública de pedidos y archivos en [PublicController.cs:94](backend/Leart.Api/Controllers/PublicController.cs#L94) carecen de limitación de frecuencia y cuotas de aplicación. La referencia del pedido es texto libre, sin comprobación de pedido confirmado. | Limitar intentos y concurrencia, establecer cuotas de almacenamiento y protección contra envíos automatizados. Definir si la personalización requerirá una invitación vinculada al pedido. **1–2 d**. |
 | H05 | **P1 · Alto:** sesiones comprometidas siguen vigentes. | Los tokens duran 24 horas en [TokenService.cs:31](backend/Leart.Api/Services/TokenService.cs#L31). Cambiar la contraseña solo actualiza su hash en [AdminAuthController.cs:93](backend/Leart.Api/Controllers/AdminAuthController.cs#L93). El token anterior siguió funcionando después del cambio. | Incorporar revocación o versión de sesión comprobada por el servidor y definir una duración adecuada. **1 d**. |
@@ -245,6 +245,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** dotnet test: 17/17 pasan, incluidos rechazo de claves antiguas y bootstrap sin reinicialización; npm run build correcto; bash -n entrypoint.sh y git diff --check correctos. docker compose config validado con secretos efímeros; API y MySQL no publican puertos. El conflicto EF previo sigue pendiente en H21.
 - **Pendientes o límites:** Las instalaciones existentes deben aplicar el procedimiento de rotación/restablecimiento documentado; no se accedió a producción.
 - **Próximo paso:** H02: sacar fotos de pedidos del directorio público y autorizar su lectura.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R004 — 2026-11-18 — H02 — Inicio de almacenamiento privado de adjuntos
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H02; Los adjuntos se guardan dentro del directorio público en [FileStorageService.cs:37](backend/Leart.Api/Services/FileStorageService.cs#L37), servido mediante archivos estáticos en [Program.cs:147](backend/Leart.Api/Program.cs#L147). Una URL conocida se pudo leer sin token. El GUID dificulta adivinarla, pero no autoriza su acceso. → En curso.
+- **Avance y alcance:** Se inicia la separación de fotos de pedidos e imágenes públicas, incluida migración de archivos antiguos y lectura autenticada desde el panel.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** Revisión de almacenamiento, DTO, proxy y visor. H01 confirmado en e19ab37.
+- **Pendientes o límites:** Implementación y pruebas de acceso HTTP y migración.
+- **Próximo paso:** Comprobar que las URLs antiguas no sirvan fotografías y el administrador sí pueda descargarlas.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R005 — 2026-11-18 — H02 — Adjuntos privados y visor autenticado
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H02; En curso → Completado.
+- **Avance y alcance:** Las fotos se guardan fuera de wwwroot; se migran archivos antiguos sin sobrescribir conflictos. Las rutas públicas antiguas y /private devuelven 404. La descarga exige JWT y marca no-store; el panel usa HttpClient autenticado, URLs de blob con tipos seguros y libera recursos al cerrar. Compose conserva el almacenamiento privado.
+- **Archivos y evidencia:** [FileStorageService.cs](backend/Leart.Api/Services/FileStorageService.cs), [AdminOrdersController.cs](backend/Leart.Api/Controllers/AdminOrdersController.cs), [Program.cs](backend/Leart.Api/Program.cs), [AttachmentAccessTests.cs](backend/Leart.Api.Tests/AttachmentAccessTests.cs), [FileStorageServiceTests.cs](backend/Leart.Api.Tests/FileStorageServiceTests.cs), [admin-orders.component.ts](src/app/admin/pages/admin-orders.component.ts), [admin.service.ts](src/app/core/services/admin.service.ts), [docker-compose.yml](docker-compose.yml), [README.md](README.md)
+- **Validación:** 19/19 pruebas backend pasan. Prueba HTTP: anónimo 401 en descarga, rutas públicas 404, administrador 200 con contenido esperado y Cache-Control no-store. Probada migración y bloqueo de recorrido de rutas. Build Angular correcto; sin diagnósticos nuevos.
+- **Pendientes o límites:** La migración de fotos reales se ejecutará al desplegar; hacer backup de ambos volúmenes según README. H09 abordará la eliminación física al borrar pedidos.
+- **Próximo paso:** H03: sustituir stack traces públicos por Problem Details genéricos.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

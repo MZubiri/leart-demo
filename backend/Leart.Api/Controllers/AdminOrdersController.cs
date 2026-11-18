@@ -1,5 +1,6 @@
 using Leart.Api.Data;
 using Leart.Api.DTOs;
+using Leart.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,12 @@ namespace Leart.Api.Controllers;
 public class AdminOrdersController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IFileStorageService _storage;
 
-    public AdminOrdersController(AppDbContext context)
+    public AdminOrdersController(AppDbContext context, IFileStorageService storage)
     {
         _context = context;
+        _storage = storage;
     }
 
     [HttpGet]
@@ -51,7 +54,7 @@ public class AdminOrdersController : ControllerBase
             {
                 Id = a.Id,
                 OriginalFileName = a.OriginalFileName,
-                Url = a.FilePath,
+                Url = $"/api/admin/orders/attachments/{a.Id}",
                 ContentType = a.ContentType,
                 FileSizeBytes = a.FileSizeBytes,
                 UploadedAt = a.UploadedAt
@@ -88,12 +91,24 @@ public class AdminOrdersController : ControllerBase
             {
                 Id = a.Id,
                 OriginalFileName = a.OriginalFileName,
-                Url = a.FilePath,
+                Url = $"/api/admin/orders/attachments/{a.Id}",
                 ContentType = a.ContentType,
                 FileSizeBytes = a.FileSizeBytes,
                 UploadedAt = a.UploadedAt
             }).ToList()
         });
+    }
+
+    [HttpGet("attachments/{attachmentId:int}")]
+    public async Task<IActionResult> DownloadAttachment(int attachmentId)
+    {
+        var attachment = await _context.OrderAttachments.AsNoTracking().SingleOrDefaultAsync(a => a.Id == attachmentId);
+        if (attachment == null) return NotFound();
+        var stream = _storage.OpenOrderFile(attachment.FilePath);
+        if (stream == null) return NotFound();
+        Response.Headers.CacheControl = "no-store";
+        Response.Headers.XContentTypeOptions = "nosniff";
+        return File(stream, "application/octet-stream", Path.GetFileName(attachment.OriginalFileName));
     }
 
     [HttpPatch("{id:int}/status")]

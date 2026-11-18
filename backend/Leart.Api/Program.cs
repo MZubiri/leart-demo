@@ -144,6 +144,21 @@ if (!Directory.Exists(uploadsPath))
     Directory.CreateDirectory(Path.Combine(uploadsPath, "orders"));
 }
 
+using (var storageScope = app.Services.CreateScope())
+{
+    storageScope.ServiceProvider.GetRequiredService<IFileStorageService>().MigrateLegacyOrderFiles();
+}
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.StartsWithSegments("/uploads/orders", StringComparison.OrdinalIgnoreCase)
+        || context.Request.Path.StartsWithSegments("/private", StringComparison.OrdinalIgnoreCase))
+    {
+        context.Response.StatusCode = StatusCodes.Status404NotFound;
+        return;
+    }
+    await next();
+});
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
@@ -213,3 +228,5 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+public partial class Program { }
