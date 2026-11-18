@@ -56,6 +56,17 @@
         @if (activeStep() === 2) {
           <h3>2. Define la presentación</h3>
           <p class="step-help">Solo mostramos combinaciones que Leart puede revisar y cotizar.</p>
+          @if (selectedCategory() === 'Cuadros' && cuadroProducts().length) {
+            <label>Tipo de cuadro</label>
+            <div class="cuadro-subcategories">
+              @for (cuadro of cuadroProducts(); track cuadro.id) {
+                <button type="button" [class.selected]="selectedProduct()?.id === cuadro.id" (click)="chooseCuadro(cuadro)">
+                  <strong>{{cuadro.name}}</strong>
+                  <small>{{cuadro.kicker}}</small>
+                </button>
+              }
+            </div>
+          }
           <label>Presentación</label>
           <div class="variant-options">
             @for (variant of variants(); track variant) {

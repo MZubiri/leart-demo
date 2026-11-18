@@ -27,6 +27,15 @@
 
     <div class="catalog-results">
       <div class="results-bar"><span><strong>{{results().length}}</strong> productos</span><button type="button" (click)="store.openCustomizer()">Armar una cotización guiada →</button></div>
+      @if (category() === 'Cuadros') {
+        <div class="cuadro-subfilter-bar">
+          <span class="subfilter-label">Subcategoría:</span>
+          <button type="button" [class.active]="cuadroSubFilter() === 'Todos'" (click)="setCuadroSubFilter('Todos')">Todos los cuadros</button>
+          <button type="button" [class.active]="cuadroSubFilter() === '1 persona'" (click)="setCuadroSubFilter('1 persona')">1 persona</button>
+          <button type="button" [class.active]="cuadroSubFilter() === 'Pareja'" (click)="setCuadroSubFilter('Pareja')">Pareja</button>
+          <button type="button" [class.active]="cuadroSubFilter() === 'Familiar'" (click)="setCuadroSubFilter('Familiar')">Familiar</button>
+        </div>
+      }
       <div class="product-grid catalog-grid">
         @for (product of shown(); track product.id) {
           <article class="product-card">

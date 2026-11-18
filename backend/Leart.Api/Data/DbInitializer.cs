@@ -44,6 +44,12 @@ public static class DbInitializer
 
             // Upsert / Seed Products
             logger.LogInformation("Verificando y sincronizando catálogo completo de productos en MySQL...");
+            var oldCuadro = await context.Products.FindAsync("cuadro-personalizado");
+            if (oldCuadro != null)
+            {
+                oldCuadro.IsActive = false;
+            }
+
             var initialProducts = GetInitialProducts();
             foreach (var p in initialProducts)
             {
@@ -91,16 +97,16 @@ public static class DbInitializer
         {
             new Product
             {
-                Id = "cuadro-personalizado",
-                Name = "Cuadro personalizado",
-                Kicker = "Tu historia enmarcada",
+                Id = "cuadro-1-persona",
+                Name = "Cuadro 1 persona",
+                Kicker = "Captura pasiones y logros",
                 Category = "Cuadros",
                 Detail = "S (20x15), M (27x22) y L (32x23)",
                 Image = "/images/cuadro-personalizado.png",
                 Tag = "1 a 10 figuras",
-                Group = "Cuadros",
-                OccasionJson = "[\"Pareja\", \"Familia\", \"Cumplea\\u00f1os\", \"Aniversario\", \"Graduaci\\u00f3n\"]",
-                Description = "Un cuadro dise\u00f1ado alrededor de tu historia. Medidas: S (20 x 15 cm, m\u00e1x. 3 minifiguras), M (27 x 22 cm, m\u00e1x. 6 minifiguras) y L (32 x 23 cm, m\u00e1x. 10 minifiguras). Incluye cuadro, minifiguras tipo brick personalizadas, fondo tem\u00e1tico a elecci\u00f3n y empaque con dise\u00f1o para regalo.",
+                Group = "1 persona",
+                OccasionJson = "[\"Grado\", \"Cumplea\\u00f1os\", \"Profesiones\", \"Reconocimiento\", \"Deportes\"]",
+                Description = "Cuadros personalizados que capturan pasiones, perfectos para regalos de grado, reconocimientos y cumplea\u00f1os. Medidas: S (20 x 15 cm, m\u00e1x. 3 minifiguras), M (27 x 22 cm, m\u00e1x. 6 minifiguras) y L (32 x 23 cm, m\u00e1x. 10 minifiguras). Incluye cuadro, minifiguras tipo brick personalizadas, fondo tem\u00e1tico a elecci\u00f3n y empaque con dise\u00f1o para regalo.",
                 MinFigures = 1,
                 MaxFigures = 10,
                 VariantsJson = "[\"Talla S (20x15 cm) \\u00b7 m\\u00e1x. 3\", \"Talla M (27x22 cm) \\u00b7 m\\u00e1x. 6\", \"Talla L (32x23 cm) \\u00b7 m\\u00e1x. 10\"]",
@@ -110,7 +116,53 @@ public static class DbInitializer
                 IsActive = true,
                 DisplayOrder = 1,
                 BasePrice = 96000,
-                Code = "CUADRO-PER"
+                Code = "CUADRO-1P"
+            },
+            new Product
+            {
+                Id = "cuadro-pareja",
+                Name = "Cuadro pareja",
+                Kicker = "Fechas inolvidables",
+                Category = "Cuadros",
+                Detail = "S (20x15), M (27x22) y L (32x23)",
+                Image = "/images/cuadro-personalizado.png",
+                Tag = "1 a 10 figuras",
+                Group = "Pareja",
+                OccasionJson = "[\"Pareja\", \"Aniversario\", \"Propuestas\", \"Matrimonio\", \"Cumplea\\u00f1os\"]",
+                Description = "Ideales para aniversarios, propuestas y fechas inolvidables. Medidas: S (20 x 15 cm, m\u00e1x. 3 minifiguras), M (27 x 22 cm, m\u00e1x. 6 minifiguras) y L (32 x 23 cm, m\u00e1x. 10 minifiguras). Incluye cuadro, minifiguras tipo brick personalizadas, fondo tem\u00e1tico a elecci\u00f3n y empaque con dise\u00f1o para regalo.",
+                MinFigures = 1,
+                MaxFigures = 10,
+                VariantsJson = "[\"Talla S (20x15 cm) \\u00b7 m\\u00e1x. 3\", \"Talla M (27x22 cm) \\u00b7 m\\u00e1x. 6\", \"Talla L (32x23 cm) \\u00b7 m\\u00e1x. 10\"]",
+                AllowsPets = true,
+                AllowsAccessories = true,
+                Rule = "Capacidad m\u00e1xima con mascotas: S hasta 3, M hasta 6, L hasta 10.",
+                IsActive = true,
+                DisplayOrder = 2,
+                BasePrice = 96000,
+                Code = "CUADRO-PAR"
+            },
+            new Product
+            {
+                Id = "cuadro-familiar",
+                Name = "Cuadro familiar",
+                Kicker = "El recuerdo de todos en casa",
+                Category = "Cuadros",
+                Detail = "S (20x15), M (27x22) y L (32x23)",
+                Image = "/images/cuadro-personalizado.png",
+                Tag = "1 a 10 figuras",
+                Group = "Familiar",
+                OccasionJson = "[\"Familia\", \"Cumplea\\u00f1os\", \"Aniversario\", \"Navidad\", \"Hogar\"]",
+                Description = "Especial para aquellas familias numerosas que quieren tener un recuerdo de todos en casa. Medidas: S (20 x 15 cm, m\u00e1x. 3 minifiguras), M (27 x 22 cm, m\u00e1x. 6 minifiguras) y L (32 x 23 cm, m\u00e1x. 10 minifiguras). Incluye cuadro, minifiguras tipo brick personalizadas, fondo tem\u00e1tico a elecci\u00f3n y empaque con dise\u00f1o para regalo.",
+                MinFigures = 1,
+                MaxFigures = 10,
+                VariantsJson = "[\"Talla S (20x15 cm) \\u00b7 m\\u00e1x. 3\", \"Talla M (27x22 cm) \\u00b7 m\\u00e1x. 6\", \"Talla L (32x23 cm) \\u00b7 m\\u00e1x. 10\"]",
+                AllowsPets = true,
+                AllowsAccessories = true,
+                Rule = "Capacidad m\u00e1xima con mascotas: S hasta 3, M hasta 6, L hasta 10.",
+                IsActive = true,
+                DisplayOrder = 3,
+                BasePrice = 96000,
+                Code = "CUADRO-FAM"
             },
             new Product
             {

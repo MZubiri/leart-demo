@@ -38,16 +38,19 @@ export class CatalogPage {
   ] as const;
   readonly search = signal('');
   readonly category = signal<'Todos' | Category>('Todos');
+  readonly cuadroSubFilter = signal<'Todos' | '1 persona' | 'Pareja' | 'Familiar'>('Todos');
   readonly occasion = signal('Todas');
   readonly visible = signal(12);
 
   readonly results = computed(() => {
     const term = this.search().trim().toLowerCase();
+    const sub = this.cuadroSubFilter();
     return this.store
       .productsSignal()
       .filter(
         (p) =>
           (this.category() === 'Todos' || p.category === this.category()) &&
+          (this.category() !== 'Cuadros' || sub === 'Todos' || p.group === sub) &&
           (this.occasion() === 'Todas' || p.occasion.includes(this.occasion())) &&
           (!term ||
             `${p.name} ${p.kicker} ${p.detail} ${p.tag ?? ''} ${p.group ?? ''}`
@@ -62,6 +65,12 @@ export class CatalogPage {
 
   setCategory(value: 'Todos' | Category) {
     this.category.set(value);
+    this.cuadroSubFilter.set('Todos');
+    this.visible.set(12);
+  }
+
+  setCuadroSubFilter(value: 'Todos' | '1 persona' | 'Pareja' | 'Familiar') {
+    this.cuadroSubFilter.set(value);
     this.visible.set(12);
   }
 
@@ -74,6 +83,7 @@ export class CatalogPage {
   clear() {
     this.search.set('');
     this.category.set('Todos');
+    this.cuadroSubFilter.set('Todos');
     this.occasion.set('Todas');
     this.visible.set(12);
   }

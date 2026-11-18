@@ -12,7 +12,11 @@ import { StoreService } from '../store/store.service';
 export class ProductPage {
   readonly id = signal('');
   readonly activeImage = signal('');
-  readonly product = computed(() => this.store.productsSignal().find((item) => item.id === this.id()));
+  readonly product = computed(() => {
+    const rawId = this.id();
+    const effectiveId = rawId === 'cuadro-personalizado' ? 'cuadro-1-persona' : rawId;
+    return this.store.productsSignal().find((item) => item.id === effectiveId);
+  });
   readonly gallery = computed(() => {
     const product = this.product();
     if (!product) return [];

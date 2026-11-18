@@ -43,6 +43,7 @@ export class StoreService {
     try {
       const saved = JSON.parse(localStorage.getItem('leart-cart') || '{}') as Record<string, { quantity: number; note: string }>;
       const aliases: Record<string, string> = {
+        'cuadro-personalizado': 'cuadro-1-persona',
         'box-taller': 'caja-taller',
         'box-fitness': 'caja-fitness',
         'box-buena-vibra': 'caja-buena-vibra',

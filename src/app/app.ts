@@ -5,7 +5,7 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } fro
 import { filter } from 'rxjs';
 import { SettingsService } from './core/services/settings.service';
 import { calculatePrice, formatCop, PriceBreakdown } from './store/pricing';
-import { CATEGORY_SHOWCASE, Category, OCCASIONS } from './store/products';
+import { CATEGORY_SHOWCASE, Category, OCCASIONS, Product } from './store/products';
 import { StoreService } from './store/store.service';
 
 const VARIANTS: Record<Category, string[]> = {
@@ -102,6 +102,10 @@ export class App {
       : VARIANTS[this.selectedCategory()];
   });
 
+  readonly cuadroProducts = computed(() =>
+    this.store.productsSignal().filter((p) => p.category === 'Cuadros')
+  );
+
   readonly maxFigures = computed(() => {
     const cat = this.selectedCategory();
     if (cat === 'Cuadros') {
@@ -157,7 +161,18 @@ export class App {
       this.selectedVariant.set(requested.variants[0] || VARIANTS[requested.category][0]);
       const maximum =
         requested.category === 'Cuadros' ? FRAME_LIMITS[requested.variants[0]] ?? 3 : requested.maxFigures;
-      const figures = Math.min(Math.max(untracked(this.figures), requested.minFigures), maximum);
+      let initialFigs = untracked(this.figures);
+      if (requested.id === 'cuadro-1-persona') {
+        initialFigs = 1;
+        this.occasion.set('Cumpleaños');
+      } else if (requested.id === 'cuadro-pareja') {
+        initialFigs = 2;
+        this.occasion.set('Aniversario');
+      } else if (requested.id === 'cuadro-familiar') {
+        initialFigs = 3;
+        this.occasion.set('Familia');
+      }
+      const figures = Math.min(Math.max(initialFigs, requested.minFigures), maximum);
       this.figures.set(figures);
       this.pets.set(Math.min(untracked(this.pets), Math.max(0, maximum - figures)));
       this.activeStep.set(2);
@@ -184,6 +199,23 @@ export class App {
     if (category === 'Llaveros') {
       this.figures.set(1);
       this.pets.set(0);
+    }
+    if (category === 'Cuadros') {
+      const first = this.cuadroProducts()[0];
+      if (first) {
+        this.store.customizerProduct.set(first);
+      }
+    }
+  }
+
+  chooseCuadro(product: Product): void {
+    this.store.customizerProduct.set(product);
+    if (product.id === 'cuadro-1-persona') {
+      this.occasion.set('Cumpleaños');
+    } else if (product.id === 'cuadro-pareja') {
+      this.occasion.set('Aniversario');
+    } else if (product.id === 'cuadro-familiar') {
+      this.occasion.set('Familia');
     }
   }
 
