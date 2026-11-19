@@ -22,6 +22,9 @@
     </div>
   </section>
 
+  @if (store.catalogLoading()) { <p role="status">Cargando catálogo...</p> }
+  @else if (store.catalogError()) { <div role="alert"><p>{{store.catalogError()}}</p><button type="button" (click)="store.refreshProducts()">Reintentar</button></div> }
+  @if (store.catalogLoaded() && !store.catalogLoading() && !store.catalogError() && !store.productsSignal().length) { <p role="status">No hay productos disponibles en este momento.</p> }
   <section class="catalog section home-featured">
     <div class="section-heading"><div><div class="eyebrow"><span></span> Una muestra de cada línea</div><h2>Ideas para <em>sorprender</em></h2></div><p>Elige un punto de partida. Leart confirmará inventario, valor y posibilidades antes de recibir el pago.</p></div>
     <div class="product-grid featured-grid">

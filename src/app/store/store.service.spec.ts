@@ -1,5 +1,7 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import rulesData from '../../../backend/Leart.Api/Data/pricing-rules.json';
+import { PricingRules } from './pricing';
 import { PricingService } from '../core/services/pricing.service';
 import { ProductsService } from '../core/services/products.service';
 import { SettingsService } from '../core/services/settings.service';
@@ -11,9 +13,9 @@ describe('Quotation lines', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({ providers: [
-      { provide: PricingService, useValue: { rules: signal(null) } },
-      { provide: ProductsService, useValue: { products: signal(PRODUCTS) } },
-      { provide: SettingsService, useValue: { buildWhatsAppUrl: (message: string) => message } },
+      { provide: PricingService, useValue: { rules: signal(rulesData as PricingRules) } },
+      { provide: ProductsService, useValue: { products: signal(PRODUCTS), loaded: signal(true), loading: signal(false), error: signal('') } },
+      { provide: SettingsService, useValue: { canContact: signal(true), buildWhatsAppUrl: (message: string) => message } },
     ] });
   });
   afterEach(() => { document.body.style.overflow = ''; });
@@ -47,5 +49,17 @@ describe('Quotation lines', () => {
   it('ignores malformed saved lines instead of breaking the quote', () => {
     localStorage.setItem('leart-cart', JSON.stringify({ version: 2, lines: { bad: { quantity: -1, productId: 'test', note: 'x' } } }));
     expect(TestBed.inject(StoreService).cartLines()).toEqual([]);
+  });
+  it('never revives a removed product from bundled seed data', () => {
+    const store = TestBed.inject(StoreService);
+    store.add(PRODUCTS[0], 'Conservar hasta revisar', small);
+    TestBed.inject(ProductsService).products.set([]);
+    expect(store.cartLines()).toEqual([]);
+    expect(store.hasUnavailableLines()).toBe(true);
+    expect(store.canSendQuote()).toBe(false);
+    expect(store.whatsappUrl()).toBe('');
+    expect(Object.keys(store.cart())).toHaveLength(1);
+    store.removeUnavailableLines();
+    expect(Object.keys(store.cart())).toHaveLength(0);
   });
 });

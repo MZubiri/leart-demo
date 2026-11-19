@@ -1,4 +1,7 @@
 <main class="product-page">
+  @if (store.catalogLoading()) { <p role="status">Cargando catálogo...</p> }
+  @else if (store.catalogError()) { <div role="alert"><p>{{store.catalogError()}}</p><button type="button" (click)="store.refreshProducts()">Reintentar</button></div> }
+  @if (store.catalogLoaded() && !store.catalogLoading() && !store.catalogError()) {
   @if(product();as item){
     <div class="breadcrumbs"><a routerLink="/">Inicio</a><span>›</span><a routerLink="/catalogo">Catálogo</a><span>›</span><b>{{item.name}}</b></div>
     <section class="product-detail">
@@ -111,5 +114,6 @@
       <h1>Producto no encontrado</h1>
       <a routerLink="/catalogo">Volver al catálogo</a>
     </section>
+  }
   }
 </main>

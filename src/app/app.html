@@ -23,7 +23,7 @@
     <div class="footer-brand"><a class="brand" routerLink="/"><span class="brand-main">LEART</span><span class="brand-dot">.</span><span class="brand-store">STORE</span></a><p>Regalos personalizados que convierten personas y momentos en piezas para recordar.</p></div>
     <div><strong>Explora</strong><a routerLink="/catalogo">Catálogo</a><button type="button" (click)="openCustomizer()">Armar cotización</button><a routerLink="/" fragment="como-funciona">Cómo comprar</a></div>
     <div><strong>Tu pedido</strong><a routerLink="/personalizacion">Personalizar después del pago</a><a routerLink="/" fragment="preguntas">Preguntas frecuentes</a><a routerLink="/" fragment="envios">Envíos</a></div>
-    <div><strong>Encuéntranos</strong><a [href]="settings().instagramUrl" target="_blank" rel="noreferrer">Instagram ↗</a><a [href]="store.whatsappUrl()" target="_blank" rel="noreferrer">WhatsApp ↗</a><small>Hecho con ♥ en Medellín, Colombia</small></div>
+    <div><strong>Encuéntranos</strong><a [href]="settings().instagramUrl" target="_blank" rel="noreferrer">Instagram ↗</a><a [attr.href]="store.whatsappUrl() || null" [attr.aria-disabled]="!store.whatsappUrl()" target="_blank" rel="noreferrer">WhatsApp ↗</a><small>Hecho con ♥ en Medellín, Colombia</small></div>
     <div class="footer-bottom">
       <span>© 2026 Leart Store · Catálogo y cotización</span>
       <a routerLink="/admin/login" style="color: inherit; opacity: 0.6; text-decoration: none; font-size: 0.75rem;">Acceso Admin 🔐</a>
@@ -128,14 +128,19 @@
   <aside class="cart-drawer" aria-label="Cotización">
     <div class="cart-head"><div><small>TU SELECCIÓN</small><h2>Cotización ({{store.cartCount()}})</h2></div><button type="button" aria-label="Cerrar cotización" (click)="store.closeCart()">×</button></div>
     <div class="cart-content">
+      @if (store.catalogLoading()) { <p role="status">Comprobando disponibilidad...</p> }
+      @else if (store.catalogError()) { <p role="alert">{{store.catalogError()}}</p><button type="button" (click)="store.refreshProducts()">Reintentar catálogo</button> }
+      @else if (store.hasUnavailableLines()) { <p role="alert">Hay selecciones que ya no están disponibles en el catálogo.</p><button type="button" (click)="store.removeUnavailableLines()">Retirar selecciones no disponibles</button> }
+      @if (!store.quotationRulesReady()) { <p role="status">Esperando tarifas para revisar la selección.</p> }
+      @else if (store.hasInvalidConfigurations()) { <p role="alert">Una selección ya no cumple las cantidades o extras permitidos. Retírala y vuelve a configurarla.</p> }
       @for (line of store.cartLines(); track line.id) {
-        <article class="cart-line"><img [src]="line.product.image" [alt]="line.product.name"><div><strong>{{line.product.name}}</strong><small>{{line.product.detail}}</small><p>{{store.configurationSummary(line.configuration, line.product)}}</p><div class="mini-counter"><button type="button" (click)="store.changeQuantity(line.id, -1)">−</button><span>{{line.quantity}}</span><button type="button" (click)="store.changeQuantity(line.product.id, 1)">+</button></div><textarea rows="2" placeholder="Notas para esta selección" [ngModel]="line.note" (ngModelChange)="store.updateNote(line.id, $event)"></textarea></div></article>
+        <article class="cart-line"><img [src]="line.product.image" [alt]="line.product.name"><div><strong>{{line.product.name}}</strong><small>{{line.product.detail}}</small><p>{{store.configurationSummary(line.configuration, line.product)}}</p><div class="mini-counter"><button type="button" (click)="store.changeQuantity(line.id, -1)">−</button><span>{{line.quantity}}</span><button type="button" (click)="store.changeQuantity(line.product.id, 1)">+</button></div><button type="button" (click)="store.changeQuantity(line.id, -line.quantity)">Quitar selección</button><textarea rows="2" placeholder="Notas para esta selección" [ngModel]="line.note" (ngModelChange)="store.updateNote(line.id, $event)"></textarea></div></article>
       } @empty {
         <div class="cart-empty"><span>□</span><h3>Tu cotización está vacía</h3><p>Explora el catálogo o arma una idea guiada para enviarla a Leart.</p><a routerLink="/catalogo" (click)="store.closeCart()">Ir al catálogo</a></div>
       }
     </div>
     @if (store.cartLines().length) {
-      <div class="cart-footer"><p>Esta solicitud no genera un cobro. Leart confirmará disponibilidad, valor, envío y medios de pago por WhatsApp.</p><a [href]="store.whatsappUrl()" target="_blank" rel="noreferrer">Enviar cotización por WhatsApp <span>↗</span></a></div>
+      <div class="cart-footer">@if (!settingsService.canContact()) { <p role="status">El canal de contacto de la tienda no está disponible en este momento.</p> }<p>Esta solicitud no genera un cobro. Leart confirmará disponibilidad, valor, envío y medios de pago por WhatsApp.</p><a [href]="store.whatsappUrl()" target="_blank" rel="noreferrer">Enviar cotización por WhatsApp <span>↗</span></a></div>
     }
   </aside>
 }

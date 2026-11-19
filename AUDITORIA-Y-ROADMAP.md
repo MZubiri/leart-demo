@@ -86,7 +86,7 @@ Confirmado significa reproducido en el entorno local descrito o demostrado por u
 | H12 | **P1 · Alto:** editar destruye metadatos. | Completado | R025 |
 | H13 | **P1 · Alto:** mezcla de configuraciones en una cotización. | Completado | R027 |
 | H14 | **P1 · Alto:** precios y capacidades inconsistentes. | Completado | R029 |
-| H15 | **P1 · Alto:** catálogo incorrecto ante vacío o fallo. | Una respuesta válida `[]` se ignora en [products.service.ts:20](src/app/core/services/products.service.ts#L20); en navegador siguieron apareciendo 75 productos. Ante fallos de BD, la API entrega el catálogo inicial en [PublicController.cs:63](backend/Leart.Api/Controllers/PublicController.cs#L63), que incluye un producto inactivo. La cotización recupera productos ausentes desde los datos locales: [store.service.ts:30](src/app/store/store.service.ts#L30). | Distinguir vacío, carga y fallo; respetar siempre la disponibilidad actual y evitar recuperar productos retirados sin validación. **1–2 d**. |
+| H15 | **P1 · Alto:** catálogo incorrecto ante vacío o fallo. | Completado | R031 |
 | H16 | **P2 · Medio:** validaciones insuficientes en la API. | Los DTO no expresan límites de longitud y dominio: [OrderDtos.cs:3](backend/Leart.Api/DTOs/OrderDtos.cs#L3). El cálculo de máximos permite inconsistencias en [AdminProductsController.cs:75](backend/Leart.Api/Controllers/AdminProductsController.cs#L75): se aceptó un producto con mínimo 1 y máximo −5. Se admiten estados arbitrarios en [AdminOrdersController.cs:106](backend/Leart.Api/Controllers/AdminOrdersController.cs#L106). | Validar longitudes, cantidades, categorías, estados y relaciones entre campos antes de persistir. Devolver errores 4xx claros. **1–2 d**. |
 | H17 | **P2 · Medio:** plantillas configurables sin efecto. | El panel guarda plantillas en [admin-settings.component.ts:559](src/app/admin/pages/admin-settings.component.ts#L559), pero los mensajes se construyen con texto fijo en [store.service.ts:119](src/app/store/store.service.ts#L119) y [personalization.page.ts:40](src/app/pages/personalization.page.ts#L40). | Consumir las plantillas configuradas y validar sus variables. **0,5 d**. |
 
@@ -531,6 +531,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 34/34 pruebas backend y 21/21 frontend pasan. Se verifican Grupo 4 a 165000, límite propio de Mini Hockey, límites de cuadros, permisos de extras, cantidades mínimas y combinaciones de cajas; errores o tarifas desconocidas no generan precios inventados. Build producción correcto; sin diagnósticos ni errores de diff.
 - **Pendientes o límites:** Confirmación comercial pendiente para M/1 y L/1–2 y para matrices de precios personalizados: el sistema permite cotizarlos sin importe automático. La política y la fuente de reglas quedan documentadas; no se aprobaron precios comerciales por cuenta propia.
 - **Próximo paso:** H15: representar catálogo vacío y caída de la API sin resucitar datos locales.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R030 — 2026-11-18 — H15 — Inicio de disponibilidad real sin catálogos de respaldo
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H15; Una respuesta válida `[]` se ignora en [products.service.ts:20](src/app/core/services/products.service.ts#L20); en navegador siguieron apareciendo 75 productos. Ante fallos de BD, la API entrega el catálogo inicial en [PublicController.cs:63](backend/Leart.Api/Controllers/PublicController.cs#L63), que incluye un producto inactivo. La cotización recupera productos ausentes desde los datos locales: [store.service.ts:30](src/app/store/store.service.ts#L30). → En curso.
+- **Avance y alcance:** Se eliminarán productos y contactos ficticios de respaldo. Se distinguirá vacío, carga y error, y se impedirá enviar selecciones retiradas o no verificadas sin borrar sus notas guardadas.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H14 confirmado en 7161808. Se probarán vacío válido, caída de API, contacto no configurado y selecciones no disponibles.
+- **Pendientes o límites:** Cambios de servicios, mensajes y pruebas.
+- **Próximo paso:** Comprobar que ningún fallo reactive el catálogo inicial.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R031 — 2026-11-18 — H15 — Catálogo y contacto sin datos ficticios de respaldo
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H15; En curso → Completado.
+- **Avance y alcance:** La API devuelve 503 ante fallos de consulta y conserva el vacío válido como []. El frontend inicia vacío, distingue carga/error/vacío y no recupera productos desde el catálogo de muestra. Selecciones retiradas se conservan para revisión pero no se envían; se revisan también las configuraciones vigentes. WhatsApp queda deshabilitado sin contacto confirmado y nunca usa el número de ejemplo. Los estados de carga no se muestran como producto inexistente.
+- **Archivos y evidencia:** [PublicController.cs](backend/Leart.Api/Controllers/PublicController.cs), [CatalogAvailabilityTests.cs](backend/Leart.Api.Tests/CatalogAvailabilityTests.cs), [products.service.ts](src/app/core/services/products.service.ts), [settings.service.ts](src/app/core/services/settings.service.ts), [availability.spec.ts](src/app/core/services/availability.spec.ts), [store.service.ts](src/app/store/store.service.ts), [store.service.spec.ts](src/app/store/store.service.spec.ts), [app.html](src/app/app.html), [catalog.page.html](src/app/pages/catalog.page.html), [home.page.html](src/app/pages/home.page.html), [product.page.html](src/app/pages/product.page.html)
+- **Validación:** 36/36 pruebas backend y 24/24 frontend pasan, incluidos BD caída con 503, catálogo vacío, contacto de ejemplo oculto y producto retirado no recuperado. Build producción correcto; sin diagnósticos ni errores de diff.
+- **Pendientes o límites:** La tienda debe configurar su contacto real en el panel; esa configuración comercial no se inventó ni se aplicó a producción.
+- **Próximo paso:** H16: validar longitudes, rangos, categorías y estados en la API.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

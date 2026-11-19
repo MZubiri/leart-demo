@@ -35,17 +35,17 @@ public class PublicController : ControllerBase
         SiteSetting settings;
         try
         {
-            settings = await _context.SiteSettings.FirstOrDefaultAsync() ?? new SiteSetting();
+            settings = await _context.SiteSettings.FirstOrDefaultAsync() ?? throw new InvalidOperationException("Los ajustes no están inicializados.");
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Could not fetch settings from MySQL, using defaults.");
-            settings = new SiteSetting();
+            _logger.LogWarning(ex, "No se pudieron consultar los ajustes.");
+            return StatusCode(503, new { message = "El contacto de la tienda no está disponible temporalmente." });
         }
 
         return Ok(new PublicSettingsDto(
             settings.StoreName,
-            settings.WhatsAppNumber,
+            settings.WhatsAppNumber == "573000000000" ? string.Empty : settings.WhatsAppNumber,
             settings.AnnouncementText,
             settings.InstagramUrl,
             settings.WhatsAppQuoteTemplate,
@@ -68,13 +68,8 @@ public class PublicController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Could not fetch products from MySQL, using initial seed fallback.");
-            var fallback = DbInitializer.GetInitialProducts();
-            if (!string.IsNullOrWhiteSpace(category) && category != "Todos")
-            {
-                fallback = fallback.Where(p => p.Category == category).ToList();
-            }
-            products = fallback;
+            _logger.LogWarning(ex, "No se pudo consultar el catálogo.");
+            return StatusCode(503, new { message = "El catálogo no está disponible temporalmente." });
         }
 
         var result = products.Select(MapToDto).ToList();

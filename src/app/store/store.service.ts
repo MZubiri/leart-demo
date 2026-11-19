@@ -1,7 +1,7 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { ProductsService } from '../core/services/products.service';
 import { SettingsService } from '../core/services/settings.service';
-import { PRODUCTS, Product } from './products';
+import { Product } from './products';
 import { calculatePrice, formatCop } from './pricing';
 import { PricingService } from '../core/services/pricing.service';
 
@@ -35,6 +35,14 @@ export class StoreService {
   private readonly pricing = inject(PricingService);
 
   readonly productsSignal = this.productsService.products;
+  readonly catalogLoading = this.productsService.loading;
+  readonly catalogError = this.productsService.error;
+  readonly catalogLoaded = this.productsService.loaded;
+  readonly hasUnavailableLines = computed(() => Object.values(this.cart()).some((line) => !this.productsSignal().some((product) => product.id === line.productId && product.isActive !== false)));
+  readonly quotationRulesReady = computed(() => !!this.pricing.rules());
+  readonly hasInvalidConfigurations = computed(() => this.cartLines().some((line) => line.configuration && !calculatePrice({ ...line.configuration, product: line.product, category: line.product.category, rules: this.pricing.rules() }).valid));
+  readonly canSendQuote = computed(() => this.catalogLoaded() && !this.catalogLoading() && !this.catalogError()
+    && this.quotationRulesReady() && !this.hasInvalidConfigurations() && !this.hasUnavailableLines() && this.cartLines().length > 0 && this.settingsService.canContact());
   get products(): Product[] {
     return this.productsSignal();
   }
@@ -47,7 +55,7 @@ export class StoreService {
   readonly cartLines = computed<CartLine[]>(() =>
     Object.entries(this.cart())
       .map(([id, line]) => {
-        const found = this.productsSignal().find((p) => p.id === line.productId) ?? PRODUCTS.find((p) => p.id === line.productId);
+        const found = this.productsSignal().find((p) => p.id === line.productId && p.isActive !== false);
         return { id, product: found!, ...line };
       })
       .filter((line) => line.product),
@@ -128,6 +136,14 @@ export class StoreService {
     this.cart.update((cart) => cart[id] ? ({ ...cart, [id]: { ...cart[id], note } }) : cart);
   }
 
+  refreshProducts(): void { this.productsService.refresh(); }
+
+  removeUnavailableLines(): void {
+    if (!this.catalogLoaded() || this.catalogLoading() || this.catalogError()) return;
+    this.cart.update((cart) => Object.fromEntries(Object.entries(cart).filter(([, line]) =>
+      this.productsSignal().some((product) => product.id === line.productId && product.isActive !== false))));
+  }
+
   clear(): void {
     this.cart.set({});
   }
@@ -154,6 +170,7 @@ export class StoreService {
   }
 
   whatsappUrl(): string {
+    if (Object.keys(this.cart()).length && !this.canSendQuote()) return '';
     const lines = this.cartLines().map(
       (line) =>
         `• ${line.quantity}x ${line.product.name} — ${line.product.category} (${line.product.detail})${
