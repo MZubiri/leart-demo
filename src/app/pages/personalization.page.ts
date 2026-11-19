@@ -59,7 +59,15 @@ export class PersonalizationPage {
   });
 
   onPhotos(event: Event): void {
-    const files = Array.from((event.target as HTMLInputElement).files ?? []).slice(0, 6);
+    const files = Array.from((event.target as HTMLInputElement).files ?? []);
+    if (files.length > 6 || files.some((file) => file.size > 5 * 1024 * 1024 || file.size === 0)
+      || files.reduce((sum, file) => sum + file.size, 0) > 20 * 1024 * 1024
+      || files.some((file) => !/\.(jpe?g|png|webp)$/i.test(file.name))) {
+      this.errorMessage.set('Selecciona hasta 6 fotos JPEG, PNG o WebP, de 5 MB por foto y 20 MB en total.');
+      (event.target as HTMLInputElement).value = '';
+      return;
+    }
+    this.errorMessage.set('');
     this.selectedFiles.set(files);
     this.photoNames.set(files.map((file) => file.name));
   }

@@ -93,6 +93,8 @@ public class PublicController : ControllerBase
     }
 
     [HttpPost("personalization")]
+    [RequestSizeLimit(25 * 1024 * 1024)]
+    [RequestFormLimits(MultipartBodyLengthLimit = 25 * 1024 * 1024)]
     [EnableRateLimiting("personalization")]
     [Consumes("multipart/form-data")]
     public async Task<ActionResult<OrderResponseDto>> SubmitPersonalization(
@@ -122,32 +124,52 @@ public class PublicController : ControllerBase
             CreatedAt = DateTime.UtcNow
         };
 
-        if (photos != null && photos.Count > 0)
-        {
-            foreach (var file in photos.Take(6))
-            {
-                try
-                {
-                    var (relativePath, storedName, sizeBytes) = await _fileStorage.SaveFileAsync(file, "orders");
-                    order.Attachments.Add(new OrderAttachment
-                    {
-                        OriginalFileName = file.FileName,
-                        StoredFileName = storedName,
-                        FilePath = relativePath,
-                        ContentType = "image/png",
-                        FileSizeBytes = sizeBytes,
-                        UploadedAt = DateTime.UtcNow
-                    });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex, "No se pudo guardar el archivo adjunto {FileName}", file.FileName);
-                }
-            }
-        }
+        photos ??= [];
+        if (photos.Count > 6 || photos.Sum(p => p.Length) > 20 * 1024 * 1024)
+            return BadRequest(new { message = "Se admiten hasta 6 fotos y 20 MB por envío." });
+        if (photos.Any(p => p.Length is <= 0 or > ImageUpload.MaxFileBytes || p.FileName.Length > 250))
+            return BadRequest(new { message = "Cada foto debe pesar entre 1 byte y 5 MB y su nombre no superar 250 caracteres." });
 
-        _context.PersonalizationOrders.Add(order);
-        await _context.SaveChangesAsync();
+        var savedPaths = new List<string>();
+        void Compensate()
+        {
+            foreach (var path in savedPaths)
+                if (!_fileStorage.DeleteFile(path)) _logger.LogError("No se pudo limpiar un adjunto de una recepción fallida.");
+        }
+        try
+        {
+            foreach (var file in photos)
+            {
+                var (relativePath, storedName, sizeBytes) = await _fileStorage.SaveFileAsync(file, "orders");
+                savedPaths.Add(relativePath);
+                order.Attachments.Add(new OrderAttachment
+                {
+                    OriginalFileName = Path.GetFileName(file.FileName),
+                    StoredFileName = storedName,
+                    FilePath = relativePath,
+                    ContentType = "image/png",
+                    FileSizeBytes = sizeBytes,
+                    UploadedAt = DateTime.UtcNow
+                });
+            }
+            _context.PersonalizationOrders.Add(order);
+            await _context.SaveChangesAsync();
+        }
+        catch (UploadValidationException ex)
+        {
+            Compensate();
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (StorageQuotaExceededException ex)
+        {
+            Compensate();
+            return StatusCode(StatusCodes.Status507InsufficientStorage, new { message = ex.Message });
+        }
+        catch
+        {
+            Compensate();
+            throw;
+        }
 
         return Ok(new OrderResponseDto
         {

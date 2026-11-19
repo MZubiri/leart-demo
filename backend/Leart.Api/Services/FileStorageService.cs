@@ -53,6 +53,11 @@ public class FileStorageService : IFileStorageService
             await using var stream = new FileStream(fullPath, FileMode.CreateNew);
             await stream.WriteAsync(bytes);
         }
+        catch
+        {
+            if (File.Exists(fullPath)) File.Delete(fullPath);
+            throw;
+        }
         finally { if (isOrder) OrderWrites.Release(); }
 
         var relativePath = sanitizedSubFolder == "orders"

@@ -79,7 +79,7 @@ Confirmado significa reproducido en el entorno local descrito o demostrado por u
 | ID | Prioridad e impacto | Hallazgo y evidencia | Tarea accionable y esfuerzo |
 | --- | --- | --- | --- |
 | H07 | **P1 · Alto:** confirmación falsa de recepción. | Completado | R015 |
-| H08 | **P1 · Alto:** pedidos incompletos y archivos huérfanos. | Los errores al guardar fotos se ignoran y el pedido puede responder 200 sin ellas. Los archivos se escriben antes de persistir la BD: [PublicController.cs:123](backend/Leart.Api/Controllers/PublicController.cs#L123). Los límites están desalineados: 20 MB por archivo en [FileStorageService.cs:18](backend/Leart.Api/Services/FileStorageService.cs#L18), frente a 25 MB por petición en [nginx.conf:7](nginx.conf#L7). | Prevalidar el conjunto completo, alinear límites y devolver el resultado de cada adjunto. Añadir compensación y limpieza cuando falle la persistencia. **1–2 d**. |
+| H08 | **P1 · Alto:** pedidos incompletos y archivos huérfanos. | Completado | R017 |
 | H09 | **P1 · Alto:** borrar un pedido conserva sus fotos. | El borrado elimina registros, pero no archivos físicos: [AdminOrdersController.cs:112](backend/Leart.Api/Controllers/AdminOrdersController.cs#L112). Tras borrar un pedido, su adjunto siguió respondiendo HTTP 200. | Implementar eliminación o retención explícita de adjuntos, con reintentos y comprobación de archivos huérfanos. **0,5–1 d**. |
 | H10 | **P1 · Alto:** se revierten cambios administrativos. | Cada arranque sobrescribe nombre, imagen, descripción, variantes, precio y otros campos de los productos iniciales: [DbInitializer.cs:53](backend/Leart.Api/Data/DbInitializer.cs#L53), invocado desde [Program.cs:192](backend/Leart.Api/Program.cs#L192). Una edición se perdió al reiniciar. Un producto inicial eliminado también se vuelve a insertar. | Separar carga inicial y migraciones de datos, preservar las ediciones del negocio y versionar cualquier actualización del catálogo. **1 d**. |
 | H11 | **P1 · Alto:** editor de productos defectuoso. | Dentro del formulario hay controles con `ngModel` sin nombre ni configuración independiente: [admin-products.component.ts:124](src/app/admin/pages/admin-products.component.ts#L124). En producción, varios campos mostraron el texto de la regla comercial en lugar de su valor. | Asignar nombres únicos o utilizar un formulario reactivo tipado. Verificar creación y edición en desarrollo y producción. **0,5–1 d**. |
@@ -377,6 +377,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** npm test -- --watch=false: 4/4 pasan, cubriendo teléfono vacío, rechazo HTTP, desconexión y envío duplicado. Build producción correcto. Sin diagnósticos ni errores de diff. Dependencias instaladas con npm 11.6.2, la versión declarada por el proyecto, tras fallo del resolvedor npm 10 del entorno.
 - **Pendientes o límites:** H08 hará atómica la recepción del lote en la API. H22 sigue pendiente para CI y cobertura transversal.
 - **Próximo paso:** H08: no aceptar pedidos con adjuntos rechazados y compensar fallos de persistencia.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R016 — 2026-11-18 — H08 — Inicio de recepción consistente de lotes
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H08; Los errores al guardar fotos se ignoran y el pedido puede responder 200 sin ellas. Los archivos se escriben antes de persistir la BD: [PublicController.cs:123](backend/Leart.Api/Controllers/PublicController.cs#L123). Los límites están desalineados: 20 MB por archivo en [FileStorageService.cs:18](backend/Leart.Api/Services/FileStorageService.cs#L18), frente a 25 MB por petición en [nginx.conf:7](nginx.conf#L7). → En curso.
+- **Avance y alcance:** Se alinearán límites de petición y lote; se rechazará el conjunto si falla una foto y se eliminarán archivos escritos cuando falle la BD. El almacenamiento limpiará escrituras interrumpidas.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H07 confirmado en f598d9a; se añadirán pruebas HTTP de lote inválido y fallo de persistencia.
+- **Pendientes o límites:** Comprobar compensación y límites sin aceptar pedidos incompletos.
+- **Próximo paso:** Ejecutar regresiones backend y frontend del envío.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R017 — 2026-11-18 — H08 — Lotes rechazados explícitamente y compensación de fallos
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H08; En curso → Completado.
+- **Avance y alcance:** La API limita a 6 fotos de 5 MiB y 20 MiB por lote, con techo de petición de 25 MiB alineado al proxy. Ya no trunca archivos ni ignora errores: una foto inválida rechaza el pedido y elimina las fotos previas del lote. Fallos de BD compensan archivos; escrituras interrumpidas limpian su archivo parcial. El formulario valida límites sin descartar silenciosamente archivos.
+- **Archivos y evidencia:** [PublicController.cs](backend/Leart.Api/Controllers/PublicController.cs), [FileStorageService.cs](backend/Leart.Api/Services/FileStorageService.cs), [PersonalizationReceptionTests.cs](backend/Leart.Api.Tests/PersonalizationReceptionTests.cs), [personalization.page.ts](src/app/pages/personalization.page.ts), [personalization.page.html](src/app/pages/personalization.page.html)
+- **Validación:** 28/28 pruebas backend y 4/4 frontend pasan. HTTP comprueba lote válido+falso rechazado sin pedido ni archivos, fallo de BD con limpieza y siete fotos rechazadas sin truncar. Sin diagnósticos ni errores de diff.
+- **Pendientes o límites:** No es una transacción distribuida entre disco y BD; H09 añade limpieza de huérfanos para interrupciones abruptas del proceso.
+- **Próximo paso:** H09: borrado físico con reintento y limpieza de huérfanos.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada
