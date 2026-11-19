@@ -67,6 +67,18 @@ describe('Visible and recoverable administrative failures', () => {
     page.loadProducts(); expect(page.products()).toHaveLength(1); expect(page.loadError()).not.toBe('');
   });
 
+  it('shows creation errors, preserves the form and confirms only a successful retry', () => {
+    const refresh = vi.fn();
+    const api = { getProducts: () => of([]), createProduct: vi.fn().mockReturnValueOnce(throwError(failure)).mockReturnValueOnce(of(PRODUCTS[0])) };
+    TestBed.configureTestingModule({ imports: [AdminProductsComponent], providers: [{ provide: AdminService, useValue: api }, { provide: ProductsService, useValue: { refresh } }] });
+    const fixture = TestBed.createComponent(AdminProductsComponent); fixture.detectChanges(); const page = fixture.componentInstance;
+    page.openCreateModal(); page.formName.set('Producto pendiente'); page.saveModalProduct(); fixture.detectChanges();
+    expect(page.modalOpen()).toBe(true); expect(page.modalSaving()).toBe(false); expect(page.formName()).toBe('Producto pendiente');
+    expect(fixture.nativeElement.textContent).toContain('No se pudo crear el producto');
+    expect(page.notice()).toBe(''); expect(refresh).not.toHaveBeenCalled(); expect(page.modalError()).not.toContain('PRIVATE');
+    page.saveModalProduct(); expect(page.modalOpen()).toBe(false); expect(page.notice()).toBe('Producto creado.'); expect(refresh).toHaveBeenCalledOnce();
+  });
+
   it('does not save default settings after a load error', () => {
     const api = { getSettings: () => throwError(failure), updateSettings: vi.fn() };
     TestBed.configureTestingModule({ imports: [AdminSettingsComponent], providers: [{ provide: AdminService, useValue: api }, { provide: SettingsService, useValue: {} }, { provide: AuthService, useValue: {} }] });

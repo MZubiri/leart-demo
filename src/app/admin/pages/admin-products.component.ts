@@ -809,11 +809,11 @@ export class AdminProductsComponent implements OnInit {
       this.admin.createProduct(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (created) => {
           this.modalSaving.set(false);
-          this.modalOpen.set(false);
+          this.modalOpen.set(false); this.notice.set('Producto creado.');
           this.loadProducts();
           this.publicProducts.refresh();
         },
-        error: () => this.modalSaving.set(false),
+        error: error => { this.modalSaving.set(false); this.modalError.set(httpErrorMessage(error, 'No se pudo crear el producto.')); },
       });
     }
   }

@@ -201,13 +201,16 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | H22 | Transversal / cierre F5 | Completado | R045 |
 | H23 | F5 | Completado | R047 |
 | H24 | F5 | Completado | R051 |
-| H25 | F5 | Completado | R053 |
+| H25 | F5 | Completado | R063 |
 | H26 | F5 | Completado | R057 |
 | O01 | Por definir | No programada | — |
 | O02 | Por definir | No programada | — |
 | O03 | Por definir | No programada | — |
 | O04 | Por definir | No programada | — |
 | O05 | Por definir | No programada | — |
+| D01 | Despliegue | En curso | R061 |
+
+**D01 — Revisión y despliegue autorizado:** revisar el código completo y ejecutar validaciones; respaldar datos/configuración actuales, preparar actualización y recuperación en Coolify, desplegar y verificar por HTTPS. Prioridad P1; impacto alto operativo; esfuerzo estimado 0,5–1 día, sujeto al estado real del servidor. No es un hallazgo nuevo ni autoriza las mejoras opcionales.
 
 Al actualizar esta tabla, actualizar también el resumen de situación inicial/vigente si cambia el número de ítems completados o programados. Un ítem con varias subtareas solo cuenta como completado cuando se satisface su alcance completo.
 
@@ -872,6 +875,39 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 38/38 frontend y 51/51 backend estándar pasan, más 1/1 integración MySQL en su runner. Build de producción frontend y publicación backend pasan en imágenes Compose. En Chromium, sin interceptar HTTP, M/1 muestra 116000 COP; UPDATE SQL a 117000 se refleja en API y cotizador tras recarga. Reiniciar MySQL y API conserva 117000 y el navegador lo confirma. Se restaura 116000, comprobado nuevamente por API y UI; sin errores JavaScript. Nueva tabla única, sin alteraciones de tablas comerciales previas; EF sin diferencias de modelo pendientes. Validaciones de matriz ausente/inválida y BD caída devuelven 503. Diff y diagnósticos de los archivos revisados correctos.
 - **Pendientes o límites:** Sin pendientes técnicos del alcance de demostración. Las tarifas reales y los accesorios sin precio definido requieren decisión comercial; no se modificó ninguna instalación productiva ni se hizo push. Las cinco mejoras opcionales continúan sin programar.
 - **Próximo paso:** Mantener esta bitácora en cada avance posterior; reemplazar los importes simulados en la fila de BD cuando se aprueben tarifas reales.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R061 — 2026-11-18 — D01 — Revisión integral y preparación del despliegue autorizado
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** D01; En curso → En curso.
+- **Avance y alcance:** El usuario autoriza revisar todo el código y desplegar en el proyecto leart de Coolify si la revisión y las pruebas no muestran bloqueos. Se inspeccionarán primero dominio, datos, volúmenes, arquitectura, configuración y mecanismo de recuperación de la instalación existente.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** Checkout limpio en 99e7492, con 30 commits locales pendientes de publicar. Revisadas instrucciones de seguimiento y localizado acceso SSH de la VPS y Coolify. Todavía no se ha modificado el servidor ni publicado código.
+- **Pendientes o límites:** Revisión integral, pruebas y auditorías finales; inventario remoto, respaldo verificable y despliegue condicionado a esos resultados.
+- **Próximo paso:** Identificar la instalación existente y completar la validación del candidato sin afectar el servicio actual.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R062 — 2026-11-18 — H25 — Regresión detectada en errores al crear productos
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H25; Completado → En curso.
+- **Avance y alcance:** La revisión final confirma que crear un producto todavía descarta el error HTTP: el callback solo libera modalSaving. La edición y el upload sí muestran mensajes. Se corregirá antes de desplegar y se añadirá una regresión de creación fallida y reintento.
+- **Archivos y evidencia:** [admin-products.component.ts](src/app/admin/pages/admin-products.component.ts), [admin-errors.spec.ts](src/app/admin/pages/admin-errors.spec.ts)
+- **Validación:** Inspección de saveModalProduct: rama createProduct con error ignorado. Las 38 pruebas frontend previas pasan porque solo cubrían fallo de edición y upload.
+- **Pendientes o límites:** Corregir, probar y hacer commit de esta regresión; el despliegue sigue en preparación.
+- **Próximo paso:** Comprobar conservación del formulario, error visible, ausencia de éxito falso y reintento confirmado.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R063 — 2026-11-18 — H25 — Error de creación visible y reintento comprobado
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H25; En curso → Completado.
+- **Avance y alcance:** Corregida la rama de creación para mostrar el error seguro sin cerrar el modal ni borrar campos. Solo se confirma Producto creado tras respuesta exitosa. Una nueva regresión cubre HTTP 503, conservación, ausencia de aviso falso y reintento exitoso.
+- **Archivos y evidencia:** [admin-products.component.ts](src/app/admin/pages/admin-products.component.ts), [admin-errors.spec.ts](src/app/admin/pages/admin-errors.spec.ts)
+- **Validación:** 39/39 pruebas frontend pasan. El test reproduce el fallo de creación que antes quedaba silencioso y verifica la recuperación. Diff correcto.
+- **Pendientes o límites:** La validación de imagen y despliegue continúa bajo D01.
+- **Próximo paso:** Revisar la última etiqueta de precio estática detectada en la ficha y completar el candidato.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada
