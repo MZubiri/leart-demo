@@ -37,7 +37,7 @@ public class AdminAuthController : ControllerBase
             return Unauthorized(new { message = "Credenciales inválidas." });
         }
 
-        var valid = !SecurityConfiguration.IsPublishedPassword(dto.Password) && BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
+        var valid = System.Text.Encoding.UTF8.GetByteCount(dto.Password) <= 72 && !SecurityConfiguration.IsPublishedPassword(dto.Password) && BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
         if (!valid)
         {
             return Unauthorized(new { message = "Credenciales inválidas." });

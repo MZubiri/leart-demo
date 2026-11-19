@@ -46,7 +46,7 @@ public class AdminSettingsController : ControllerBase
 
         // Clean WhatsApp number: keep only digits
         var cleanWhatsApp = Regex.Replace(dto.WhatsAppNumber ?? string.Empty, @"[^\d]", "");
-        if (string.IsNullOrWhiteSpace(cleanWhatsApp))
+        if (!Regex.IsMatch(cleanWhatsApp, @"^[0-9]{8,15}$") || cleanWhatsApp == "573000000000")
         {
             return BadRequest(new { message = "El número de WhatsApp es obligatorio y debe contener solo dígitos con indicativo (ej: 573001234567)." });
         }

@@ -17,11 +17,13 @@ public class AdminProductsController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IFileStorageService _fileStorage;
+    private readonly PricingCatalog _pricing;
 
-    public AdminProductsController(AppDbContext context, IFileStorageService fileStorage)
+    public AdminProductsController(AppDbContext context, IFileStorageService fileStorage, PricingCatalog pricing)
     {
         _context = context;
         _fileStorage = fileStorage;
+        _pricing = pricing;
     }
 
     [HttpGet]
@@ -48,6 +50,7 @@ public class AdminProductsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ProductDto>> Create([FromBody] ProductCreateOrUpdateDto dto)
     {
+        if (ExceedsCategoryCapacity(dto)) return BadRequest(new { message = "El máximo de figuras supera la capacidad de esta categoría." });
         if (string.IsNullOrWhiteSpace(dto.Name))
             return BadRequest(new { message = "El nombre del producto es obligatorio." });
 
@@ -57,7 +60,8 @@ public class AdminProductsController : ControllerBase
 
         if (await _context.Products.AnyAsync(p => p.Id == slug))
         {
-            slug = $"{slug}-{Random.Shared.Next(100, 999)}";
+            var suffix = Guid.NewGuid().ToString("N")[..8];
+            slug = $"{slug[..Math.Min(slug.Length, 90)]}-{suffix}";
         }
 
         var product = new Product
@@ -72,8 +76,8 @@ public class AdminProductsController : ControllerBase
             Group = dto.Group?.Trim(),
             OccasionJson = JsonSerializer.Serialize(dto.Occasion ?? new List<string>()),
             Description = dto.Description?.Trim() ?? string.Empty,
-            MinFigures = Math.Max(1, dto.MinFigures),
-            MaxFigures = Math.Max(dto.MinFigures, dto.MaxFigures),
+            MinFigures = dto.MinFigures,
+            MaxFigures = dto.MaxFigures,
             VariantsJson = JsonSerializer.Serialize(dto.Variants ?? new List<string>()),
             AllowsPets = dto.AllowsPets,
             AllowsAccessories = dto.AllowsAccessories,
@@ -94,6 +98,7 @@ public class AdminProductsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<ProductDto>> Update(string id, [FromBody] ProductCreateOrUpdateDto dto)
     {
+        if (ExceedsCategoryCapacity(dto)) return BadRequest(new { message = "El máximo de figuras supera la capacidad de esta categoría." });
         var product = await _context.Products.FindAsync(id);
         if (product == null)
             return NotFound(new { message = "Producto no encontrado." });
@@ -108,8 +113,8 @@ public class AdminProductsController : ControllerBase
         product.Group = dto.Group?.Trim();
         product.OccasionJson = JsonSerializer.Serialize(dto.Occasion ?? new List<string>());
         product.Description = dto.Description?.Trim() ?? string.Empty;
-        product.MinFigures = Math.Max(1, dto.MinFigures);
-        product.MaxFigures = Math.Max(dto.MinFigures, dto.MaxFigures);
+        product.MinFigures = dto.MinFigures;
+        product.MaxFigures = dto.MaxFigures;
         product.VariantsJson = JsonSerializer.Serialize(dto.Variants ?? new List<string>());
         product.AllowsPets = dto.AllowsPets;
         product.AllowsAccessories = dto.AllowsAccessories;
@@ -162,6 +167,13 @@ public class AdminProductsController : ControllerBase
         return Ok(new { url = relativePath });
     }
 
+    private bool ExceedsCategoryCapacity(ProductCreateOrUpdateDto dto)
+    {
+        var max = dto.Category == "Cuadros" ? _pricing.Rules.GetProperty("frameLimits").EnumerateObject().Max(value => value.Value.GetInt32())
+            : _pricing.Rules.GetProperty("defaultLimits").GetProperty(dto.Category).GetInt32();
+        return dto.MaxFigures > max;
+    }
+
     private static string GenerateSlug(string text)
     {
         var normalized = text.ToLowerInvariant().Normalize(System.Text.NormalizationForm.FormD);
@@ -169,7 +181,7 @@ public class AdminProductsController : ControllerBase
         var clean = new string(chars);
         clean = Regex.Replace(clean, @"[^a-z0-9\s-]", "");
         clean = Regex.Replace(clean, @"\s+", "-").Trim('-');
-        return string.IsNullOrWhiteSpace(clean) ? "producto" : clean;
+        return string.IsNullOrWhiteSpace(clean) ? "producto" : clean[..Math.Min(100, clean.Length)].TrimEnd('-');
     }
 
     private static ProductDto MapToDto(Product p)

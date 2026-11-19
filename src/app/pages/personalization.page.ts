@@ -34,7 +34,7 @@ export class PersonalizationPage {
   readonly errorMessage = signal('');
   readonly receivedPhotos = signal(0);
 
-  readonly ready = computed(() => Boolean(this.order().trim() && this.name().trim() && this.phone().trim() && this.product()));
+  readonly ready = computed(() => Boolean(this.order().trim() && this.name().trim() && /^\+?[0-9]{8,15}$/.test(this.phone().trim()) && this.product()));
 
   readonly whatsappUrl = computed(() => {
     const ref = this.submittedReference() || this.order();

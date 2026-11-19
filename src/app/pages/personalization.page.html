@@ -37,13 +37,13 @@
             <p>Usa el dato que acordaste con Leart por WhatsApp.</p>
             <div class="field-grid">
               <label>Pedido o referencia *
-                <input type="text" placeholder="Ej: Pedido Ana / 24-09" [ngModel]="order()" (ngModelChange)="order.set($event)">
+                <input type="text" maxlength="50" placeholder="Ej: Pedido Ana / 24-09" [ngModel]="order()" (ngModelChange)="order.set($event)">
               </label>
               <label>Nombre completo *
-                <input type="text" placeholder="Tu nombre" [ngModel]="name()" (ngModelChange)="name.set($event)">
+                <input type="text" maxlength="100" placeholder="Tu nombre" [ngModel]="name()" (ngModelChange)="name.set($event)">
               </label>
               <label>WhatsApp *
-                <input type="tel" placeholder="Tu número de contacto" [ngModel]="phone()" (ngModelChange)="phone.set($event)">
+                <input type="tel" maxlength="16" placeholder="Tu número de contacto" [ngModel]="phone()" (ngModelChange)="phone.set($event)">
               </label>
               <label>Producto comprado *
                 <select [ngModel]="product()" (ngModelChange)="product.set($event)">
@@ -63,10 +63,10 @@
             <h2>Describe a quién representaremos</h2>
             <p>Incluye personas, mascotas, rasgos y la historia del regalo.</p>
             <label>Personas o mascotas
-              <textarea rows="3" placeholder="Ej: Laura, Mateo y un perro blanco pequeño" [ngModel]="people()" (ngModelChange)="people.set($event)"></textarea>
+              <textarea maxlength="4000" rows="3" placeholder="Ej: Laura, Mateo y un perro blanco pequeño" [ngModel]="people()" (ngModelChange)="people.set($event)"></textarea>
             </label>
             <label>Historia u ocasión
-              <textarea rows="4" placeholder="¿Qué momento quieres representar?" [ngModel]="story()" (ngModelChange)="story.set($event)"></textarea>
+              <textarea maxlength="4000" rows="4" placeholder="¿Qué momento quieres representar?" [ngModel]="story()" (ngModelChange)="story.set($event)"></textarea>
             </label>
           </div>
         </div>
@@ -77,7 +77,7 @@
             <h2>Agrega los detalles</h2>
             <p>Las opciones finales se validan contra el inventario de cabello, rostros, outfits y accesorios.</p>
             <label>Nombres, fecha o frase
-              <input type="text" placeholder="Texto que debe aparecer en el diseño" [ngModel]="phrase()" (ngModelChange)="phrase.set($event)">
+              <input type="text" maxlength="1000" placeholder="Texto que debe aparecer en el diseño" [ngModel]="phrase()" (ngModelChange)="phrase.set($event)">
             </label>
             <label>Requerimientos especiales
               <textarea rows="4" placeholder="Outfits, profesión, equipo, colores, accesorios..." [ngModel]="requirements()" (ngModelChange)="requirements.set($event)"></textarea>

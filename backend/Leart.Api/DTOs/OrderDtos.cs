@@ -1,15 +1,17 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Leart.Api.DTOs;
 
 public class PersonalizationCreateDto
 {
-    public string OrderReference { get; set; } = string.Empty;
-    public string CustomerName { get; set; } = string.Empty;
-    public string Phone { get; set; } = string.Empty;
-    public string ProductTitle { get; set; } = string.Empty;
-    public string PeopleDetails { get; set; } = string.Empty;
-    public string Story { get; set; } = string.Empty;
-    public string Phrase { get; set; } = string.Empty;
-    public string Requirements { get; set; } = string.Empty;
+    [Required, StringLength(50)] public string OrderReference { get; set; } = string.Empty;
+    [Required, StringLength(100)] public string CustomerName { get; set; } = string.Empty;
+    [Required, RegularExpression(@"^\+?[0-9]{8,15}$")] public string Phone { get; set; } = string.Empty;
+    [Required, StringLength(150)] public string ProductTitle { get; set; } = string.Empty;
+    [StringLength(4000)] public string? PeopleDetails { get; set; }
+    [StringLength(4000)] public string? Story { get; set; }
+    [StringLength(1000)] public string? Phrase { get; set; }
+    [StringLength(4000)] public string? Requirements { get; set; }
 }
 
 public class OrderResponseDto
@@ -38,4 +40,4 @@ public class AttachmentDto
     public DateTime UploadedAt { get; set; }
 }
 
-public record UpdateOrderStatusDto(string Status);
+public record UpdateOrderStatusDto([Required, AllowedValues("Pendiente", "En producción", "Completado", "Cancelado")] string Status);

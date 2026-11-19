@@ -67,26 +67,26 @@ Confirmado significa reproducido en el entorno local descrito o demostrado por u
 
 | ID | Prioridad e impacto | Hallazgo y evidencia | Tarea accionable y esfuerzo |
 | --- | --- | --- | --- |
-| H01 | **P0 · Crítico:** control administrativo y de datos. | Completado | R003 |
-| H02 | **P0 · Crítico:** confidencialidad de fotografías. | Completado | R005 |
-| H03 | **P1 · Alto:** exposición de información interna. | Completado | R007 |
-| H04 | **P1 · Alto:** abuso del login y almacenamiento. | Completado | R009 |
-| H05 | **P1 · Alto:** sesiones comprometidas siguen vigentes. | Completado | R011 |
-| H06 | **P2 · Medio:** archivos no verificados. | Completado | R013 |
+| H01 | **P0 · Crítico:** control administrativo y de datos. | Hay una clave JWT fija en [appsettings.json:14](backend/Leart.Api/appsettings.json#L14), un administrador con contraseña conocida en [DbInitializer.cs:30](backend/Leart.Api/Data/DbInitializer.cs#L30) y acceso MySQL como root con contraseña fija y puerto publicado en [docker-compose.yml:6](docker-compose.yml#L6). En local, el login predeterminado y un JWT firmado con la clave publicada obtuvieron acceso administrativo HTTP 200. | Rotar secretos, exigir configuración segura al arrancar, sustituir el administrador automático por un alta inicial controlada, usar un usuario de BD limitado y retirar su exposición pública. **1–2 d**. |
+| H02 | **P0 · Crítico:** confidencialidad de fotografías. | Los adjuntos se guardan dentro del directorio público en [FileStorageService.cs:37](backend/Leart.Api/Services/FileStorageService.cs#L37), servido mediante archivos estáticos en [Program.cs:147](backend/Leart.Api/Program.cs#L147). Una URL conocida se pudo leer sin token. El GUID dificulta adivinarla, pero no autoriza su acceso. | Guardar fotos de pedidos fuera del directorio público y entregarlas mediante un endpoint autorizado. Separarlas de las imágenes públicas del catálogo. **1–2 d**. |
+| H03 | **P1 · Alto:** exposición de información interna. | El manejador global devuelve mensaje, excepción completa y stack trace también en producción: [Program.cs:114](backend/Leart.Api/Program.cs#L114). Una entrada demasiado larga produjo HTTP 500 con detalles de Entity Framework y rutas del servidor. | Devolver errores estructurados y genéricos con identificador de correlación. Conservar el detalle en logs internos. **0,5 d**. |
+| H04 | **P1 · Alto:** abuso del login y almacenamiento. | El login en [AdminAuthController.cs:24](backend/Leart.Api/Controllers/AdminAuthController.cs#L24) y la recepción pública de pedidos y archivos en [PublicController.cs:94](backend/Leart.Api/Controllers/PublicController.cs#L94) carecen de limitación de frecuencia y cuotas de aplicación. La referencia del pedido es texto libre, sin comprobación de pedido confirmado. | Limitar intentos y concurrencia, establecer cuotas de almacenamiento y protección contra envíos automatizados. Definir si la personalización requerirá una invitación vinculada al pedido. **1–2 d**. |
+| H05 | **P1 · Alto:** sesiones comprometidas siguen vigentes. | Los tokens duran 24 horas en [TokenService.cs:31](backend/Leart.Api/Services/TokenService.cs#L31). Cambiar la contraseña solo actualiza su hash en [AdminAuthController.cs:93](backend/Leart.Api/Controllers/AdminAuthController.cs#L93). El token anterior siguió funcionando después del cambio. | Incorporar revocación o versión de sesión comprobada por el servidor y definir una duración adecuada. **1 d**. |
+| H06 | **P2 · Medio:** archivos no verificados. | La validación comprueba extensión y tamaño, pero no el contenido real: [FileStorageService.cs:43](backend/Leart.Api/Services/FileStorageService.cs#L43). Un archivo de texto renombrado a JPG fue aceptado y servido. | Validar y decodificar imágenes, limitar dimensiones y normalizarlas. Definir una política separada para PDF si realmente se necesita. **1–2 d**. |
 
 ### Integridad y comportamiento comercial
 
 | ID | Prioridad e impacto | Hallazgo y evidencia | Tarea accionable y esfuerzo |
 | --- | --- | --- | --- |
-| H07 | **P1 · Alto:** confirmación falsa de recepción. | Completado | R015 |
-| H08 | **P1 · Alto:** pedidos incompletos y archivos huérfanos. | Completado | R017 |
-| H09 | **P1 · Alto:** borrar un pedido conserva sus fotos. | Completado | R019 |
-| H10 | **P1 · Alto:** se revierten cambios administrativos. | Completado | R021 |
-| H11 | **P1 · Alto:** editor de productos defectuoso. | Completado | R023 |
-| H12 | **P1 · Alto:** editar destruye metadatos. | Completado | R025 |
-| H13 | **P1 · Alto:** mezcla de configuraciones en una cotización. | Completado | R027 |
-| H14 | **P1 · Alto:** precios y capacidades inconsistentes. | Completado | R029 |
-| H15 | **P1 · Alto:** catálogo incorrecto ante vacío o fallo. | Completado | R031 |
+| H07 | **P1 · Alto:** confirmación falsa de recepción. | Ante cualquier error HTTP, el formulario marca el envío como completado en [personalization.page.ts:92](src/app/pages/personalization.page.ts#L92). Después afirma que registró datos y fotos en [personalization.page.html:24](src/app/pages/personalization.page.html#L24). La condición de envío omite el teléfono requerido: [personalization.page.ts:36](src/app/pages/personalization.page.ts#L36). Reproducido con HTTP 400. | Confirmar únicamente tras persistencia exitosa, conservar el formulario y permitir reintento. Mostrar una alternativa por WhatsApp con un mensaje fiel al resultado. **0,5–1 d**. |
+| H08 | **P1 · Alto:** pedidos incompletos y archivos huérfanos. | Los errores al guardar fotos se ignoran y el pedido puede responder 200 sin ellas. Los archivos se escriben antes de persistir la BD: [PublicController.cs:123](backend/Leart.Api/Controllers/PublicController.cs#L123). Los límites están desalineados: 20 MB por archivo en [FileStorageService.cs:18](backend/Leart.Api/Services/FileStorageService.cs#L18), frente a 25 MB por petición en [nginx.conf:7](nginx.conf#L7). | Prevalidar el conjunto completo, alinear límites y devolver el resultado de cada adjunto. Añadir compensación y limpieza cuando falle la persistencia. **1–2 d**. |
+| H09 | **P1 · Alto:** borrar un pedido conserva sus fotos. | El borrado elimina registros, pero no archivos físicos: [AdminOrdersController.cs:112](backend/Leart.Api/Controllers/AdminOrdersController.cs#L112). Tras borrar un pedido, su adjunto siguió respondiendo HTTP 200. | Implementar eliminación o retención explícita de adjuntos, con reintentos y comprobación de archivos huérfanos. **0,5–1 d**. |
+| H10 | **P1 · Alto:** se revierten cambios administrativos. | Cada arranque sobrescribe nombre, imagen, descripción, variantes, precio y otros campos de los productos iniciales: [DbInitializer.cs:53](backend/Leart.Api/Data/DbInitializer.cs#L53), invocado desde [Program.cs:192](backend/Leart.Api/Program.cs#L192). Una edición se perdió al reiniciar. Un producto inicial eliminado también se vuelve a insertar. | Separar carga inicial y migraciones de datos, preservar las ediciones del negocio y versionar cualquier actualización del catálogo. **1 d**. |
+| H11 | **P1 · Alto:** editor de productos defectuoso. | Dentro del formulario hay controles con `ngModel` sin nombre ni configuración independiente: [admin-products.component.ts:124](src/app/admin/pages/admin-products.component.ts#L124). En producción, varios campos mostraron el texto de la regla comercial en lugar de su valor. | Asignar nombres únicos o utilizar un formulario reactivo tipado. Verificar creación y edición en desarrollo y producción. **0,5–1 d**. |
+| H12 | **P1 · Alto:** editar destruye metadatos. | El payload fija ocasiones y reduce las variantes a una etiqueta; omite grupo, precio, código y orden: [admin-products.component.ts:718](src/app/admin/pages/admin-products.component.ts#L718). El PUT reemplaza esos campos con valores vacíos o predeterminados: [AdminProductsController.cs:101](backend/Leart.Api/Controllers/AdminProductsController.cs#L101). | Definir un contrato explícito de actualización: formulario completo o PATCH con campos presentes. Preservar los datos no editados. **1–2 d**. |
+| H13 | **P1 · Alto:** mezcla de configuraciones en una cotización. | La selección se identifica únicamente por producto y la nota nueva reemplaza la anterior: [store.service.ts:61](src/app/store/store.service.ts#L61). Agregar un cuadro S y otro M terminó como dos unidades con la configuración M. | Modelar líneas con identificador propio y configuración estructurada. Agrupar solo configuraciones equivalentes y migrar la selección guardada. **1 d**. |
+| H14 | **P1 · Alto:** precios y capacidades inconsistentes. | El precio usa tablas locales y prioriza el grupo del producto sobre la variante elegida: [pricing.ts:73](src/app/store/pricing.ts#L73), [pricing.ts:106](src/app/store/pricing.ts#L106). Elegir Grupo 4 en el flujo genérico calculó 130.000 COP en lugar de los 165.000 de su tabla. Los límites usan valores de categoría en [app.ts:109](src/app/app.ts#L109): Mini Hockey declara máximo cuatro en [DbInitializer.cs:1813](backend/Leart.Api/Data/DbInitializer.cs#L1813), pero el cotizador puede permitir ocho. | Establecer una fuente única de precios, variantes y restricciones. Usar identificadores estables y respetar mínimos, máximos y permisos de extras por producto. **3–5 d**. |
+| H15 | **P1 · Alto:** catálogo incorrecto ante vacío o fallo. | Una respuesta válida `[]` se ignora en [products.service.ts:20](src/app/core/services/products.service.ts#L20); en navegador siguieron apareciendo 75 productos. Ante fallos de BD, la API entrega el catálogo inicial en [PublicController.cs:63](backend/Leart.Api/Controllers/PublicController.cs#L63), que incluye un producto inactivo. La cotización recupera productos ausentes desde los datos locales: [store.service.ts:30](src/app/store/store.service.ts#L30). | Distinguir vacío, carga y fallo; respetar siempre la disponibilidad actual y evitar recuperar productos retirados sin validación. **1–2 d**. |
 | H16 | **P2 · Medio:** validaciones insuficientes en la API. | Los DTO no expresan límites de longitud y dominio: [OrderDtos.cs:3](backend/Leart.Api/DTOs/OrderDtos.cs#L3). El cálculo de máximos permite inconsistencias en [AdminProductsController.cs:75](backend/Leart.Api/Controllers/AdminProductsController.cs#L75): se aceptó un producto con mínimo 1 y máximo −5. Se admiten estados arbitrarios en [AdminOrdersController.cs:106](backend/Leart.Api/Controllers/AdminOrdersController.cs#L106). | Validar longitudes, cantidades, categorías, estados y relaciones entre campos antes de persistir. Devolver errores 4xx claros. **1–2 d**. |
 | H17 | **P2 · Medio:** plantillas configurables sin efecto. | El panel guarda plantillas en [admin-settings.component.ts:559](src/app/admin/pages/admin-settings.component.ts#L559), pero los mensajes se construyen con texto fijo en [store.service.ts:119](src/app/store/store.service.ts#L119) y [personalization.page.ts:40](src/app/pages/personalization.page.ts#L40). | Consumir las plantillas configuradas y validar sus variables. **0,5 d**. |
 
@@ -173,26 +173,26 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 
 ## 9. Seguimiento de ítems
 
-**Situación vigente:** 0 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
+**Situación vigente:** 16 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
 
 | ID | Fase | Estado vigente | Última entrada de avance o validación |
 | --- | --- | --- | --- |
-| H01 | F1 | Pendiente | — |
-| H02 | F1 | Pendiente | — |
-| H03 | F1 | Pendiente | — |
-| H04 | F1 | Pendiente | — |
-| H05 | F1 | Pendiente | — |
-| H06 | F1 | Pendiente | — |
-| H07 | F2 | Pendiente | — |
-| H08 | F2 | Pendiente | — |
-| H09 | F2 | Pendiente | — |
-| H10 | F2 | Pendiente | — |
-| H11 | F2 | Pendiente | — |
-| H12 | F2 | Pendiente | — |
-| H13 | F2 | Pendiente | — |
-| H14 | F3 | Pendiente | — |
-| H15 | F2 | Pendiente | — |
-| H16 | F2 | Pendiente | — |
+| H01 | F1 | Completado | R003 |
+| H02 | F1 | Completado | R005 |
+| H03 | F1 | Completado | R007 |
+| H04 | F1 | Completado | R009 |
+| H05 | F1 | Completado | R011 |
+| H06 | F1 | Completado | R013 |
+| H07 | F2 | Completado | R015 |
+| H08 | F2 | Completado | R017 |
+| H09 | F2 | Completado | R019 |
+| H10 | F2 | Completado | R021 |
+| H11 | F2 | Completado | R023 |
+| H12 | F2 | Completado | R025 |
+| H13 | F2 | Completado | R027 |
+| H14 | F3 | Completado | R029 |
+| H15 | F2 | Completado | R031 |
+| H16 | F2 | Completado | R033 |
 | H17 | F3 | Pendiente | — |
 | H18 | F2 | Pendiente | — |
 | H19 | F4 | Pendiente | — |
@@ -553,6 +553,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 36/36 pruebas backend y 24/24 frontend pasan, incluidos BD caída con 503, catálogo vacío, contacto de ejemplo oculto y producto retirado no recuperado. Build producción correcto; sin diagnósticos ni errores de diff.
 - **Pendientes o límites:** La tienda debe configurar su contacto real en el panel; esa configuración comercial no se inventó ni se aplicó a producción.
 - **Próximo paso:** H16: validar longitudes, rangos, categorías y estados en la API.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R032 — 2026-11-18 — H16 — Inicio de validación de contratos y límites
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H16; Los DTO no expresan límites de longitud y dominio: [OrderDtos.cs:3](backend/Leart.Api/DTOs/OrderDtos.cs#L3). El cálculo de máximos permite inconsistencias en [AdminProductsController.cs:75](backend/Leart.Api/Controllers/AdminProductsController.cs#L75): se aceptó un producto con mínimo 1 y máximo −5. Se admiten estados arbitrarios en [AdminOrdersController.cs:106](backend/Leart.Api/Controllers/AdminOrdersController.cs#L106). → En curso.
+- **Avance y alcance:** Se validarán longitudes, rangos, categorías, listas, teléfonos, URLs y estados antes de persistir. Los límites por categoría se leerán de la matriz común y se evitará corregir silenciosamente cantidades inválidas.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H15 confirmado en d956663. Se añadirán casos HTTP que deben responder 400 sin cambios de datos.
+- **Pendientes o límites:** DTO, controladores y pruebas de límites.
+- **Próximo paso:** Comprobar entradas inválidas y flujo válido del formulario con campos opcionales vacíos.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R033 — 2026-11-18 — H16 — Contratos validados antes de persistir
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H16; En curso → Completado.
+- **Avance y alcance:** La API rechaza longitudes excesivas, precios negativos, rangos incoherentes, categorías o estados desconocidos, URLs y teléfonos inválidos. Los máximos se contrastan con la matriz común y los campos opcionales del formulario admiten vacío. Se corrige además el registro: el actualizador anterior afectaba la primera tabla de hallazgos en vez de la sección 9; se restauró íntegra la evidencia inicial desde 1fe840e, se reconstruyó el seguimiento H01–H16 según sus bitácoras y se acotó el actualizador. Las menciones previas de evidencia como estado anterior eran un error documental.
+- **Archivos y evidencia:** [ProductDtos.cs](backend/Leart.Api/DTOs/ProductDtos.cs), [OrderDtos.cs](backend/Leart.Api/DTOs/OrderDtos.cs), [AuthDtos.cs](backend/Leart.Api/DTOs/AuthDtos.cs), [SettingDtos.cs](backend/Leart.Api/DTOs/SettingDtos.cs), [AdminProductsController.cs](backend/Leart.Api/Controllers/AdminProductsController.cs), [AdminSettingsController.cs](backend/Leart.Api/Controllers/AdminSettingsController.cs), [AdminAuthController.cs](backend/Leart.Api/Controllers/AdminAuthController.cs), [InputValidationTests.cs](backend/Leart.Api.Tests/InputValidationTests.cs), [personalization.page.ts](src/app/pages/personalization.page.ts), [personalization.page.html](src/app/pages/personalization.page.html)
+- **Validación:** 43/43 pruebas backend y 24/24 frontend pasan; build producción correcto. Se verifican HTTP 400 de entradas inválidas y recepción válida con campos opcionales vacíos. Diagnósticos sin errores. Se cotejaron los 16 estados del registro con la bitácora y se restauró la tabla histórica.
+- **Pendientes o límites:** El aviso de versiones EF permanece para H21. No se modificaron datos productivos.
+- **Próximo paso:** H17: aplicar las plantillas configuradas y validar sus variables.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada
