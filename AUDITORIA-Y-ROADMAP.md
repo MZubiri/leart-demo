@@ -80,7 +80,7 @@ Confirmado significa reproducido en el entorno local descrito o demostrado por u
 | --- | --- | --- | --- |
 | H07 | **P1 · Alto:** confirmación falsa de recepción. | Completado | R015 |
 | H08 | **P1 · Alto:** pedidos incompletos y archivos huérfanos. | Completado | R017 |
-| H09 | **P1 · Alto:** borrar un pedido conserva sus fotos. | El borrado elimina registros, pero no archivos físicos: [AdminOrdersController.cs:112](backend/Leart.Api/Controllers/AdminOrdersController.cs#L112). Tras borrar un pedido, su adjunto siguió respondiendo HTTP 200. | Implementar eliminación o retención explícita de adjuntos, con reintentos y comprobación de archivos huérfanos. **0,5–1 d**. |
+| H09 | **P1 · Alto:** borrar un pedido conserva sus fotos. | Completado | R019 |
 | H10 | **P1 · Alto:** se revierten cambios administrativos. | Cada arranque sobrescribe nombre, imagen, descripción, variantes, precio y otros campos de los productos iniciales: [DbInitializer.cs:53](backend/Leart.Api/Data/DbInitializer.cs#L53), invocado desde [Program.cs:192](backend/Leart.Api/Program.cs#L192). Una edición se perdió al reiniciar. Un producto inicial eliminado también se vuelve a insertar. | Separar carga inicial y migraciones de datos, preservar las ediciones del negocio y versionar cualquier actualización del catálogo. **1 d**. |
 | H11 | **P1 · Alto:** editor de productos defectuoso. | Dentro del formulario hay controles con `ngModel` sin nombre ni configuración independiente: [admin-products.component.ts:124](src/app/admin/pages/admin-products.component.ts#L124). En producción, varios campos mostraron el texto de la regla comercial en lugar de su valor. | Asignar nombres únicos o utilizar un formulario reactivo tipado. Verificar creación y edición en desarrollo y producción. **0,5–1 d**. |
 | H12 | **P1 · Alto:** editar destruye metadatos. | El payload fija ocasiones y reduce las variantes a una etiqueta; omite grupo, precio, código y orden: [admin-products.component.ts:718](src/app/admin/pages/admin-products.component.ts#L718). El PUT reemplaza esos campos con valores vacíos o predeterminados: [AdminProductsController.cs:101](backend/Leart.Api/Controllers/AdminProductsController.cs#L101). | Definir un contrato explícito de actualización: formulario completo o PATCH con campos presentes. Preservar los datos no editados. **1–2 d**. |
@@ -399,6 +399,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 28/28 pruebas backend y 4/4 frontend pasan. HTTP comprueba lote válido+falso rechazado sin pedido ni archivos, fallo de BD con limpieza y siete fotos rechazadas sin truncar. Sin diagnósticos ni errores de diff.
 - **Pendientes o límites:** No es una transacción distribuida entre disco y BD; H09 añade limpieza de huérfanos para interrupciones abruptas del proceso.
 - **Próximo paso:** H09: borrado físico con reintento y limpieza de huérfanos.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R018 — 2026-11-18 — H09 — Inicio de borrado y limpieza de adjuntos
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H09; El borrado elimina registros, pero no archivos físicos: [AdminOrdersController.cs:112](backend/Leart.Api/Controllers/AdminOrdersController.cs#L112). Tras borrar un pedido, su adjunto siguió respondiendo HTTP 200. → En curso.
+- **Avance y alcance:** Se borrarán las fotos antes de retirar su metadata, conservando el pedido para reintentar si el disco falla. Un servicio periódico limpiará fotos sin referencia de más de 24 horas para cubrir interrupciones abruptas.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H08 confirmado en f7be2b1. Se probarán eliminación, fallo de almacenamiento y preservación de referencias vigentes.
+- **Pendientes o límites:** Implementación y pruebas de retención.
+- **Próximo paso:** Verificar que ninguna limpieza borre una foto todavía vinculada a un pedido.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R019 — 2026-11-18 — H09 — Borrado de fotos y recuperación de huérfanos
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H09; En curso → Completado.
+- **Avance y alcance:** Eliminar un pedido borra primero sus fotos y conserva la metadata con respuesta 503 si el disco falla, permitiendo reintento. Borrados repetidos de archivos ausentes son idempotentes. Un servicio revisa cada 12 horas los archivos sin referencia de más de 24 horas; consulta la BD antes de decidir y preserva referencias y archivos recientes. Se rechaza configurar almacenamiento privado dentro de wwwroot.
+- **Archivos y evidencia:** [OrderFileCleanup.cs](backend/Leart.Api/Services/OrderFileCleanup.cs), [FileStorageService.cs](backend/Leart.Api/Services/FileStorageService.cs), [AdminOrdersController.cs](backend/Leart.Api/Controllers/AdminOrdersController.cs), [OrderDeletionTests.cs](backend/Leart.Api.Tests/OrderDeletionTests.cs), [FileStorageServiceTests.cs](backend/Leart.Api.Tests/FileStorageServiceTests.cs), [README.md](README.md)
+- **Validación:** 31/31 pruebas backend pasan: borrado real de foto y metadata, fallo de disco conserva pedido, reintento/idempotencia, limpieza de huérfano antiguo y conservación de fotos referenciadas o recientes, rechazo de raíz pública. Sin diagnósticos ni errores de diff.
+- **Pendientes o límites:** Las copias de seguridad tienen retención propia del operador. Si la BD falla después del borrado físico, el pedido conserva metadata y su eliminación puede reintentarse.
+- **Próximo paso:** H10: dejar de sobrescribir o reinsertar catálogo al reiniciar.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

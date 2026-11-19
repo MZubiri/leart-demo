@@ -6,6 +6,7 @@ public interface IFileStorageService
     bool DeleteFile(string relativePath);
     Stream? OpenOrderFile(string relativePath);
     void MigrateLegacyOrderFiles();
+    IEnumerable<string> OrderFilesOlderThan(DateTime cutoff);
 }
 
 public class FileStorageService : IFileStorageService
@@ -18,7 +19,10 @@ public class FileStorageService : IFileStorageService
     public FileStorageService(IWebHostEnvironment env, IConfiguration? configuration = null)
     {
         _env = env;
-        _privateRoot = configuration?["Storage:Root"] ?? Path.Combine(env.ContentRootPath, "storage");
+        _privateRoot = Path.GetFullPath(configuration?["Storage:Root"] ?? Path.Combine(env.ContentRootPath, "storage"));
+        var publicRoot = Path.GetFullPath(env.WebRootPath);
+        if (_privateRoot == publicRoot || _privateRoot.StartsWith(publicRoot + Path.DirectorySeparatorChar, StringComparison.Ordinal))
+            throw new InvalidOperationException("Storage:Root debe estar fuera del directorio público.");
         _maxOrderBytes = configuration?.GetValue<long?>("Storage:MaxOrderBytes") ?? 1024L * 1024 * 1024;
         if (_maxOrderBytes < 1) throw new InvalidOperationException("Storage:MaxOrderBytes debe ser positivo.");
     }
@@ -76,7 +80,7 @@ public class FileStorageService : IFileStorageService
             if (OrderFileName(relativePath) is { } orderName)
             {
                 var orderPath = Path.Combine(_privateRoot, "orders", orderName);
-                if (!File.Exists(orderPath)) return false;
+                if (!File.Exists(orderPath)) return true;
                 File.Delete(orderPath);
                 return true;
             }
@@ -141,5 +145,12 @@ public class FileStorageService : IFileStorageService
             }
             else File.Move(file, destination);
         }
+    }
+    public IEnumerable<string> OrderFilesOlderThan(DateTime cutoff)
+    {
+        var root = Path.Combine(_privateRoot, "orders");
+        if (!Directory.Exists(root)) return [];
+        return Directory.GetFiles(root).Where(file => File.GetLastWriteTimeUtc(file) < cutoff)
+            .Select(file => "/private/orders/" + Path.GetFileName(file)).ToArray();
     }
 }

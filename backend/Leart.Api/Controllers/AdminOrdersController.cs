@@ -134,6 +134,12 @@ public class AdminOrdersController : ControllerBase
         if (order == null)
             return NotFound(new { message = "Pedido no encontrado." });
 
+        foreach (var attachment in order.Attachments)
+        {
+            if (!_storage.DeleteFile(attachment.FilePath))
+                return StatusCode(StatusCodes.Status503ServiceUnavailable, new { message = "No se pudo completar el borrado de fotos. El pedido se conserva para reintentar." });
+        }
+
         _context.PersonalizationOrders.Remove(order);
         await _context.SaveChangesAsync();
 

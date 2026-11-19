@@ -129,4 +129,11 @@ public class FileStorageServiceTests : IDisposable
             await Assert.ThrowsAsync<UploadValidationException>(() => _storageService.SaveFileAsync(new FormFile(content, 0, content.Length, "photos", "photo.png"), "orders"));
         }
     }
+    [Fact]
+    public void PrivateStorageCannotBeConfiguredInsidePublicRoot()
+    {
+        var webRoot = Path.Combine(_tempDir, "wwwroot");
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?> { ["Storage:Root"] = Path.Combine(webRoot, "private") }).Build();
+        Assert.Throws<InvalidOperationException>(() => new FileStorageService(new TestWebHostEnvironment { ContentRootPath = _tempDir, WebRootPath = webRoot }, configuration));
+    }
 }

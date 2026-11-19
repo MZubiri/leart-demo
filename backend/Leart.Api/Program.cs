@@ -60,6 +60,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Services
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
+builder.Services.AddSingleton<OrderFileCleanup>();
+builder.Services.AddHostedService(services => services.GetRequiredService<OrderFileCleanup>());
 
 // JWT Authentication
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "LeartApi";
