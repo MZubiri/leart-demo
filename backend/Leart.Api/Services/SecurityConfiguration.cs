@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
-using MySqlConnector;
+using MySql.Data.MySqlClient;
 
 namespace Leart.Api.Services;
 

@@ -1,6 +1,6 @@
-# Leart Store — Fullstack (Angular 21 + ASP.NET Core 9 + MySQL)
+# Leart Store — Fullstack (Angular 21 + ASP.NET Core 10 + MySQL)
 
-Tienda y cotizador web para Leart Store con backend en ASP.NET Core (.NET 9), base de datos en MySQL y Panel de Administración integrado.
+Tienda y cotizador web para Leart Store con backend en ASP.NET Core (.NET 10), base de datos en MySQL y Panel de Administración integrado.
 
 Incluye:
 - **Catálogo de 5 líneas**: Cuadros, Sets armables, Cajas acrílicas, Llaveros y Minifiguras.
@@ -57,7 +57,7 @@ docker compose up -d mysql
 
 El contenedor MySQL solo se expone en la red interna de Compose. Para desarrollo local, usa una instancia propia con el usuario limitado `leart`, o ejecuta también la API mediante Compose. Configura secretos mediante variables de entorno o `dotnet user-secrets`; los archivos de configuración versionados no contienen contraseñas.
 
-### 2. Iniciar Backend (ASP.NET Core 9)
+### 2. Iniciar Backend (ASP.NET Core 10)
 
 ```bash
 cd backend/Leart.Api
@@ -84,7 +84,7 @@ dotnet test backend/Leart.Api.Tests
 ## 🚀 Despliegue con Docker
 
 ### Opción 1: Docker Compose Multicontenedor (Recomendado)
-Orquesta MySQL 8.0, API .NET 9 y Frontend Nginx con proxy inverso integrado:
+Orquesta MySQL 8.4, API .NET 10 y Frontend Nginx con proxy inverso integrado:
 
 ```bash
 docker compose up -d --build
@@ -159,3 +159,25 @@ Al eliminar un pedido se borran sus fotos; si el almacenamiento falla, se conser
 La matriz de cálculo se mantiene en [pricing-rules.json](backend/Leart.Api/Data/pricing-rules.json), con versión explícita, y la API la sirve en `/api/public/pricing`. El frontend no incluye otra tabla de precios: sin reglas cargadas no permite confirmar una configuración. Cantidades y extras respetan el producto y la presentación; las cajas usan los límites de mascotas por cantidad de figuras de la matriz comercial.
 
 Los cuadros M con una figura y L con una o dos no tienen precio confirmado en la planilla disponible: se muestran como **A cotizar**, conservando la posibilidad de elegir esa presentación. Si el precio base administrado difiere del estándar de la matriz, también se solicita cotización; no se ignora el cambio ni se inventa un recargo. Para habilitar importes exactos adicionales se debe confirmar la matriz comercial y actualizar sus reglas con pruebas. Los estimados excluyen accesorios sin precio definido y el valor final se confirma por WhatsApp.
+
+## Plataforma y dependencias
+
+Se requiere .NET 10 LTS y MySQL 8.0 o posterior (Compose usa MySQL 8.4 LTS).
+No se soporta MariaDB con el proveedor Oracle. EF Core y paquetes Microsoft se alinean
+en 10.0.15. [Soporte .NET](https://dotnet.microsoft.com/en-us/platform/support/policy)
+y [compatibilidad MySQL](https://dev.mysql.com/doc/connector-net/en/connector-net-entityframework-core.html).
+El proveedor [MySql.EntityFrameworkCore](https://www.nuget.org/packages/MySql.EntityFrameworkCore/10.0.12)
+se distribuye bajo GPL-2.0-only WITH Universal-FOSS-exception-1.0 (antes Pomelo MIT).
+Antes de distribuir una aplicación derivada, revisar las condiciones de esa licencia
+y de sus dependencias para el modelo de distribución del proyecto.
+
+Validación de dependencias del 2026-11-18: Angular 21.2.26, Playwright 1.65.1;
+`npm audit --omit=dev` y auditoría NuGet transitiva sin avisos. La auditoría npm completa
+mantiene 16 paquetes de herramientas afectados por **dos** avisos moderados transitivos:
+[glob](https://github.com/advisories/GHSA-3g3m-2fjr-6pw4) y
+[minimatch](https://github.com/advisories/GHSA-g3hv-75wg-m249), sobre consumo de recursos
+al recorrer archivos/patrones. Se ejecutan sobre el código local durante desarrollo,
+no se incluyen en la SPA. Usar código y patrones de compilación confiables y seguir
+los parches de Angular CLI; no se forzaron versiones mayores incompatibles transitivas.
+No quedan avisos altos o críticos. Repetir estas auditorías antes de publicar: los
+resultados dependen de la fecha y del registro consultado.

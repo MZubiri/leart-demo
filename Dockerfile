@@ -11,9 +11,9 @@ COPY . .
 RUN npm run build
 
 # ==========================================
-# Etapa 2: Compilación de Backend (.NET 9)
+# Etapa 2: Compilación de Backend (.NET 10)
 # ==========================================
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS backend-build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS backend-build
 WORKDIR /src
 
 COPY ["backend/Leart.Api/Leart.Api.csproj", "backend/Leart.Api/"]
@@ -24,7 +24,7 @@ WORKDIR /src/backend/Leart.Api
 RUN dotnet publish "Leart.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Runtime fullstack con MySQL externo y almacenamiento persistente.
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 COPY --from=backend-build /app/publish .
 COPY --from=frontend-build /app/dist/leart-demo/browser/ /app/wwwroot/

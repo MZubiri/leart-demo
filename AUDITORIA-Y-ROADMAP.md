@@ -173,7 +173,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 
 ## 9. Seguimiento de ítems
 
-**Situación vigente:** 19 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
+**Situación vigente:** 20 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
 
 | ID | Fase | Estado vigente | Última entrada de avance o validación |
 | --- | --- | --- | --- |
@@ -197,7 +197,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | H18 | F2 | Completado | R037 |
 | H19 | F4 | Completado | R039 |
 | H20 | F4 | Pendiente | — |
-| H21 | F4 | Pendiente | — |
+| H21 | F4 | Completado | R041 |
 | H22 | Transversal / cierre F5 | Pendiente | — |
 | H23 | F5 | Pendiente | — |
 | H24 | F5 | Pendiente | — |
@@ -641,6 +641,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** Ejercicio real con MySQL 8.4 y volúmenes desechables: registro SQL, archivo público y foto privada recuperados; recreación conserva archivos; API reanudada tras copia; segundo intento de restaurar rechazado. Servicios y volúmenes de prueba retirados. bash -n y diff correctos.
 - **Pendientes o límites:** La construcción completa de imágenes y smoke de API se realizará con la plataforma actualizada en H21; no se cambió ninguna instalación existente. Debe ensayarse la restauración de cada copia operativa.
 - **Próximo paso:** H21 antes de H20: actualizar plataforma y proveedor para generar las migraciones con el proveedor definitivo, evitando migrarlas dos veces.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R040 — 2026-11-18 — H21 — Inicio de actualización de plataforma y dependencias
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H21; Pendiente → En curso.
+- **Avance y alcance:** Se adelanta H21 a H20 para generar migraciones con el proveedor definitivo. Se verificó .NET 10 LTS vigente, SDK 10.0.404/runtime 10.0.15 y paquete Oracle MySql.EntityFrameworkCore 10.0.12 compatible con EF10/MySQL8; Pomelo publicado sigue en EF9. Se actualizarán frontend, runtime y dependencias compatibles.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** Metadatos oficiales de Microsoft, NuGet y tabla de soporte de Oracle consultados; SDK descargado y hash SHA-512 verificado.
+- **Pendientes o límites:** Alinear paquetes, probar contra MySQL real y revisar avisos. El proveedor Oracle declara GPL-2.0-only WITH Universal-FOSS-exception-1.0; se documentará la licencia y la necesidad de comprobar condiciones de distribución.
+- **Próximo paso:** Restaurar paquetes actualizados y ejecutar pruebas, build y auditorías.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R041 — 2026-11-18 — H21 — .NET 10 LTS y dependencias compatibles verificadas
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H21; En curso → Completado.
+- **Avance y alcance:** Proyecto, SDK e imágenes pasan a .NET 10 LTS. EF Core/Relational y paquetes Microsoft quedan alineados en 10.0.15, con proveedor Oracle MySQL EF10 y sin autodetección por petición. Compose usa MySQL 8.4 LTS. Angular se actualiza a 21.2.26 y Playwright a 1.65.1 dentro de los rangos compatibles. Se excluyen binarios, archivos privados y entornos del contexto Docker del backend. README documenta compatibilidad, licencia del proveedor y avisos residuales.
+- **Archivos y evidencia:** [global.json](global.json), [Leart.Api.csproj](backend/Leart.Api/Leart.Api.csproj), [Leart.Api.Tests.csproj](backend/Leart.Api.Tests/Leart.Api.Tests.csproj), [Program.cs](backend/Leart.Api/Program.cs), [SecurityConfiguration.cs](backend/Leart.Api/Services/SecurityConfiguration.cs), [MySqlIntegrationTests.cs](backend/Leart.Api.Tests/MySqlIntegrationTests.cs), [ApiFactory.cs](backend/Leart.Api.Tests/ApiFactory.cs), [test-mysql.cjs](scripts/test-mysql.cjs), [Dockerfile](Dockerfile), [Dockerfile](backend/Leart.Api/Dockerfile), [.dockerignore](backend/Leart.Api/.dockerignore), [docker-compose.yml](docker-compose.yml), [package-lock.json](package-lock.json), [README.md](README.md)
+- **Validación:** 44/44 pruebas backend estándar pasan y la integración MySQL queda explícitamente omitida fuera de su runner; runner aislado ejecutó y pasó su prueba real de bootstrap y reinicio. 25/25 frontend y build producción pasan. Sin MSB3277. Auditorías NuGet transitiva y npm producción: 0 avisos. Imagen API Docker construida; usuario app UID1654, directorios escribibles y runtime 10.0.15 comprobados.
+- **Pendientes o límites:** Auditoría npm completa: 16 paquetes de desarrollo afectados por dos avisos moderados (glob/minimatch); no se fuerzan cambios mayores incompatibles. Solo código/patrones confiables en herramientas. La licencia Oracle GPL con excepción FOSS requiere revisión según distribución antes de publicar. No se desplegó a producción.
+- **Próximo paso:** H20: migraciones con esquema compatible, adopción controlada de bases anteriores y readiness real.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

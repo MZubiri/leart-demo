@@ -1,0 +1,7 @@
+bin
+obj
+storage
+wwwroot/uploads
+.env
+.env.*
+*.log

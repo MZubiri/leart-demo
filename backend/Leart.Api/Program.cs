@@ -34,28 +34,8 @@ builder.Services.AddProblemDetails();
 // OpenAPI
 builder.Services.AddOpenApi();
 
-// Database Context (MariaDB / MySQL with Pomelo)
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    ServerVersion serverVersion;
-    try
-    {
-        serverVersion = ServerVersion.AutoDetect(connectionString);
-    }
-    catch
-    {
-        serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
-    }
-
-    options.UseMySql(connectionString, serverVersion, mySqlOptions =>
-    {
-        mySqlOptions.EnableRetryOnFailure(
-            maxRetryCount: 10,
-            maxRetryDelay: TimeSpan.FromSeconds(3),
-            errorNumbersToAdd: null);
-    });
-});
+// MySQL 8+, proveedor EF10. No se abre una conexión para autodetectar por petición.
+builder.Services.AddDbContext<AppDbContext>(options => options.UseMySQL(connectionString));
 
 builder.Services.AddSingleton<PricingCatalog>();
 

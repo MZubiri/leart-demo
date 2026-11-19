@@ -10,12 +10,13 @@ namespace Leart.Api.Tests;
 
 public class ApiFactory : WebApplicationFactory<Program>
 {
+    public string? MySqlConnection { get; init; }
     public Action<IServiceCollection>? OverrideServices { get; set; }
     public string StorageRoot { get; } = Path.Combine(Path.GetTempPath(), "leart-api-" + Guid.NewGuid().ToString("N"));
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseSetting("Jwt:Secret", "Test-only-signing-key-with-at-least-32-bytes-2026");
-        builder.UseSetting("ConnectionStrings:DefaultConnection", "Server=localhost;Database=tests;User=tests;Password=test-only-password;");
+        builder.UseSetting("ConnectionStrings:DefaultConnection", MySqlConnection ?? "Server=localhost;Database=tests;User=tests;Password=test-only-password;");
         builder.UseSetting("BootstrapAdmin:Username", "owner");
         builder.UseSetting("BootstrapAdmin:Email", "owner@example.test");
         builder.UseSetting("BootstrapAdmin:Password", "Test-only-bootstrap-password-2026");
@@ -25,7 +26,7 @@ public class ApiFactory : WebApplicationFactory<Program>
         {
             services.RemoveAll<DbContextOptions<AppDbContext>>();
             services.RemoveAll<IDbContextOptionsConfiguration<AppDbContext>>();
-            services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase(databaseName));
+            services.AddDbContext<AppDbContext>(options => { if (MySqlConnection is null) options.UseInMemoryDatabase(databaseName); else options.UseMySQL(MySqlConnection); });
             OverrideServices?.Invoke(services);
         });
     }
