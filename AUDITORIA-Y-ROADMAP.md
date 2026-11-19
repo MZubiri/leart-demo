@@ -208,7 +208,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | O03 | Por definir | No programada | — |
 | O04 | Por definir | No programada | — |
 | O05 | Por definir | No programada | — |
-| D01 | Despliegue | En curso | R061 |
+| D01 | Despliegue | En curso | R066 |
 
 **D01 — Revisión y despliegue autorizado:** revisar el código completo y ejecutar validaciones; respaldar datos/configuración actuales, preparar actualización y recuperación en Coolify, desplegar y verificar por HTTPS. Prioridad P1; impacto alto operativo; esfuerzo estimado 0,5–1 día, sujeto al estado real del servidor. No es un hallazgo nuevo ni autoriza las mejoras opcionales.
 
@@ -932,6 +932,17 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Próximo paso:** Finalizar imagen con readiness de Docker, validar migración de la copia real y publicar el candidato.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
+### R066 — 2026-11-18 — D01 — Revisión final, respaldo y preparación de persistencia Coolify
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** D01; En curso → En curso.
+- **Avance y alcance:** Revisados servicios/controladores/DTO/modelos, migraciones, estado y precios frontend, formularios administrativos, rutas, plantillas, scripts y configuración. Se corrigieron dos regresiones en commits independientes fcca824 y caeff5c. Se añade curl y HEALTHCHECK a la imagen fullstack para readiness en Coolify. El destino ARM64 ejecuta todavía c4ab4d85 con MariaDB 10.11 embebida, sin volúmenes: se respaldaron SQL, uploads, configuración y metadata local/remotamente y se restauró la copia en MySQL 8.4 privado del mismo proyecto. Auto-deploy está temporalmente pausado para preparar el cambio sin publicar antes de validar.
+- **Archivos y evidencia:** [Dockerfile](Dockerfile), [test-runtime.cjs](scripts/test-runtime.cjs), [admin-products.component.ts](src/app/admin/pages/admin-products.component.ts), [product.page.ts](src/app/pages/product.page.ts), [SchemaInitializer.cs](backend/Leart.Api/Data/SchemaInitializer.cs), [FileStorageService.cs](backend/Leart.Api/Services/FileStorageService.cs), [AbuseProtection.cs](backend/Leart.Api/Services/AbuseProtection.cs)
+- **Validación:** 40/40 frontend, 51/51 backend estándar más 1/1 integración MySQL pasan. Build producción, teclado Chromium, rutas Nginx y backup/restauración pasan. Imagen fullstack final pasa SPA/API, precio persistido, curl readiness, migración/bootstrap, upload WebP→PNG privado, autorización y reinicio. npm producción y NuGet transitivas: 0 vulnerabilidades. actionlint correcto. Restauración real remota: 75 productos, 1 ajuste, 1 administrador, 0 pedidos y 0 adjuntos. Capacidad ARM64 de las bibliotecas nativas confirmada; falta ejecutar el candidato en esa arquitectura.
+- **Pendientes o límites:** Comparación de filas de la copia real, compilación ARM64, adopción/migraciones y canario antes del cambio público. El administrador aún usa la clave originalmente publicada; se preparó una nueva credencial privada para retirarla durante el despliegue. El contacto WhatsApp actual es un valor de ejemplo y se consultó al usuario por el número real.
+- **Próximo paso:** Publicar el candidato, construirlo en ARM64, verificar copia/migraciones y canario, y activar únicamente si esas comprobaciones pasan.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
 ### Plantilla para la siguiente entrada
 
 Copiar la plantilla, asignar el siguiente identificador `R002`, `R003`, etc., y completar los campos. Eliminar los textos de ejemplo de la entrada real.
@@ -951,3 +962,51 @@ Copiar la plantilla, asignar el siguiente identificador `R002`, `R003`, etc., y 
 - **Estado anterior → nuevo:** por cada ítem afectado.
 - **Próximo paso:** tarea concreta para continuar.
 ```
+
+## 11. Revisión previa al despliegue — 2026-11-18
+
+Revisados controladores, servicios, modelos, DTO, migraciones, lógica y plantillas frontend, administración, scripts e infraestructura. Las pruebas no garantizan ausencia de defectos. O01–O05 siguen sin programar.
+
+### Comprobaciones de patrones .NET
+
+Se ejecutaron las recetas de la guía sobre 32 archivos de aplicación, excluidas migraciones generadas. Los conteos son coincidencias que requieren revisión de contexto.
+
+| Receta | Coincidencias |
+| --- | --- |
+| syncOverAsync | 0 |
+| asyncVoid | 0 |
+| taskRun | 0 |
+| stackalloc | 0 |
+| indexOfCulture | 0 |
+| substring | 0 |
+| stringPrefixCulture | 0 |
+| containsLiteral | 5 |
+| cultureCase | 0 |
+| replaceChains | 0 |
+| params | 0 |
+| linqChars | 0 |
+| newHttpClient | 0 |
+| newJsonOptions | 0 |
+| compiledRegex | 0 |
+| generatedRegex | 0 |
+| newRegex | 0 |
+| staticDictionary | 0 |
+| frozenDictionary | 0 |
+| newList | 7 |
+| newDictionary | 0 |
+| currentCultureComparer | 0 |
+| linqChain | 35 |
+| sealedClasses | 9 |
+| unsealedClasses | 19 |
+
+No se encontraron esperas síncronas de Task, async void, stackalloc, clientes HTTP por petición ni opciones JSON recreadas. Los 35 usos de LINQ incluyen traducciones EF a SQL y validaciones/arranque. De 28 clases contadas, 9 son sealed y 19 no; AppDbContext se hereda en pruebas y modelos/DTO/controladores no justifican optimizar despacho sin medición. Las 5 coincidencias Contains son colecciones/argumentos o metadata de esquema. Se conservan paginación e índices comprobados por EXPLAIN.
+
+| Prioridad | Hallazgo confirmado y tratamiento |
+| --- | --- |
+| P1 | Destino con MariaDB dentro del contenedor sin volúmenes. D01 prepara MySQL privado, volúmenes y respaldo/restauración. |
+| P1 | Imagen sin curl para el sondeo Coolify: añadido HEALTHCHECK contra /health/ready y validado en imagen. |
+| P2 — H25 | Error de creación ignorado: corregido en fcca824 con prueba de fallo y reintento. |
+| P2 — H14 | Etiqueta de fondo con importe fijo: corregida en caeff5c con prueba de tarifa y ausencia de reglas. |
+| Comercial | Tarifas simuladas autorizadas; WhatsApp de ejemplo. Se preserva configuración y se consulta el número real. |
+
+El candidato supera la validación local. La activación requiere validar ARM64 y la migración real; el resultado se registra en D01.

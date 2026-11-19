@@ -17,6 +17,9 @@ const waitFor = async check => { for (let i = 0; i < 180; i++) { try { if (await
     assert((await (await fetch(url)).text()).includes('<app-root>'));
     assert.equal((await fetch(url + '/api/nonexistent')).status, 404);
     assert((await (await fetch(url + '/api/public/products')).json()).length > 0);
+    const rules = await (await fetch(url + '/api/public/pricing')).json();
+    assert.equal(rules.simulated, true); assert.equal(rules.frames.M['1'], 116000);
+    docker('exec', web, 'curl', '--fail', '--silent', 'http://127.0.0.1:8080/health/ready');
     const login = await fetch(url + '/api/admin/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'owner', password }) });
     assert.equal(login.status, 200); const { token } = await login.json();
     const form = new FormData();
@@ -30,6 +33,6 @@ const waitFor = async check => { for (let i = 0; i < 180; i++) { try { if (await
     const signature = Buffer.from(await attachment.arrayBuffer()).subarray(0, 8).toString('hex'); assert.equal(signature, '89504e470d0a1a0a');
     docker('restart', web); await waitFor(async () => (await fetch(url + '/health/ready')).status === 200);
     assert.equal((await fetch(attachmentUrl, { headers: { Authorization: `Bearer ${token}` } })).status, 200);
-    console.log('Runtime: SPA/API, MySQL migration/bootstrap, normalized private photo and restart passed.');
+    console.log('Runtime: SPA/API, persisted simulated pricing, readiness probe, MySQL migration/bootstrap, normalized private photo and restart passed.');
   } finally { for (const name of [web, mysql]) try { docker('stop', name); } catch {} }
 })().catch(error => { console.error(error.message); process.exitCode = 1; });

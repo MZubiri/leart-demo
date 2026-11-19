@@ -26,6 +26,7 @@ RUN dotnet publish "Leart.Api.csproj" -c Release -o /app/publish /p:UseAppHost=f
 # Runtime fullstack con MySQL externo y almacenamiento persistente.
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 COPY --from=backend-build /app/publish .
 COPY --from=frontend-build /app/dist/leart-demo/browser/ /app/wwwroot/
 RUN mkdir -p /app/wwwroot/uploads/products /app/storage/orders && chown -R app:app /app/wwwroot/uploads /app/storage
@@ -34,4 +35,5 @@ ENV ASPNETCORE_URLS=http://+:8080
 ENV ASPNETCORE_ENVIRONMENT=Production
 VOLUME ["/app/wwwroot/uploads", "/app/storage"]
 EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 CMD curl --fail --silent http://127.0.0.1:8080/health/ready || exit 1
 ENTRYPOINT ["dotnet", "Leart.Api.dll"]
