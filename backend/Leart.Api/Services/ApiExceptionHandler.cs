@@ -8,15 +8,16 @@ public sealed class ApiExceptionHandler(ILogger<ApiExceptionHandler> logger, IPr
     public async ValueTask<bool> TryHandleAsync(HttpContext context, Exception exception, CancellationToken cancellationToken)
     {
         logger.LogError(exception, "Error interno. CorrelationId: {CorrelationId}", context.TraceIdentifier);
-        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        var status = exception is UploadValidationException ? StatusCodes.Status400BadRequest : StatusCodes.Status500InternalServerError;
+        context.Response.StatusCode = status;
         context.Response.Headers.CacheControl = "no-store";
         await problems.WriteAsync(new ProblemDetailsContext
         {
             HttpContext = context,
             ProblemDetails = new ProblemDetails
             {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "No se pudo completar la operación.",
+                Status = status,
+                Title = exception is UploadValidationException ? exception.Message : "No se pudo completar la operación.",
                 Extensions = { ["traceId"] = context.TraceIdentifier }
             }
         });

@@ -23,19 +23,9 @@ public class FileStorageService : IFileStorageService
         if (_maxOrderBytes < 1) throw new InvalidOperationException("Storage:MaxOrderBytes debe ser positivo.");
     }
 
-    private const long MaxFileSizeBytes = 20 * 1024 * 1024; // 20 MB max
-    private static readonly HashSet<string> AllowedExtensions = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ".jpg", ".jpeg", ".png", ".webp", ".gif", ".pdf"
-    };
-
     public async Task<(string relativePath, string storedFileName, long sizeBytes)> SaveFileAsync(IFormFile file, string subFolder)
     {
-        if (file == null || file.Length == 0)
-            throw new ArgumentException("El archivo es inválido o está vacío.", nameof(file));
-
-        if (file.Length > MaxFileSizeBytes)
-            throw new ArgumentException($"El archivo supera el tamaño máximo permitido de {MaxFileSizeBytes / (1024 * 1024)} MB.", nameof(file));
+        var bytes = await ImageUpload.NormalizeAsync(file);
 
         // Sanitize subFolder name (only alphanumeric and hyphens)
         var sanitizedSubFolder = System.Text.RegularExpressions.Regex.Replace(subFolder ?? "general", @"[^a-zA-Z0-9_-]", "");
@@ -50,12 +40,7 @@ public class FileStorageService : IFileStorageService
             Directory.CreateDirectory(uploadsRoot);
         }
 
-        var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-        if (!AllowedExtensions.Contains(ext))
-        {
-            throw new ArgumentException($"Tipo de archivo '{ext}' no permitido. Extensiones válidas: {string.Join(", ", AllowedExtensions)}");
-        }
-
+        const string ext = ".png";
         var storedFileName = $"{Guid.NewGuid():N}{ext}";
         var fullPath = Path.Combine(uploadsRoot, storedFileName);
 
@@ -63,17 +48,17 @@ public class FileStorageService : IFileStorageService
         if (isOrder) await OrderWrites.WaitAsync();
         try
         {
-            if (isOrder && Directory.EnumerateFiles(uploadsRoot).Sum(path => new FileInfo(path).Length) > _maxOrderBytes - file.Length)
+            if (isOrder && Directory.EnumerateFiles(uploadsRoot).Sum(path => new FileInfo(path).Length) > _maxOrderBytes - bytes.Length)
                 throw new StorageQuotaExceededException();
             await using var stream = new FileStream(fullPath, FileMode.CreateNew);
-            await file.CopyToAsync(stream);
+            await stream.WriteAsync(bytes);
         }
         finally { if (isOrder) OrderWrites.Release(); }
 
         var relativePath = sanitizedSubFolder == "orders"
             ? $"/private/orders/{storedFileName}"
             : $"/uploads/{sanitizedSubFolder}/{storedFileName}";
-        return (relativePath, storedFileName, file.Length);
+        return (relativePath, storedFileName, bytes.Length);
     }
 
     public bool DeleteFile(string relativePath)

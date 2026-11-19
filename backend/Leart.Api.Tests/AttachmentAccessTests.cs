@@ -20,7 +20,7 @@ public class AttachmentAccessTests
         using var scope = factory.Services.CreateScope();
         var storage = scope.ServiceProvider.GetRequiredService<IFileStorageService>();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        using var content = new MemoryStream("private-test-photo"u8.ToArray());
+        using var content = new MemoryStream(TestImages.Png());
         var (filePath, name, size) = await storage.SaveFileAsync(new FormFile(content, 0, content.Length, "photos", "reference.png"), "orders");
         var order = new PersonalizationOrder { CustomerName = "Test", Phone = "123", Attachments = [new OrderAttachment { FilePath = filePath, StoredFileName = name, OriginalFileName = "reference.png", FileSizeBytes = size }] };
         db.PersonalizationOrders.Add(order);
@@ -35,7 +35,7 @@ public class AttachmentAccessTests
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
         var download = await client.GetAsync(url);
         Assert.Equal(HttpStatusCode.OK, download.StatusCode);
-        Assert.Equal("private-test-photo", await download.Content.ReadAsStringAsync());
+        Assert.Equal(TestImages.Png(), await download.Content.ReadAsByteArrayAsync());
         Assert.True(download.Headers.CacheControl?.NoStore);
     }
 }

@@ -134,7 +134,7 @@ public class PublicController : ControllerBase
                         OriginalFileName = file.FileName,
                         StoredFileName = storedName,
                         FilePath = relativePath,
-                        ContentType = file.ContentType,
+                        ContentType = "image/png",
                         FileSizeBytes = sizeBytes,
                         UploadedAt = DateTime.UtcNow
                     });

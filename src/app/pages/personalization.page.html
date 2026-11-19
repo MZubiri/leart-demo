@@ -82,10 +82,10 @@
               <textarea rows="4" placeholder="Outfits, profesión, equipo, colores, accesorios..." [ngModel]="requirements()" (ngModelChange)="requirements.set($event)"></textarea>
             </label>
             <label class="upload-box postpay-upload">
-              <input type="file" accept="image/*" multiple (change)="onPhotos($event)">
+              <input type="file" accept="image/jpeg,image/png,image/webp" multiple (change)="onPhotos($event)">
               <span>＋</span>
               <strong>Seleccionar fotos de referencia</strong>
-              <small>Hasta 6 archivos · se guardan de forma segura</small>
+              <small>Hasta 6 fotos JPEG, PNG o WebP · 5 MB por foto · máximo 4096 px por lado</small>
             </label>
             @if (photoNames().length) {
               <ul class="file-list">

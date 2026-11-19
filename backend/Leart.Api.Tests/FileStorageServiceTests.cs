@@ -73,7 +73,7 @@ public class FileStorageServiceTests : IDisposable
         var formFile = new FormFile(stream, 0, content.Length, "file", "script.sh");
 
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentException>(() =>
+        await Assert.ThrowsAsync<UploadValidationException>(() =>
             _storageService.SaveFileAsync(formFile, "orders"));
     }
 
@@ -81,7 +81,7 @@ public class FileStorageServiceTests : IDisposable
     public async Task SaveFileAsync_AcceptsValidImage()
     {
         // Arrange
-        var content = new byte[] { 0x89, 0x50, 0x4E, 0x47 }; // PNG magic
+        var content = TestImages.Png();
         var stream = new MemoryStream(content);
         var formFile = new FormFile(stream, 0, content.Length, "file", "photo.png");
 
@@ -93,7 +93,7 @@ public class FileStorageServiceTests : IDisposable
         Assert.False(File.Exists(Path.Combine(_tempDir, "wwwroot", relativePath.TrimStart('/'))));
         using (var stored = _storageService.OpenOrderFile(relativePath)) Assert.NotNull(stored);
         Assert.EndsWith(".png", storedName);
-        Assert.Equal(content.Length, sizeBytes);
+        Assert.InRange(sizeBytes, 1, ImageUpload.MaxFileBytes);
 
         // Delete test
         var deleted = _storageService.DeleteFile(relativePath);
@@ -116,8 +116,17 @@ public class FileStorageServiceTests : IDisposable
     {
         var configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?> { ["Storage:MaxOrderBytes"] = "3" }).Build();
         var service = new FileStorageService(new TestWebHostEnvironment { ContentRootPath = _tempDir, WebRootPath = Path.Combine(_tempDir, "wwwroot") }, configuration);
-        using var content = new MemoryStream(new byte[4]);
-        await Assert.ThrowsAsync<StorageQuotaExceededException>(() => service.SaveFileAsync(new FormFile(content, 0, 4, "photos", "photo.png"), "orders"));
+        using var content = new MemoryStream(TestImages.Png());
+        await Assert.ThrowsAsync<StorageQuotaExceededException>(() => service.SaveFileAsync(new FormFile(content, 0, content.Length, "photos", "photo.png"), "orders"));
         Assert.Empty(Directory.GetFiles(Path.Combine(_tempDir, "storage", "orders")));
+    }
+    [Fact]
+    public async Task FakeTruncatedAndOversizedImagesAreRejected()
+    {
+        foreach (var bytes in new[] { "not-an-image"u8.ToArray(), TestImages.Png()[..30], TestImages.Png(5000, 1) })
+        {
+            using var content = new MemoryStream(bytes);
+            await Assert.ThrowsAsync<UploadValidationException>(() => _storageService.SaveFileAsync(new FormFile(content, 0, content.Length, "photos", "photo.png"), "orders"));
+        }
     }
 }

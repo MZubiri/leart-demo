@@ -72,7 +72,7 @@ Confirmado significa reproducido en el entorno local descrito o demostrado por u
 | H03 | **P1 · Alto:** exposición de información interna. | Completado | R007 |
 | H04 | **P1 · Alto:** abuso del login y almacenamiento. | Completado | R009 |
 | H05 | **P1 · Alto:** sesiones comprometidas siguen vigentes. | Completado | R011 |
-| H06 | **P2 · Medio:** archivos no verificados. | La validación comprueba extensión y tamaño, pero no el contenido real: [FileStorageService.cs:43](backend/Leart.Api/Services/FileStorageService.cs#L43). Un archivo de texto renombrado a JPG fue aceptado y servido. | Validar y decodificar imágenes, limitar dimensiones y normalizarlas. Definir una política separada para PDF si realmente se necesita. **1–2 d**. |
+| H06 | **P2 · Medio:** archivos no verificados. | Completado | R013 |
 
 ### Integridad y comportamiento comercial
 
@@ -333,6 +333,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 24/24 pruebas backend pasan. HTTP: token vigente 200; tras cambio 401; login con clave nueva 200; eliminar cuenta revoca el token. Build Angular y diff correctos.
 - **Pendientes o límites:** Sin pendientes de revocación en este alcance; O04 sobre cookies sigue opcional.
 - **Próximo paso:** H06: validar y normalizar el contenido real de las imágenes.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R012 — 2026-11-18 — H06 — Inicio de validación y normalización de imágenes
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H06; La validación comprueba extensión y tamaño, pero no el contenido real: [FileStorageService.cs:43](backend/Leart.Api/Services/FileStorageService.cs#L43). Un archivo de texto renombrado a JPG fue aceptado y servido. → En curso.
+- **Avance y alcance:** Se aceptarán únicamente JPEG, PNG y WebP decodificables. Se limitarán bytes y dimensiones y se guardará una imagen PNG normalizada sin metadatos del cliente. PDF y animaciones no forman parte del formulario de fotos.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** Verificada la compatibilidad net9.0 y licencia MIT de SkiaSharp 4.157.0 en los metadatos oficiales NuGet.
+- **Pendientes o límites:** Pruebas de contenido falso, truncado, dimensiones y funcionamiento nativo en Linux.
+- **Próximo paso:** Validar almacenamiento y descarga usando imágenes reales.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R013 — 2026-11-18 — H06 — Decodificación real y normalización de fotografías
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H06; En curso → Completado.
+- **Avance y alcance:** JPEG, PNG y WebP estáticos se decodifican con SkiaSharp y se recodifican a PNG sin metadatos del cliente. Máximo 5 MiB de entrada y salida, 4096 píxeles por lado y 12 MP; como máximo dos decodificaciones simultáneas. Se rechazan contenido falso, archivos truncados, formatos activos y animaciones. El MIME persistido se fija en image/png.
+- **Archivos y evidencia:** [ImageUpload.cs](backend/Leart.Api/Services/ImageUpload.cs), [FileStorageService.cs](backend/Leart.Api/Services/FileStorageService.cs), [UploadValidationException.cs](backend/Leart.Api/Services/UploadValidationException.cs), [Leart.Api.csproj](backend/Leart.Api/Leart.Api.csproj), [FileStorageServiceTests.cs](backend/Leart.Api.Tests/FileStorageServiceTests.cs), [AttachmentAccessTests.cs](backend/Leart.Api.Tests/AttachmentAccessTests.cs), [personalization.page.html](src/app/pages/personalization.page.html), [README.md](README.md)
+- **Validación:** 25/25 pruebas backend pasan en Linux con la biblioteca nativa, incluidas decodificación normalizada, rechazo de texto renombrado, PNG truncado y ancho excesivo, cuota y descarga autenticada de una imagen real. Sin diagnósticos en los archivos cambiados; diff correcto.
+- **Pendientes o límites:** H08 debe hacer explícito el rechazo del lote completo: el controlador previo todavía ignora individualmente errores de adjuntos. No se reinterpretaron adjuntos históricos.
+- **Próximo paso:** H07: corregir la confirmación falsa del formulario y añadir regresiones frontend.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada
