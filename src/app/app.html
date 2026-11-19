@@ -126,8 +126,8 @@
   <aside class="cart-drawer" aria-label="Cotización">
     <div class="cart-head"><div><small>TU SELECCIÓN</small><h2>Cotización ({{store.cartCount()}})</h2></div><button type="button" aria-label="Cerrar cotización" (click)="store.closeCart()">×</button></div>
     <div class="cart-content">
-      @for (line of store.cartLines(); track line.product.id) {
-        <article class="cart-line"><img [src]="line.product.image" [alt]="line.product.name"><div><strong>{{line.product.name}}</strong><small>{{line.product.detail}}</small><div class="mini-counter"><button type="button" (click)="store.changeQuantity(line.product.id, -1)">−</button><span>{{line.quantity}}</span><button type="button" (click)="store.changeQuantity(line.product.id, 1)">+</button></div><textarea rows="2" placeholder="Notas para esta selección" [ngModel]="line.note" (ngModelChange)="store.updateNote(line.product.id, $event)"></textarea></div></article>
+      @for (line of store.cartLines(); track line.id) {
+        <article class="cart-line"><img [src]="line.product.image" [alt]="line.product.name"><div><strong>{{line.product.name}}</strong><small>{{line.product.detail}}</small><p>{{store.configurationSummary(line.configuration)}}</p><div class="mini-counter"><button type="button" (click)="store.changeQuantity(line.id, -1)">−</button><span>{{line.quantity}}</span><button type="button" (click)="store.changeQuantity(line.product.id, 1)">+</button></div><textarea rows="2" placeholder="Notas para esta selección" [ngModel]="line.note" (ngModelChange)="store.updateNote(line.id, $event)"></textarea></div></article>
       } @empty {
         <div class="cart-empty"><span>□</span><h3>Tu cotización está vacía</h3><p>Explora el catálogo o arma una idea guiada para enviarla a Leart.</p><a routerLink="/catalogo" (click)="store.closeCart()">Ir al catálogo</a></div>
       }

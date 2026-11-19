@@ -84,7 +84,7 @@ Confirmado significa reproducido en el entorno local descrito o demostrado por u
 | H10 | **P1 · Alto:** se revierten cambios administrativos. | Completado | R021 |
 | H11 | **P1 · Alto:** editor de productos defectuoso. | Completado | R023 |
 | H12 | **P1 · Alto:** editar destruye metadatos. | Completado | R025 |
-| H13 | **P1 · Alto:** mezcla de configuraciones en una cotización. | La selección se identifica únicamente por producto y la nota nueva reemplaza la anterior: [store.service.ts:61](src/app/store/store.service.ts#L61). Agregar un cuadro S y otro M terminó como dos unidades con la configuración M. | Modelar líneas con identificador propio y configuración estructurada. Agrupar solo configuraciones equivalentes y migrar la selección guardada. **1 d**. |
+| H13 | **P1 · Alto:** mezcla de configuraciones en una cotización. | Completado | R027 |
 | H14 | **P1 · Alto:** precios y capacidades inconsistentes. | El precio usa tablas locales y prioriza el grupo del producto sobre la variante elegida: [pricing.ts:73](src/app/store/pricing.ts#L73), [pricing.ts:106](src/app/store/pricing.ts#L106). Elegir Grupo 4 en el flujo genérico calculó 130.000 COP en lugar de los 165.000 de su tabla. Los límites usan valores de categoría en [app.ts:109](src/app/app.ts#L109): Mini Hockey declara máximo cuatro en [DbInitializer.cs:1813](backend/Leart.Api/Data/DbInitializer.cs#L1813), pero el cotizador puede permitir ocho. | Establecer una fuente única de precios, variantes y restricciones. Usar identificadores estables y respetar mínimos, máximos y permisos de extras por producto. **3–5 d**. |
 | H15 | **P1 · Alto:** catálogo incorrecto ante vacío o fallo. | Una respuesta válida `[]` se ignora en [products.service.ts:20](src/app/core/services/products.service.ts#L20); en navegador siguieron apareciendo 75 productos. Ante fallos de BD, la API entrega el catálogo inicial en [PublicController.cs:63](backend/Leart.Api/Controllers/PublicController.cs#L63), que incluye un producto inactivo. La cotización recupera productos ausentes desde los datos locales: [store.service.ts:30](src/app/store/store.service.ts#L30). | Distinguir vacío, carga y fallo; respetar siempre la disponibilidad actual y evitar recuperar productos retirados sin validación. **1–2 d**. |
 | H16 | **P2 · Medio:** validaciones insuficientes en la API. | Los DTO no expresan límites de longitud y dominio: [OrderDtos.cs:3](backend/Leart.Api/DTOs/OrderDtos.cs#L3). El cálculo de máximos permite inconsistencias en [AdminProductsController.cs:75](backend/Leart.Api/Controllers/AdminProductsController.cs#L75): se aceptó un producto con mínimo 1 y máximo −5. Se admiten estados arbitrarios en [AdminOrdersController.cs:106](backend/Leart.Api/Controllers/AdminOrdersController.cs#L106). | Validar longitudes, cantidades, categorías, estados y relaciones entre campos antes de persistir. Devolver errores 4xx claros. **1–2 d**. |
@@ -487,6 +487,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 6/6 pruebas frontend pasan, incluida modificación exclusiva del nombre preservando grupo, precio, código, orden y listas originales. Build producción correcto; sin diagnósticos ni errores de diff.
 - **Pendientes o límites:** H14 alineará las reglas de cálculo con los metadatos comerciales; H16 ampliará validación de entradas en la API.
 - **Próximo paso:** H13: separar líneas por configuración y migrar la selección guardada.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R026 — 2026-11-18 — H13 — Inicio de líneas independientes de cotización
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H13; La selección se identifica únicamente por producto y la nota nueva reemplaza la anterior: [store.service.ts:61](src/app/store/store.service.ts#L61). Agregar un cuadro S y otro M terminó como dos unidades con la configuración M. → En curso.
+- **Avance y alcance:** Se modelará cada selección con ID propio y configuración estructurada, agrupando solo elecciones idénticas y migrando las selecciones antiguas sin perder sus notas.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H12 confirmado. Se probarán variantes S/M, agrupación equivalente, edición de una sola línea y migración.
+- **Pendientes o límites:** Implementación de persistencia versionada, resumen y pruebas.
+- **Próximo paso:** Verificar que WhatsApp mantenga los detalles de cada variante.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R027 — 2026-11-18 — H13 — Selecciones con identidad y configuración propias
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H13; En curso → Completado.
+- **Avance y alcance:** Cada línea tiene ID aleatorio y configuración estructurada; solo se agrupan producto, configuración, estimado y notas equivalentes. Cantidad y notas se editan por línea. El resumen y WhatsApp mantienen cada variante. La persistencia v2 migra cantidades y notas antiguas, y descarta entradas malformadas sin romper el flujo.
+- **Archivos y evidencia:** [store.service.ts](src/app/store/store.service.ts), [store.service.spec.ts](src/app/store/store.service.spec.ts), [app.ts](src/app/app.ts), [app.html](src/app/app.html)
+- **Validación:** 9/9 pruebas frontend y build producción pasan. Se comprobó S/M en líneas separadas, agrupación de una selección idéntica, cambios aislados, mensaje WhatsApp y migración v1→v2. Tras ajustar generación de IDs compatible con HTTP, las tres pruebas enfocadas de cotización vuelven a pasar. Sin diagnósticos ni errores de diff.
+- **Pendientes o límites:** No es posible recuperar configuraciones ya sobrescritas por versiones anteriores; se conservan las notas que todavía existan.
+- **Próximo paso:** H14: centralizar tarifas y respetar capacidades y extras por producto.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

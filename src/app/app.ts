@@ -257,26 +257,10 @@ export class App {
 
   addCustom(): void {
     const product = this.selectedProduct() ?? this.store.products[0];
-    const extras = [
-      this.pets() ? `${this.pets()} mascota(s)` : '',
-      this.accessories() ? 'con accesorios' : '',
-    ]
-      .filter(Boolean)
-      .join(', ');
-
-    const priceText = `Estimado: ${this.formattedEstimatedPrice()}`;
-
-    const note = [
-      `${this.selectedVariant()}, ${this.figures()} minifigura(s)`,
-      extras,
-      priceText,
-      this.occasion(),
-      this.notes(),
-    ]
-      .filter(Boolean)
-      .join(' · ');
-
     this.store.closeCustomizer();
-    this.store.add(product, note);
+    this.store.add(product, this.notes(), {
+      variant: this.selectedVariant(), figures: this.figures(), pets: this.pets(),
+      accessories: this.accessories(), occasion: this.occasion(), estimatedPrice: this.priceQuote().totalPrice,
+    });
   }
 }

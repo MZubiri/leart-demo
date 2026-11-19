@@ -2,8 +2,26 @@ import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { ProductsService } from '../core/services/products.service';
 import { SettingsService } from '../core/services/settings.service';
 import { PRODUCTS, Product } from './products';
+import { formatCop } from './pricing';
 
-export interface CartLine {
+export interface CartConfiguration {
+  variant: string;
+  figures: number;
+  pets: number;
+  accessories: boolean;
+  occasion: string;
+  estimatedPrice?: number | null;
+}
+
+interface StoredCartLine {
+  productId: string;
+  quantity: number;
+  note: string;
+  configuration?: CartConfiguration;
+}
+
+export interface CartLine extends StoredCartLine {
+  id: string;
   product: Product;
   quantity: number;
   note: string;
@@ -19,7 +37,7 @@ export class StoreService {
     return this.productsSignal();
   }
 
-  readonly cart = signal<Record<string, { quantity: number; note: string }>>(this.loadCart());
+  readonly cart = signal<Record<string, StoredCartLine>>(this.loadCart());
   readonly cartOpen = signal(false);
   readonly customizerOpen = signal(false);
   readonly customizerProduct = signal<Product | null>(null);
@@ -27,8 +45,8 @@ export class StoreService {
   readonly cartLines = computed<CartLine[]>(() =>
     Object.entries(this.cart())
       .map(([id, line]) => {
-        const found = this.productsSignal().find((p) => p.id === id) ?? PRODUCTS.find((p) => p.id === id);
-        return { product: found!, ...line };
+        const found = this.productsSignal().find((p) => p.id === line.productId) ?? PRODUCTS.find((p) => p.id === line.productId);
+        return { id, product: found!, ...line };
       })
       .filter((line) => line.product),
   );
@@ -36,41 +54,63 @@ export class StoreService {
   readonly cartCount = computed(() => this.cartLines().reduce((total, line) => total + line.quantity, 0));
 
   constructor() {
-    effect(() => localStorage.setItem('leart-cart', JSON.stringify(this.cart())));
+    effect(() => {
+      try { localStorage.setItem('leart-cart', JSON.stringify({ version: 2, lines: this.cart() })); } catch { /* La selección en memoria sigue disponible. */ }
+    });
   }
 
-  private loadCart(): Record<string, { quantity: number; note: string }> {
+  private loadCart(): Record<string, StoredCartLine> {
     try {
-      const saved = JSON.parse(localStorage.getItem('leart-cart') || '{}') as Record<string, { quantity: number; note: string }>;
+      const saved = JSON.parse(localStorage.getItem('leart-cart') || '{}');
+      const source = saved?.version === 2 ? saved.lines : saved;
+      if (!source || typeof source !== 'object' || Array.isArray(source)) return {};
       const aliases: Record<string, string> = {
-        'cuadro-personalizado': 'cuadro-1-persona',
-        'box-taller': 'caja-taller',
-        'box-fitness': 'caja-fitness',
-        'box-buena-vibra': 'caja-buena-vibra',
+        'cuadro-personalizado': 'cuadro-1-persona', 'box-taller': 'caja-taller',
+        'box-fitness': 'caja-fitness', 'box-buena-vibra': 'caja-buena-vibra',
       };
-      return Object.fromEntries(
-        Object.entries(saved)
-          .map(([id, line]) => [aliases[id] || id, line])
-          .filter(([id]) => (this.productsSignal().some((p) => p.id === id) || PRODUCTS.some((p) => p.id === id))),
-      );
-    } catch {
-      return {};
-    }
+      const result: Record<string, StoredCartLine> = Object.create(null);
+      for (const [id, value] of Object.entries(source)) {
+        if (!value || typeof value !== 'object') continue;
+        const line = value as Partial<StoredCartLine>;
+        const productId = saved.version === 2 ? line.productId : (aliases[id] || id);
+        if (typeof productId !== 'string' || !Number.isSafeInteger(line.quantity) || line.quantity! < 1
+          || typeof line.note !== 'string') continue;
+        const configuration = line.configuration;
+        if (configuration && (typeof configuration.variant !== 'string' || !Number.isInteger(configuration.figures)
+          || configuration.figures < 1 || !Number.isInteger(configuration.pets) || configuration.pets < 0
+          || typeof configuration.accessories !== 'boolean' || typeof configuration.occasion !== 'string')) continue;
+        result[id] = { productId, quantity: line.quantity!, note: line.note, configuration };
+      }
+      return result;
+    } catch { return {}; }
   }
 
-  add(product: Product, note = ''): void {
-    this.cart.update((cart) => ({
-      ...cart,
-      [product.id]: {
-        quantity: (cart[product.id]?.quantity || 0) + 1,
-        note: note || cart[product.id]?.note || '',
-      },
-    }));
+  add(product: Product, note = '', configuration?: CartConfiguration): void {
+    const signature = (config?: CartConfiguration) => config ? JSON.stringify([
+      config.variant, config.figures, config.pets, config.accessories, config.occasion, config.estimatedPrice,
+    ]) : '';
+    this.cart.update((cart) => {
+      const existing = Object.entries(cart).find(([, line]) => line.productId === product.id
+        && line.note === note && signature(line.configuration) === signature(configuration));
+      const id = existing?.[0] ?? Array.from(crypto.getRandomValues(new Uint32Array(4)), (value) => value.toString(16).padStart(8, '0')).join('');
+      return { ...cart, [id]: { productId: product.id, quantity: (existing?.[1].quantity ?? 0) + 1,
+        note, configuration: configuration ? { ...configuration } : undefined } };
+    });
     this.openCart();
+  }
+
+  configurationSummary(configuration?: CartConfiguration): string {
+    if (!configuration) return '';
+    return [configuration.variant, configuration.figures + ' minifigura(s)',
+      configuration.pets ? configuration.pets + ' mascota(s)' : '',
+      configuration.accessories ? 'Consultar accesorios' : '', configuration.occasion,
+      configuration.estimatedPrice != null ? 'Estimado: ' + formatCop(configuration.estimatedPrice) : '',
+    ].filter(Boolean).join(' · ');
   }
 
   changeQuantity(id: string, change: number): void {
     this.cart.update((cart) => {
+      if (!cart[id] || !Number.isSafeInteger(change)) return cart;
       const updated = { ...cart };
       const next = (updated[id]?.quantity || 0) + change;
       if (next <= 0) delete updated[id];
@@ -80,7 +120,7 @@ export class StoreService {
   }
 
   updateNote(id: string, note: string): void {
-    this.cart.update((cart) => ({ ...cart, [id]: { ...cart[id], note } }));
+    this.cart.update((cart) => cart[id] ? ({ ...cart, [id]: { ...cart[id], note } }) : cart);
   }
 
   clear(): void {
@@ -112,7 +152,8 @@ export class StoreService {
     const lines = this.cartLines().map(
       (line) =>
         `• ${line.quantity}x ${line.product.name} — ${line.product.category} (${line.product.detail})${
-          line.note ? `\n  Detalles: ${line.note}` : ''
+          [this.configurationSummary(line.configuration), line.note].filter(Boolean).length
+            ? `\n  Detalles: ${[this.configurationSummary(line.configuration), line.note].filter(Boolean).join(' · ')}` : ''
         }`,
     );
 
