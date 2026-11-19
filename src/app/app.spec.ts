@@ -37,6 +37,14 @@ describe('Guided quote', () => {
     expect(store.cartLines()[0].quantity).toBe(2);
   });
 
+  it('exposes an unavailable contact as a disabled link without href', async () => {
+    TestBed.overrideProvider(SettingsService, { useValue: { settings: signal({ announcementText: '', instagramUrl: '' }), canContact: signal(false), buildQuoteMessage: (lines: string) => lines, buildWhatsAppUrl: () => '' } });
+    const fixture = TestBed.createComponent(App); fixture.detectChanges();
+    fixture.componentInstance.store.add(PRODUCTS[0], 'Nota'); await fixture.whenStable();
+    const link = fixture.nativeElement.querySelector('.cart-footer a') as HTMLAnchorElement;
+    expect(link.getAttribute('href')).toBeNull(); expect(link.getAttribute('aria-disabled')).toBe('true');
+  });
+
   it('stops the figure counter at the specific product maximum', async () => {
     const fixture = TestBed.createComponent(App); fixture.detectChanges();
     const app = fixture.componentInstance;

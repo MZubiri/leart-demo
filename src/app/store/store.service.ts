@@ -150,23 +150,19 @@ export class StoreService {
 
   openCart(): void {
     this.cartOpen.set(true);
-    document.body.style.overflow = 'hidden';
   }
 
   closeCart(): void {
     this.cartOpen.set(false);
-    document.body.style.overflow = '';
   }
 
   openCustomizer(product: Product | null = null): void {
     this.customizerProduct.set(product);
     this.customizerOpen.set(true);
-    document.body.style.overflow = 'hidden';
   }
 
   closeCustomizer(): void {
     this.customizerOpen.set(false);
-    document.body.style.overflow = '';
   }
 
   whatsappUrl(): string {

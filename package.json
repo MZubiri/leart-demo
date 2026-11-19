@@ -9,7 +9,8 @@
     "test": "ng test",
     "prebuild": "node scripts/optimize-images.cjs",
     "pretest": "node scripts/optimize-images.cjs",
-    "prestart": "node scripts/optimize-images.cjs"
+    "prestart": "node scripts/optimize-images.cjs",
+    "test:keyboard": "node scripts/test-keyboard.cjs"
   },
   "prettier": {
     "printWidth": 100,
@@ -26,6 +27,7 @@
   "private": true,
   "packageManager": "npm@11.6.2",
   "dependencies": {
+    "@angular/cdk": "^21.2.14",
     "@angular/common": "^21.0.0",
     "@angular/compiler": "^21.0.0",
     "@angular/core": "^21.0.0",

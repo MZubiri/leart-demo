@@ -1,3 +1,4 @@
+import { ModalDialogDirective } from './shared/modal-dialog.directive';
 import { OptimizedImageDirective } from './shared/optimized-image.directive';
 import { CommonModule } from '@angular/common';
 import { Component, computed, effect, inject, signal, untracked, ViewEncapsulation } from '@angular/core';
@@ -12,7 +13,7 @@ import { StoreService } from './store/store.service';
 
 @Component({
   selector: 'app-root',
-  imports: [OptimizedImageDirective, CommonModule, FormsModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [ModalDialogDirective, OptimizedImageDirective, CommonModule, FormsModule, RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   encapsulation: ViewEncapsulation.None,

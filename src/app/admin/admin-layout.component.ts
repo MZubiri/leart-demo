@@ -58,11 +58,11 @@ import { SettingsService } from '../core/services/settings.service';
         <header class="admin-topbar">
           <div class="topbar-left">
             <span class="whatsapp-status">
-              🟢 WhatsApp activo: <strong>+{{ settings.settings().whatsAppNumber }}</strong>
+              @if (settings.canContact()) { WhatsApp configurado: <strong>+{{ settings.settings().whatsAppNumber }}</strong> } @else { Contacto no disponible }
             </span>
           </div>
           <div class="topbar-right">
-            <a [href]="'https://wa.me/' + settings.settings().whatsAppNumber" target="_blank" class="test-wa-btn">
+            <a [attr.href]="settings.canContact() ? 'https://wa.me/' + settings.settings().whatsAppNumber : null" [attr.aria-disabled]="!settings.canContact()" target="_blank" class="test-wa-btn">
               Probar chat WhatsApp ↗
             </a>
           </div>

@@ -21,6 +21,8 @@ jobs:
       - run: npm ci
       - run: npm test -- --watch=false
       - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:keyboard
       - run: npm audit --omit=dev --audit-level=moderate
       - run: npm audit --audit-level=high
   backend-and-infrastructure:

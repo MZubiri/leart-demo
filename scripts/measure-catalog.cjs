@@ -8,7 +8,8 @@ const settings = { storeName: 'Leart', whatsAppNumber: '573001112233', announcem
 const mime = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html', '.jpg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml' };
 const server = http.createServer((request, response) => {
   const pathname = new URL(request.url, 'http://localhost').pathname;
-  const api = { '/api/public/products': catalog.PRODUCTS.filter(product => product.isActive !== false), '/api/public/settings': settings, '/api/public/pricing': require('../backend/Leart.Api/Data/pricing-rules.json') };
+  const order = { id: 1, orderReference: 'KEYBOARD-TEST', customerName: 'Test', phone: '573001112233', productTitle: 'Cuadro', status: 'Pendiente', createdAt: '2026-01-01T12:00:00Z', attachmentCount: 0, peopleDetails: 'Dos figuras', story: '', phrase: '', requirements: '', attachments: [] };
+  const api = { '/api/admin/products': catalog.PRODUCTS, '/api/admin/orders': { items: [order], total: 1, page: 1, pageSize: 20 }, '/api/admin/orders/1': order, '/api/admin/settings': { id: 1, ...settings, updatedAt: '2026-01-01' }, '/api/public/products': catalog.PRODUCTS.filter(product => product.isActive !== false), '/api/public/settings': settings, '/api/public/pricing': require('../backend/Leart.Api/Data/pricing-rules.json') };
   response.setHeader('Cache-Control', 'no-store');
   if (Object.hasOwn(api, pathname)) { response.setHeader('Content-Type', 'application/json'); return response.end(JSON.stringify(api[pathname])); }
   let file = path.resolve(root, '.' + decodeURIComponent(pathname));
@@ -16,7 +17,7 @@ const server = http.createServer((request, response) => {
   if (!fs.existsSync(file) || !fs.statSync(file).isFile()) file = path.join(root, 'index.html');
   response.setHeader('Content-Type', mime[path.extname(file)] || 'application/octet-stream'); response.end(fs.readFileSync(file));
 });
-(async () => {
+if (require.main === module) (async () => {
   let browser;
   try {
     await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
@@ -40,3 +41,5 @@ const server = http.createServer((request, response) => {
     })));
   } finally { if (browser) await browser.close(); await new Promise(resolve => server.close(resolve)); }
 })().catch(error => { console.error(error.message); process.exitCode = 1; });
+
+module.exports = { server };

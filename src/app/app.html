@@ -2,8 +2,8 @@
   <div class="announcement">{{settings().announcementText}}</div>
   <header class="site-header">
     <a class="brand" routerLink="/" aria-label="Leart inicio" (click)="menuOpen.set(false)"><span class="brand-main">LEART</span><span class="brand-dot">.</span><span class="brand-store">STORE</span></a>
-    <button class="menu-button" type="button" aria-label="Abrir menú" (click)="menuOpen.update(value => !value)"><span></span><span></span></button>
-    <nav [class.is-open]="menuOpen()">
+    <button class="menu-button" type="button" aria-label="Abrir menú" [attr.aria-expanded]="menuOpen()" aria-controls="store-navigation" (click)="menuOpen.update(value => !value)"><span></span><span></span></button>
+    <nav id="store-navigation" [class.is-open]="menuOpen()">
       <a routerLink="/catalogo" routerLinkActive="active" (click)="menuOpen.set(false)">Catálogo</a>
       <a routerLink="/" fragment="como-funciona" (click)="menuOpen.set(false)">Cómo comprar</a>
       <a routerLink="/personalizacion" routerLinkActive="active" (click)="menuOpen.set(false)">Ya hice mi pedido</a>
@@ -32,8 +32,8 @@
 }
 
 @if (store.customizerOpen()) {
-  <div class="modal-backdrop" (click)="store.closeCustomizer()">
-    <section class="customizer quote-builder" role="dialog" aria-modal="true" aria-label="Armar cotización" (click)="$event.stopPropagation()">
+  <div class="modal-backdrop" data-modal-layer (click)="store.closeCustomizer()">
+    <section leartModal (modalDismiss)="store.closeCustomizer()" class="customizer quote-builder" aria-label="Armar cotización" (click)="$event.stopPropagation()">
       <button class="modal-close" type="button" aria-label="Cerrar" (click)="store.closeCustomizer()">×</button>
       <div class="customizer-head">
         <div class="eyebrow"><span></span> Cotizador visual</div>
@@ -45,7 +45,7 @@
         @if (pricing.error()) { <p role="alert">{{pricing.error()}}</p><button type="button" (click)="pricing.refresh()">Reintentar tarifas</button> }
         @else if (!pricing.rules()) { <p role="status">Cargando tarifas y presentaciones...</p> }
         @if (activeStep() === 1) {
-          <h3>1. ¿Qué quieres regalar?</h3>
+          <h3 tabindex="-1" data-step-heading>1. ¿Qué quieres regalar?</h3>
           <p class="step-help">Elige una de las cinco líneas de Leart.</p>
           <div class="visual-options format-options quote-formats">
             @for (option of formats; track option.name) {
@@ -56,7 +56,7 @@
           </div>
         }
         @if (activeStep() === 2) {
-          <h3>2. Define la presentación</h3>
+          <h3 tabindex="-1" data-step-heading>2. Define la presentación</h3>
           <p class="step-help">Solo mostramos combinaciones que Leart puede revisar y cotizar.</p>
           @if (selectedCategory() === 'Cuadros' && cuadroProducts().length) {
             <label>Tipo de cuadro</label>
@@ -76,8 +76,8 @@
             }
           </div>
           <div class="details-row quote-details">
-            <div><label>Minifiguras</label><div class="counter"><button type="button" (click)="changeFigures(-1)" [disabled]="figures() <= minFigures()">−</button><strong>{{figures()}}</strong><button type="button" (click)="changeFigures(1)" [disabled]="!canIncreaseFigures()">+</button></div><small>Hasta {{maxFigures()}} minifiguras en esta presentación.</small></div>
-            <div><label>Mascotas</label><div class="counter"><button type="button" (click)="changePets(-1)" [disabled]="pets() === 0">−</button><strong>{{pets()}}</strong><button type="button" (click)="changePets(1)" [disabled]="pets() >= maxPets()">+</button></div><small>Hasta {{maxPets()}} mascotas con las figuras seleccionadas.</small></div>
+            <div><label>Minifiguras</label><div class="counter"><button type="button" aria-label="Quitar una minifigura" (click)="changeFigures(-1)" [disabled]="figures() <= minFigures()">−</button><strong>{{figures()}}</strong><button type="button" aria-label="Agregar una minifigura" (click)="changeFigures(1)" [disabled]="!canIncreaseFigures()">+</button></div><small>Hasta {{maxFigures()}} minifiguras en esta presentación.</small></div>
+            <div><label>Mascotas</label><div class="counter"><button type="button" aria-label="Quitar una mascota" (click)="changePets(-1)" [disabled]="pets() === 0">−</button><strong>{{pets()}}</strong><button type="button" aria-label="Agregar una mascota" (click)="changePets(1)" [disabled]="pets() >= maxPets()">+</button></div><small>Hasta {{maxPets()}} mascotas con las figuras seleccionadas.</small></div>
           </div>
           <div class="capacity-meter"><span><b>{{capacityUsed()}}</b> de {{totalCapacity()}} espacios usados</span><i><b [style.width.%]="capacityUsed() / (totalCapacity() || 1) * 100"></b></i><small>La capacidad depende de la presentación y de la combinación elegida.</small></div>
           <label class="check-option"><input type="checkbox" [disabled]="!selectedProduct()?.allowsAccessories" [ngModel]="accessories()" (ngModelChange)="accessories.set($event)"><span>Quiero consultar por accesorios adicionales</span></label>
@@ -95,12 +95,12 @@
           <p class="rule-note"><b>Regla:</b> {{selectedProduct()?.rule}}</p>
         }
         @if (activeStep() === 3) {
-          <h3>3. Cuéntanos lo esencial</h3>
+          <h3 tabindex="-1" data-step-heading>3. Cuéntanos lo esencial</h3>
           <p class="step-help">Aquí preparas la cotización. Las fotos y elecciones detalladas se solicitan después del pago.</p>
-          <label for="occasion">Ocasión</label>
-          <select id="occasion" [ngModel]="occasion()" (ngModelChange)="occasion.set($event)">@for (item of occasions; track item) {<option [value]="item">{{item}}</option>}<option value="Otro momento">Otro momento</option></select>
-          <label for="notes">Idea, nombres o requerimientos especiales</label>
-          <textarea id="notes" rows="4" placeholder="Ej: regalo para una pareja, incluir un perrito blanco y elementos de ciclismo" [ngModel]="notes()" (ngModelChange)="notes.set($event)"></textarea>
+          <label for="customizer-occasion">Ocasión</label>
+          <select id="customizer-occasion" [ngModel]="occasion()" (ngModelChange)="occasion.set($event)">@for (item of occasions; track item) {<option [value]="item">{{item}}</option>}<option value="Otro momento">Otro momento</option></select>
+          <label for="customizer-notes">Idea, nombres o requerimientos especiales</label>
+          <textarea id="customizer-notes" rows="4" placeholder="Ej: regalo para una pareja, incluir un perrito blanco y elementos de ciclismo" [ngModel]="notes()" (ngModelChange)="notes.set($event)"></textarea>
           <div class="summary-box">
             <div>
               <span>{{selectedCategory()}} · {{selectedVariant()}}</span>
@@ -124,8 +124,9 @@
 }
 
 @if (store.cartOpen()) {
+  <div data-modal-layer>
   <div class="cart-backdrop" (click)="store.closeCart()"></div>
-  <aside class="cart-drawer" aria-label="Cotización">
+  <aside leartModal (modalDismiss)="store.closeCart()" class="cart-drawer" aria-label="Cotización">
     <div class="cart-head"><div><small>TU SELECCIÓN</small><h2>Cotización ({{store.cartCount()}})</h2></div><button type="button" aria-label="Cerrar cotización" (click)="store.closeCart()">×</button></div>
     <div class="cart-content">
       @if (store.catalogLoading()) { <p role="status">Comprobando disponibilidad...</p> }
@@ -134,13 +135,14 @@
       @if (!store.quotationRulesReady()) { <p role="status">Esperando tarifas para revisar la selección.</p> }
       @else if (store.hasInvalidConfigurations()) { <p role="alert">Una selección ya no cumple las cantidades o extras permitidos. Retírala y vuelve a configurarla.</p> }
       @for (line of store.cartLines(); track line.id) {
-        <article class="cart-line"><img [leartImage]="line.product.image" [alt]="line.product.name"><div><strong>{{line.product.name}}</strong><small>{{line.product.detail}}</small><p>{{store.configurationSummary(line.configuration, line.product)}}</p><div class="mini-counter"><button type="button" (click)="store.changeQuantity(line.id, -1)">−</button><span>{{line.quantity}}</span><button type="button" (click)="store.changeQuantity(line.id, 1)">+</button></div><button type="button" (click)="store.changeQuantity(line.id, -line.quantity)">Quitar selección</button><textarea rows="2" placeholder="Notas para esta selección" [ngModel]="line.note" (ngModelChange)="store.updateNote(line.id, $event)"></textarea></div></article>
+        <article class="cart-line"><img [leartImage]="line.product.image" [alt]="line.product.name"><div><strong>{{line.product.name}}</strong><small>{{line.product.detail}}</small><p>{{store.configurationSummary(line.configuration, line.product)}}</p><div class="mini-counter"><button type="button" [attr.aria-label]="'Reducir cantidad de ' + line.product.name" (click)="store.changeQuantity(line.id, -1)">−</button><span>{{line.quantity}}</span><button type="button" [attr.aria-label]="'Aumentar cantidad de ' + line.product.name" (click)="store.changeQuantity(line.id, 1)">+</button></div><button type="button" (click)="store.changeQuantity(line.id, -line.quantity)">Quitar selección</button><textarea [attr.aria-label]="'Notas de ' + line.product.name" rows="2" placeholder="Notas para esta selección" [ngModel]="line.note" (ngModelChange)="store.updateNote(line.id, $event)"></textarea></div></article>
       } @empty {
         <div class="cart-empty"><span>□</span><h3>Tu cotización está vacía</h3><p>Explora el catálogo o arma una idea guiada para enviarla a Leart.</p><a routerLink="/catalogo" (click)="store.closeCart()">Ir al catálogo</a></div>
       }
     </div>
     @if (store.cartLines().length) {
-      <div class="cart-footer">@if (!settingsService.canContact()) { <p role="status">El canal de contacto de la tienda no está disponible en este momento.</p> }<p>Esta solicitud no genera un cobro. Leart confirmará disponibilidad, valor, envío y medios de pago por WhatsApp.</p><a [href]="store.whatsappUrl()" target="_blank" rel="noreferrer">Enviar cotización por WhatsApp <span>↗</span></a></div>
+      <div class="cart-footer">@if (!settingsService.canContact()) { <p role="status">El canal de contacto de la tienda no está disponible en este momento.</p> }<p>Esta solicitud no genera un cobro. Leart confirmará disponibilidad, valor, envío y medios de pago por WhatsApp.</p><a [attr.href]="store.whatsappUrl() || null" [attr.aria-disabled]="!store.whatsappUrl()" target="_blank" rel="noreferrer">Enviar cotización por WhatsApp <span>↗</span></a></div>
     }
   </aside>
+  </div>
 }

@@ -1,3 +1,4 @@
+import { ModalDialogDirective } from '../../shared/modal-dialog.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { httpErrorMessage } from '../../core/services/http-error';
 import { DatePipe } from '@angular/common';
@@ -8,7 +9,7 @@ import { AdminService, OrderAdmin, OrderSummary } from '../../core/services/admi
 @Component({
   selector: 'app-admin-orders',
   standalone: true,
-  imports: [DatePipe],
+  imports: [ModalDialogDirective, DatePipe],
   template: `
     <div class="orders-page">
       <div class="page-header">
@@ -89,7 +90,7 @@ import { AdminService, OrderAdmin, OrderSummary } from '../../core/services/admi
                     </td>
                     <td>
                       <select
-                        class="status-select"
+                        [attr.aria-label]="'Estado del pedido ' + order.orderReference" class="status-select"
                         [class]="'select-' + order.status.toLowerCase().replace(' ', '-')"
                         [value]="order.status" [disabled]="mutating() || loading() || !!loadError()"
                         (change)="onStatusChange(order, $any($event.target).value, $any($event.target))"
@@ -105,7 +106,7 @@ import { AdminService, OrderAdmin, OrderSummary } from '../../core/services/admi
                         <button type="button" class="btn-detail" (click)="openDetailModal(order)">
                           Ver detalles
                         </button>
-                        <button type="button" class="btn-delete" [disabled]="mutating() || loading() || !!loadError()" (click)="deleteOrder(order)">
+                        <button type="button" [attr.aria-label]="'Eliminar pedido ' + order.orderReference" class="btn-delete" [disabled]="mutating() || loading() || !!loadError()" (click)="deleteOrder(order)">
                           🗑️
                         </button>
                       </div>
@@ -127,14 +128,14 @@ import { AdminService, OrderAdmin, OrderSummary } from '../../core/services/admi
       @if (detailError()) { <p role="alert">{{ detailError() }}</p> }
       <!-- Detail & Photos Modal -->
       @if (activeOrder(); as o) {
-        <div class="modal-backdrop" (click)="closeDetailModal()">
-          <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-backdrop" data-modal-layer (click)="closeDetailModal()">
+          <div leartModal (modalDismiss)="closeDetailModal()" aria-labelledby="order-dialog-title" class="modal-card" (click)="$event.stopPropagation()">
             <div class="modal-header">
               <div>
-                <h2>Pedido: {{ o.orderReference }}</h2>
+                <h2 id="order-dialog-title">Pedido: {{ o.orderReference }}</h2>
                 <span class="subtitle">Registrado el {{ o.createdAt | date: 'medium' }}</span>
               </div>
-              <button type="button" class="close-btn" (click)="closeDetailModal()">×</button>
+              <button type="button" class="close-btn" aria-label="Cerrar diálogo" (click)="closeDetailModal()">×</button>
             </div>
 
             <div class="modal-body">

@@ -274,3 +274,27 @@ Se redujo aproximadamente91,7% la transferencia de imágenes. Una corrida por co
 no demuestra mejora de LCP; medir en hosting con datos reales de usuarios antes de
 atribuir cambios de experiencia a estas optimizaciones. El script verifica además que
 las imágenes solicitadas se decodifiquen correctamente.
+
+## Teclado y diálogos
+
+Cotizador, panel de cotización y diálogos de productos/pedidos gestionan el foco con
+Angular CDK: foco inicial dentro del diálogo, ciclo Tab/Shift+Tab, Escape y retorno al
+control de origen. Los cambios de paso conservan el foco dentro del cotizador. El fondo
+queda inerte y el scroll se restaura al cerrar la última capa. El guardado/upload en
+curso bloquea el cierre del editor para preservar el resultado de la operación.
+
+Los contadores, estados, notas y cargas de imagen tienen nombres accesibles. Ocasión
+del catálogo y del cotizador usan IDs distintos. Los enlaces sin contacto disponible
+carecen de href y anuncian su estado deshabilitado.
+
+```bash
+npm run build
+npx playwright install chromium
+npm run test:keyboard
+```
+
+La regresión de Chromium verifica los tres pasos, transición al panel, incremento de
+cantidad, creación/edición de productos, detalle de pedido, foco y teclado. Usa API
+controlada para aislar la interfaz; las pruebas backend/MySQL y smoke del runtime
+verifican por separado autorización, almacenamiento y migraciones. CI ejecuta ambas capas.
+No equivale a una certificación completa de accesibilidad ni a pruebas con lectores de pantalla.

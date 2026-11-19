@@ -1,3 +1,4 @@
+import { ModalDialogDirective } from '../../shared/modal-dialog.directive';
 import { Subscription } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { httpErrorMessage } from '../../core/services/http-error';
@@ -11,7 +12,7 @@ import { Category, Product } from '../../store/products';
 @Component({
   selector: 'app-admin-products',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [ModalDialogDirective, CommonModule, FormsModule],
   template: `
     <div class="products-page">
       <div class="page-header">
@@ -32,7 +33,7 @@ import { Category, Product } from '../../store/products';
       <div class="filter-bar">
         <div class="search-box">
           <span class="search-icon">🔍</span>
-          <input name="productControl1"
+          <input aria-label="Buscar productos" name="productControl1"
             type="text"
             placeholder="Buscar por nombre o detalle..."
             [ngModel]="searchTerm()"
@@ -121,11 +122,11 @@ import { Category, Product } from '../../store/products';
 
       <!-- Create / Edit Modal -->
       @if (modalOpen()) {
-        <div class="modal-backdrop" (click)="closeModal()">
-          <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-backdrop" data-modal-layer (click)="closeModal()">
+          <div leartModal (modalDismiss)="closeModal()" aria-labelledby="product-dialog-title" class="modal-card" (click)="$event.stopPropagation()">
             <div class="modal-header">
-              <h2>{{ isEditing() ? 'Editar Producto' : 'Crear Nuevo Producto' }}</h2>
-              <button type="button" class="close-btn" (click)="closeModal()">×</button>
+              <h2 id="product-dialog-title">{{ isEditing() ? 'Editar Producto' : 'Crear Nuevo Producto' }}</h2>
+              <button type="button" class="close-btn" aria-label="Cerrar diálogo" (click)="closeModal()">×</button>
             </div>
 
             <form (ngSubmit)="saveModalProduct()" class="modal-form">
@@ -191,9 +192,9 @@ import { Category, Product } from '../../store/products';
                 </div>
 
                 <div class="field-group full">
-                  <label>Imagen del Producto</label>
+                  <label for="product-image-url">Imagen del Producto</label>
                   <div class="image-upload-row">
-                    <input name="productControl2"
+                    <input id="product-image-url" name="productControl2"
                       type="text"
                       [ngModel]="formImage()"
                       (ngModelChange)="formImage.set($event)"
@@ -202,7 +203,7 @@ import { Category, Product } from '../../store/products';
                     />
                     <label class="btn-file-upload">
                       <span>📁 Subir Imagen</span>
-                      <input type="file" accept="image/*" (change)="onUploadFile($event)" style="display: none;" />
+                      <input type="file" aria-label="Subir imagen de producto JPEG PNG o WebP" accept="image/jpeg,image/png,image/webp" (change)="onUploadFile($event)" style="position:absolute;width:1px;height:1px;opacity:0;" />
                     </label>
                   </div>
                   @if (formImage()) {
@@ -606,6 +607,7 @@ import { Category, Product } from '../../store/products';
       font-size: 0.88rem;
       cursor: pointer;
     }
+    .btn-file-upload:focus-within { outline: 3px solid #2563eb; outline-offset: 3px; }
     .btn-submit:hover:not(:disabled) { background: #232d36; }
     .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
   `],

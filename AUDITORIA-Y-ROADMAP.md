@@ -173,7 +173,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 
 ## 9. Seguimiento de ítems
 
-**Situación vigente:** 24 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
+**Situación vigente:** 25 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
 
 | ID | Fase | Estado vigente | Última entrada de avance o validación |
 | --- | --- | --- | --- |
@@ -202,7 +202,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | H23 | F5 | Completado | R047 |
 | H24 | F5 | Completado | R051 |
 | H25 | F5 | Completado | R053 |
-| H26 | F5 | En curso | R055 |
+| H26 | F5 | Completado | R057 |
 | O01 | Por definir | No programada | — |
 | O02 | Por definir | No programada | — |
 | O03 | Por definir | No programada | — |
@@ -828,6 +828,17 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** Las regresiones de precios, límites y variantes pasan en la suite frontend final. La aprobación comercial no se deduce de una prueba técnica ni de la autorización general para corregir código.
 - **Pendientes o límites:** Confirmación del usuario de la matriz enlazada y de conservar A cotizar en cuadros M/1, L/1–2 y precios personalizados. No se inventaron tarifas ni se cambió producción.
 - **Próximo paso:** Con la respuesta, registrar la decisión y cerrar H14 o ajustar únicamente los valores que se indiquen.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R057 — 2026-11-18 — H26 — Diálogos operables con teclado y foco comprobado
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H26; En curso → Completado.
+- **Avance y alcance:** Cotizador, panel y modales administrativos usan CDK para confinar foco, con Escape solo en la capa superior, fondo inerte, scroll y retorno al disparador. La transición entre cotizador y panel conserva ese origen; cambios de paso enfocan el encabezado si desaparece el control activo. Contadores, estados, notas, cierre y upload tienen nombres accesibles; IDs de ocasión son únicos y enlaces sin contacto quedan sin href y con aria-disabled. El editor conserva su cierre bloqueado mientras guarda/sube.
+- **Archivos y evidencia:** [modal-dialog.directive.ts](src/app/shared/modal-dialog.directive.ts), [modal-dialog.directive.spec.ts](src/app/shared/modal-dialog.directive.spec.ts), [app.html](src/app/app.html), [app.ts](src/app/app.ts), [app.spec.ts](src/app/app.spec.ts), [store.service.ts](src/app/store/store.service.ts), [admin-products.component.ts](src/app/admin/pages/admin-products.component.ts), [admin-orders.component.ts](src/app/admin/pages/admin-orders.component.ts), [admin-layout.component.ts](src/app/admin/admin-layout.component.ts), [test-keyboard.cjs](scripts/test-keyboard.cjs), [measure-catalog.cjs](scripts/measure-catalog.cjs), [ci.yml](.github/workflows/ci.yml), [package.json](package.json), [package-lock.json](package-lock.json), [README.md](README.md)
+- **Validación:** 37/37 frontend y47/47 backend estándar pasan, con1 integración omitida explícitamente fuera de su runner. Runner MySQL real pasa migración nueva, adopción anterior, consultas y planes sobre10000 pedidos. Chromium pasa tres pasos, transición y cantidad del panel, creación/edición de producto, detalle de pedido, foco inicial, Tab/Shift+Tab, Escape y restauración. La prueba DOM verifica capas y scroll anterior. Imagen fullstack final construida y smoke real pasa con foto privada normalizada, autorización y reinicio. Nginx y copia/restauración pasan de nuevo; actionlint correcto. Auditorías npm producción y NuGet transitivas0avisos; diff limpio.
+- **Pendientes o límites:** No equivale a certificación completa de accesibilidad ni a prueba con lectores de pantalla. El editor conserva diagnósticos de imports que no aparecen en compilación ni pruebas; los resultados del compilador actual y Chromium son la evidencia de ejecución. H14 queda pendiente de confirmación comercial, según R056.
+- **Próximo paso:** Registrar la confirmación comercial pendiente de H14 y conservar seguimiento en futuras correcciones.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada
