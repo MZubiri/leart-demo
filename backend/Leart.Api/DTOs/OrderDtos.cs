@@ -41,3 +41,7 @@ public class AttachmentDto
 }
 
 public record UpdateOrderStatusDto([Required, AllowedValues("Pendiente", "En producción", "Completado", "Cancelado")] string Status);
+
+public record OrderSummaryDto(int Id, string OrderReference, string CustomerName, string Phone, string ProductTitle, string Status, DateTime CreatedAt, int AttachmentCount);
+public record PagedOrdersDto(List<OrderSummaryDto> Items, int Page, int PageSize, int Total);
+public record AdminDashboardDto(string WhatsAppNumber, int TotalProducts, int ActiveProducts, int TotalOrders, int PendingOrders, List<OrderSummaryDto> RecentOrders);

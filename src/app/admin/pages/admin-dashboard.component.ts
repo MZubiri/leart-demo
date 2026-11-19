@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AdminService, OrderAdmin, SiteSettingAdmin } from '../../core/services/admin.service';
-import { Product } from '../../store/products';
+import { AdminService, OrderSummary } from '../../core/services/admin.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -33,7 +32,7 @@ import { Product } from '../../store/products';
           <div class="card-icon">🧱</div>
           <div class="card-body">
             <span class="card-label">Productos en Catálogo</span>
-            <strong class="card-val">{{ products().length }}</strong>
+            <strong class="card-val">{{ totalProducts() }}</strong>
             <small>{{ activeProductsCount() }} productos activos</small>
           </div>
           <a routerLink="/admin/productos" class="card-link">Gestionar →</a>
@@ -43,7 +42,7 @@ import { Product } from '../../store/products';
           <div class="card-icon">📥</div>
           <div class="card-body">
             <span class="card-label">Pedidos / Personalizaciones</span>
-            <strong class="card-val">{{ orders().length }}</strong>
+            <strong class="card-val">{{ totalOrders() }}</strong>
             <small>{{ pendingOrdersCount() }} pendientes por revisar</small>
           </div>
           <a routerLink="/admin/pedidos" class="card-link">Ver pedidos →</a>
@@ -54,7 +53,7 @@ import { Product } from '../../store/products';
       <div class="dashboard-section">
         <div class="section-head">
           <h2>Últimos pedidos de personalización recibidos</h2>
-          <a routerLink="/admin/pedidos" class="view-all-link">Ver todos ({{ orders().length }}) →</a>
+          <a routerLink="/admin/pedidos" class="view-all-link">Ver todos ({{ totalOrders() }}) →</a>
         </div>
 
         @if (loading()) {
@@ -90,8 +89,8 @@ import { Product } from '../../store/products';
                     </td>
                     <td>{{ order.productTitle }}</td>
                     <td>
-                      <span class="badge" [class.badge-has-photos]="order.attachments.length > 0">
-                        {{ order.attachments.length }} foto(s)
+                      <span class="badge" [class.badge-has-photos]="order.attachmentCount > 0">
+                        {{ order.attachmentCount }} foto(s)
                       </span>
                     </td>
                     <td>
@@ -269,9 +268,10 @@ import { Product } from '../../store/products';
 export class AdminDashboardComponent implements OnInit {
   private readonly admin = inject(AdminService);
 
-  readonly settings = signal<SiteSettingAdmin | null>(null);
-  readonly products = signal<Product[]>([]);
-  readonly orders = signal<OrderAdmin[]>([]);
+  readonly settings = signal<{ whatsAppNumber: string } | null>(null);
+  readonly totalProducts = signal(0);
+  readonly totalOrders = signal(0);
+  readonly orders = signal<OrderSummary[]>([]);
   readonly loading = signal(true);
 
   readonly activeProductsCount = signal(0);
@@ -283,28 +283,14 @@ export class AdminDashboardComponent implements OnInit {
 
   loadData(): void {
     this.loading.set(true);
-    this.admin.getSettings().subscribe({
-      next: (s) => this.settings.set(s),
-      error: () => {},
-    });
-
-    this.admin.getProducts().subscribe({
-      next: (p) => {
-        this.products.set(p);
-        this.activeProductsCount.set(p.filter((x) => x.isActive).length);
+    this.admin.getDashboard().subscribe({
+      next: data => {
+        this.settings.set({ whatsAppNumber: data.whatsAppNumber });
+        this.totalProducts.set(data.totalProducts); this.activeProductsCount.set(data.activeProducts);
+        this.totalOrders.set(data.totalOrders); this.pendingOrdersCount.set(data.pendingOrders);
+        this.orders.set(data.recentOrders); this.loading.set(false);
       },
-      error: () => {},
-    });
-
-    this.admin.getOrders().subscribe({
-      next: (o) => {
-        this.orders.set(o);
-        this.pendingOrdersCount.set(o.filter((x) => x.status === 'Pendiente').length);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-      },
+      error: () => this.loading.set(false),
     });
   }
 }

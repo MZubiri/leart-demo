@@ -27,6 +27,8 @@ public class MySqlIntegrationTests
             login.EnsureSuccessStatusCode();
             var token = (await login.Content.ReadFromJsonAsync<LoginResponseDto>())!.Token;
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            Assert.NotNull(await client.GetFromJsonAsync<PagedOrdersDto>("/api/admin/orders?pageSize=5"));
+            Assert.NotNull(await client.GetFromJsonAsync<AdminDashboardDto>("/api/admin/orders/dashboard"));
             using var scope = factory.Services.CreateScope(); var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var product = await db.Products.FirstAsync(); product.Name = "Retained after restart"; await db.SaveChangesAsync();
         }
@@ -36,6 +38,8 @@ public class MySqlIntegrationTests
             var products = await client.GetFromJsonAsync<List<ProductDto>>("/api/public/products");
             Assert.Contains(products!, product => product.Name == "Retained after restart");
         }
+        using (var benchmark = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseMySQL(connection).Options))
+            await VerifyOrderQueryPlans(benchmark);
         // Importar el SQL real del esquema anterior (Pomelo/EF9), sin historial.
         var options = new DbContextOptionsBuilder<AppDbContext>().UseMySQL(connection).Options;
         using var legacy = new AppDbContext(options);
@@ -58,5 +62,45 @@ public class MySqlIntegrationTests
         Assert.Equal("Retained legacy store", (await legacy.SiteSettings.SingleAsync()).StoreName);
         Assert.Equal("LEGACY-ORDER", (await legacy.PersonalizationOrders.SingleAsync()).OrderReference);
         Assert.Equal("/private/orders/legacy.png", (await legacy.OrderAttachments.SingleAsync()).FilePath);
+    }
+
+    private static async Task VerifyOrderQueryPlans(AppDbContext db)
+    {
+        db.PersonalizationOrders.AddRange(Enumerable.Range(1, 10000).Select(i => new Leart.Api.Models.PersonalizationOrder {
+            CustomerName = "Test", Phone = "573001112233", Status = i % 3 == 0 ? "Pendiente" : "Completado",
+            CreatedAt = new DateTime(2026, 1, 1).AddSeconds(i) }));
+        await db.SaveChangesAsync();
+        await db.Database.OpenConnectionAsync();
+        try
+        {
+            foreach (var name in new[] { "IX_Orders_CreatedAt_Id", "IX_Orders_Status_CreatedAt_Id" })
+            {
+                await using var check = db.Database.GetDbConnection().CreateCommand();
+                check.CommandText = "SELECT COUNT(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='PersonalizationOrders' AND INDEX_NAME='" + name + "'";
+                if (Convert.ToInt32(await check.ExecuteScalarAsync()) > 0)
+                {
+                    // Nombre procedente exclusivamente de la lista constante de índices de esta prueba.
+                    check.CommandText = "DROP INDEX " + name + " ON PersonalizationOrders"; await check.ExecuteNonQueryAsync();
+                }
+            }
+            async Task<string> Plan(string filter)
+            {
+                await using var command = db.Database.GetDbConnection().CreateCommand();
+                command.CommandText = "EXPLAIN SELECT Id,OrderReference,CustomerName,Phone,ProductTitle,Status,CreatedAt FROM PersonalizationOrders " + filter + " ORDER BY CreatedAt DESC,Id DESC LIMIT 20";
+                await using var reader = await command.ExecuteReaderAsync(); var details = "";
+                while (await reader.ReadAsync()) details += Convert.ToString(reader["Extra"]);
+                return details;
+            }
+            await db.Database.ExecuteSqlRawAsync("ANALYZE TABLE PersonalizationOrders");
+            var before = await Plan(""); var filteredBefore = await Plan("WHERE Status='Pendiente'");
+            await db.Database.ExecuteSqlRawAsync("CREATE INDEX IX_Orders_CreatedAt_Id ON PersonalizationOrders(CreatedAt,Id)");
+            await db.Database.ExecuteSqlRawAsync("CREATE INDEX IX_Orders_Status_CreatedAt_Id ON PersonalizationOrders(Status,CreatedAt,Id)");
+            await db.Database.ExecuteSqlRawAsync("ANALYZE TABLE PersonalizationOrders");
+            var after = await Plan(""); var filteredAfter = await Plan("WHERE Status='Pendiente'");
+            Console.WriteLine("EXPLAIN 10000 orders: unfiltered before=" + before + "; after=" + after + "; filtered before=" + filteredBefore + "; after=" + filteredAfter);
+            Assert.Contains("filesort", before); Assert.Contains("filesort", filteredBefore);
+            Assert.DoesNotContain("filesort", after); Assert.DoesNotContain("filesort", filteredAfter);
+        }
+        finally { await db.Database.CloseConnectionAsync(); }
     }
 }

@@ -59,6 +59,8 @@ public class AppDbContext : DbContext
             entity.Property(o => o.Phone).HasMaxLength(30).IsRequired();
             entity.Property(o => o.ProductTitle).HasMaxLength(150);
             entity.Property(o => o.Status).HasMaxLength(40).HasDefaultValue("Pendiente");
+            entity.HasIndex(o => new { o.CreatedAt, o.Id }).HasDatabaseName("IX_Orders_CreatedAt_Id");
+            entity.HasIndex(o => new { o.Status, o.CreatedAt, o.Id }).HasDatabaseName("IX_Orders_Status_CreatedAt_Id");
             entity.HasMany(o => o.Attachments)
                   .WithOne(a => a.Order)
                   .HasForeignKey(a => a.OrderId)

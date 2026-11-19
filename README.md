@@ -234,3 +234,17 @@ compensación de adjuntos, catálogo tras reinicio, contratos, precios, variante
 errores de envío y migración de BD anterior. VS Code ofrece tareas de pruebas sin
 abrir el antiguo puerto Karma. Los generadores Angular vuelven a crear tests por defecto.
 El workflow solo se ejecutará en GitHub después de publicar estos commits.
+
+## Consultas administrativas acotadas
+
+`GET /api/admin/orders?status=Todos&page=1&pageSize=20` devuelve
+`{items,page,pageSize,total}`. pageSize admite 1–100, page 1–100000; el orden es
+CreatedAt/Id descendente. Los elementos contienen conteo de fotos, sin historias ni
+adjuntos. `GET /api/admin/orders/{id}` carga el detalle autorizado bajo demanda.
+`GET /api/admin/orders/dashboard` devuelve conteos agregados y cinco resúmenes recientes.
+
+La migración OrderListIndexes agrega índices por CreatedAt/Id y Status/CreatedAt/Id.
+EXPLAIN con 10.000 pedidos sintéticos, estadísticas actualizadas y LIMIT20: ambas
+consultas pasaron de filesort a backward index scan. Es evidencia local del plan,
+no una estimación de latencia productiva. Las páginas profundas aún usan OFFSET;
+medir su uso real antes de plantear paginación por cursor.

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -50,6 +50,10 @@ export interface OrderAdmin {
   attachments: OrderAdminAttachment[];
 }
 
+export type OrderSummary = Pick<OrderAdmin, 'id' | 'orderReference' | 'customerName' | 'phone' | 'productTitle' | 'status' | 'createdAt'> & { attachmentCount: number };
+export interface PagedOrders { items: OrderSummary[]; page: number; pageSize: number; total: number; }
+export interface AdminDashboard { whatsAppNumber: string; totalProducts: number; activeProducts: number; totalOrders: number; pendingOrders: number; recentOrders: OrderSummary[]; }
+
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private readonly http = inject(HttpClient);
@@ -100,9 +104,13 @@ export class AdminService {
   }
 
   // Orders
-  getOrders(status?: string): Observable<OrderAdmin[]> {
-    const params = status && status !== 'Todos' ? `?status=${encodeURIComponent(status)}` : '';
-    return this.http.get<OrderAdmin[]>(`${this.baseUrl}/orders${params}`);
+  getOrders(status = 'Todos', page = 1, pageSize = 20): Observable<PagedOrders> {
+    const params = new HttpParams().set('status', status).set('page', page).set('pageSize', pageSize);
+    return this.http.get<PagedOrders>(this.baseUrl + '/orders', { params });
+  }
+
+  getDashboard(): Observable<AdminDashboard> {
+    return this.http.get<AdminDashboard>(this.baseUrl + '/orders/dashboard');
   }
 
   getOrderById(id: number): Observable<OrderAdmin> {

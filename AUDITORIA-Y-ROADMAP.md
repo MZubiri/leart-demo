@@ -173,7 +173,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 
 ## 9. Seguimiento de ítems
 
-**Situación vigente:** 22 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
+**Situación vigente:** 23 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
 
 | ID | Fase | Estado vigente | Última entrada de avance o validación |
 | --- | --- | --- | --- |
@@ -199,7 +199,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | H20 | F4 | Completado | R043 |
 | H21 | F4 | Completado | R041 |
 | H22 | Transversal / cierre F5 | Completado | R045 |
-| H23 | F5 | Pendiente | — |
+| H23 | F5 | Completado | R047 |
 | H24 | F5 | Pendiente | — |
 | H25 | F5 | Pendiente | — |
 | H26 | F5 | Pendiente | — |
@@ -707,6 +707,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** npm ci limpio con npm11.6.2, 25/25 frontend, 46/46 backend estándar y build pasan. Workflow validado con actionlint1.7.12; tags oficiales resueltos a SHA. Imagen fullstack construida y smoke real pasa: SPA/API, migración/bootstrap MySQL, foto WebP normalizada a PNG, descarga 401 sin token/200 con token y conservación tras reinicio. Los runners MySQL, Nginx y backup pasaron en H18–H20; servicios de smoke retirados. Diff correcto.
 - **Pendientes o límites:** El workflow remoto no se ejecutó porque los commits siguen locales; se activará al publicarlos. Las pruebas y builds equivalentes se ejecutaron localmente. Avisos moderados de desarrollo de H21 siguen documentados. La validación del runtime completa también el pendiente de imagen de H19.
 - **Próximo paso:** H23: paginar pedidos y reemplazar cargas históricas completas por resúmenes agregados.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R046 — 2026-11-18 — H23 — Inicio de listados acotados y métricas agregadas
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H23; Pendiente → En curso.
+- **Avance y alcance:** Se paginarán pedidos con proyección resumida y carga del detalle bajo demanda. El dashboard usará conteos SQL y cinco pedidos recientes. Se medirá el plan de consulta antes de incorporar índices; la autodetección por petición ya fue retirada en H21.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H22 confirmado; revisados los consumidores del listado y dashboard.
+- **Pendientes o límites:** Contratos, API, interfaz, pruebas y plan EXPLAIN.
+- **Próximo paso:** Verificar límites y navegación sin cargar adjuntos ni todo el histórico.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R047 — 2026-11-18 — H23 — Pedidos paginados y dashboard agregado
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H23; En curso → Completado.
+- **Avance y alcance:** Listado con página de20 y máximo100, filtro validado, orden estable CreatedAt/Id y proyección sin narrativas ni adjuntos. El detalle se consulta al abrirlo. Dashboard devuelve conteos SQL y cinco resúmenes, sin cargar todo el histórico. Se añadieron dos índices por migración tras medir su plan. La adopción de H20 sigue validando la migración inicial y aplica correctamente los índices posteriores.
+- **Archivos y evidencia:** [AdminOrdersController.cs](backend/Leart.Api/Controllers/AdminOrdersController.cs), [OrderDtos.cs](backend/Leart.Api/DTOs/OrderDtos.cs), [AppDbContext.cs](backend/Leart.Api/Data/AppDbContext.cs), [AppDbContextModelSnapshot.cs](backend/Leart.Api/Data/Migrations/AppDbContextModelSnapshot.cs), [OrderPaginationTests.cs](backend/Leart.Api.Tests/OrderPaginationTests.cs), [MySqlIntegrationTests.cs](backend/Leart.Api.Tests/MySqlIntegrationTests.cs), [admin.service.ts](src/app/core/services/admin.service.ts), [admin-orders.component.ts](src/app/admin/pages/admin-orders.component.ts), [admin-orders.component.spec.ts](src/app/admin/pages/admin-orders.component.spec.ts), [admin-dashboard.component.ts](src/app/admin/pages/admin-dashboard.component.ts), [test-mysql.cjs](scripts/test-mysql.cjs), [README.md](README.md)
+- **Validación:** 47/47 pruebas estándar backend y 26/26 frontend pasan; build correcto. MySQL real pasa proyecciones HTTP, migración nueva y adopción del esquema anterior con migración posterior. EXPLAIN sobre10000 pedidos: sin índices filesort; con índices y estadísticas actualizadas backward index scan, con y sin filtro. HTTP prueba límites, páginas disjuntas, orden estable, conteos y ausencia de contenido pesado. Sin diagnósticos ni errores de diff.
+- **Pendientes o límites:** La medición es local y no sustituye métricas productivas. Páginas profundas mantienen OFFSET; evaluar cursor solo si el uso real lo requiere. H25 sigue para estados de error administrativos.
+- **Próximo paso:** H24: reducir transferencia gráfica y medir carga en navegador.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

@@ -15,7 +15,7 @@ const docker = (...args) => cp.execFileSync('docker', args, { encoding: 'utf8', 
     }
     if (!ready) throw Error('MySQL did not become ready');
     const port = docker('port', name, '3306/tcp').split(':').at(-1);
-    const result = cp.spawnSync(process.env.DOTNET_COMMAND || 'dotnet', ['test', 'backend/Leart.Api.Tests', '--filter', 'MySqlIntegration', '--nologo', '--verbosity', 'quiet'], {
+    const result = cp.spawnSync(process.env.DOTNET_COMMAND || 'dotnet', ['test', 'backend/Leart.Api.Tests', '--filter', 'MySqlIntegration', '--nologo', '--verbosity', 'quiet', ...(process.env.LEART_TEST_DETAIL ? ['--logger', 'console;verbosity=detailed'] : [])], {
       env: { ...process.env, LEART_TEST_MYSQL: `Server=127.0.0.1;Port=${port};Database=leart_tests;User=leart;Password=${password};SslMode=Disabled` }, stdio: 'inherit',
     });
     if (result.error) throw result.error;

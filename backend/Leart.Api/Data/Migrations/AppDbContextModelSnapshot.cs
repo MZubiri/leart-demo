@@ -153,6 +153,12 @@ namespace Leart.Api.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatedAt", "Id")
+                        .HasDatabaseName("IX_Orders_CreatedAt_Id");
+
+                    b.HasIndex("Status", "CreatedAt", "Id")
+                        .HasDatabaseName("IX_Orders_Status_CreatedAt_Id");
+
                     b.ToTable("PersonalizationOrders");
                 });
 

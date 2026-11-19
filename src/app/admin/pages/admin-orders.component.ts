@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { AdminService, OrderAdmin } from '../../core/services/admin.service';
+import { AdminService, OrderAdmin, OrderSummary } from '../../core/services/admin.service';
 
 @Component({
   selector: 'app-admin-orders',
@@ -64,9 +64,6 @@ import { AdminService, OrderAdmin } from '../../core/services/admin.service';
                     <td>
                       <div class="customer-col">
                         <strong>{{ order.customerName }}</strong>
-                        @if (order.peopleDetails) {
-                          <small>Figuras: {{ order.peopleDetails }}</small>
-                        }
                       </div>
                     </td>
                     <td>
@@ -79,10 +76,10 @@ import { AdminService, OrderAdmin } from '../../core/services/admin.service';
                       <button
                         type="button"
                         class="photos-badge"
-                        [class.has-photos]="order.attachments.length > 0"
+                        [class.has-photos]="order.attachmentCount > 0"
                         (click)="openDetailModal(order)"
                       >
-                        📷 {{ order.attachments.length }} foto(s)
+                        📷 {{ order.attachmentCount }} foto(s)
                       </button>
                     </td>
                     <td>
@@ -116,6 +113,13 @@ import { AdminService, OrderAdmin } from '../../core/services/admin.service';
         }
       </div>
 
+      <nav aria-label="Páginas de pedidos">
+        <button type="button" [disabled]="loading() || page() <= 1" (click)="goPage(page() - 1)">Anterior</button>
+        <span>Página {{ page() }} de {{ pages() }} · {{ total() }} pedidos</span>
+        <button type="button" [disabled]="loading() || page() >= pages()" (click)="goPage(page() + 1)">Siguiente</button>
+      </nav>
+      @if (detailLoading()) { <p role="status">Cargando detalle...</p> }
+      @if (detailError()) { <p role="alert">{{ detailError() }}</p> }
       <!-- Detail & Photos Modal -->
       @if (activeOrder(); as o) {
         <div class="modal-backdrop" (click)="closeDetailModal()">
@@ -487,7 +491,14 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   readonly statusList = ['Todos', 'Pendiente', 'En producción', 'Completado'];
   readonly selectedStatus = signal('Todos');
-  readonly orders = signal<OrderAdmin[]>([]);
+  readonly orders = signal<OrderSummary[]>([]);
+  readonly page = signal(1);
+  readonly total = signal(0);
+  readonly pageSize = 20;
+  readonly pages = computed(() => Math.max(1, Math.ceil(this.total() / this.pageSize)));
+  readonly detailLoading = signal(false);
+  readonly detailError = signal('');
+  private detailRequest?: Subscription;
   readonly loading = signal(true);
   readonly attachmentUrls = signal<Record<number, string>>({});
   readonly attachmentError = signal('');
@@ -500,9 +511,11 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   loadOrders(): void {
     this.loading.set(true);
-    this.admin.getOrders(this.selectedStatus()).subscribe({
+    this.admin.getOrders(this.selectedStatus(), this.page(), this.pageSize).subscribe({
       next: (data) => {
-        this.orders.set(data);
+        this.orders.set(data.items);
+        this.total.set(data.total);
+        if (this.page() > this.pages()) { this.page.set(this.pages()); this.loadOrders(); return; }
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
@@ -511,10 +524,11 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   filterByStatus(status: string): void {
     this.selectedStatus.set(status);
+    this.page.set(1);
     this.loadOrders();
   }
 
-  onStatusChange(order: OrderAdmin, newStatus: string): void {
+  onStatusChange(order: OrderSummary, newStatus: string): void {
     this.admin.updateOrderStatus(order.id, newStatus).subscribe({
       next: () => {
         this.orders.update((list) =>
@@ -524,18 +538,27 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteOrder(order: OrderAdmin): void {
+  deleteOrder(order: OrderSummary): void {
     if (confirm(`¿Eliminar el pedido "${order.orderReference}"?`)) {
       this.admin.deleteOrder(order.id).subscribe({
         next: () => {
-          this.orders.update((list) => list.filter((o) => o.id !== order.id));
+          this.loadOrders();
         },
       });
     }
   }
 
-  openDetailModal(order: OrderAdmin): void {
-    this.closeDetailModal();
+  goPage(page: number): void { if (page < 1 || page > this.pages()) return; this.page.set(page); this.loadOrders(); }
+
+  openDetailModal(summary: OrderSummary): void {
+    this.closeDetailModal(); this.detailLoading.set(true); this.detailError.set('');
+    this.detailRequest = this.admin.getOrderById(summary.id).subscribe({
+      next: order => { this.detailLoading.set(false); this.showOrder(order); },
+      error: () => { this.detailLoading.set(false); this.detailError.set('No se pudo cargar el pedido. Vuelve a abrirlo para reintentar.'); },
+    });
+  }
+
+  private showOrder(order: OrderAdmin): void {
     this.activeOrder.set(order);
     for (const attachment of order.attachments) {
       this.previewRequests.push(this.admin.getAttachment(attachment.id).subscribe({
@@ -550,6 +573,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   }
 
   closeDetailModal(): void {
+    this.detailRequest?.unsubscribe(); this.detailLoading.set(false);
     this.previewRequests.forEach((request) => request.unsubscribe());
     this.previewRequests = [];
     Object.values(this.attachmentUrls()).forEach((url) => URL.revokeObjectURL(url));
@@ -560,7 +584,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void { this.closeDetailModal(); }
 
-  buildCustomerWhatsAppUrl(order: OrderAdmin): string {
+  buildCustomerWhatsAppUrl(order: Pick<OrderAdmin, 'phone' | 'customerName' | 'orderReference'>): string {
     const cleanPhone = order.phone.replace(/\D/g, '');
     const message = `Hola ${order.customerName} 👋 Te saludamos de Leart Store respecto a tu pedido ${order.orderReference}.`;
     return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
