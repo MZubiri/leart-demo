@@ -173,7 +173,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 
 ## 9. Seguimiento de ítems
 
-**Situación vigente:** 21 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
+**Situación vigente:** 22 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
 
 | ID | Fase | Estado vigente | Última entrada de avance o validación |
 | --- | --- | --- | --- |
@@ -198,7 +198,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | H19 | F4 | Completado | R039 |
 | H20 | F4 | Completado | R043 |
 | H21 | F4 | Completado | R041 |
-| H22 | Transversal / cierre F5 | Pendiente | — |
+| H22 | Transversal / cierre F5 | Completado | R045 |
 | H23 | F5 | Pendiente | — |
 | H24 | F5 | Pendiente | — |
 | H25 | F5 | Pendiente | — |
@@ -685,6 +685,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 46/46 pruebas backend estándar pasan (1 integración omitida por defecto). Runner MySQL real pasa migración nueva, reinicio, importación del esquema Pomelo, rechazo de columna inesperada sin registrar historial y adopción conservando producto, tienda, pedido y referencia privada. Pruebas HTTP: readiness 503 ante fallo de BD, liveness 200, API inexistente 404 y arranque detenido por BD inaccesible. EF sin cambios pendientes; regresión Nginx pasa. Sin diagnósticos ni errores de diff.
 - **Pendientes o límites:** El DDL de MySQL no es transaccional: aplicar con copia verificada y una sola instancia, según README. No se migró ninguna BD productiva.
 - **Próximo paso:** H22: automatizar estas comprobaciones en CI y completar la protección transversal.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R044 — 2026-11-18 — H22 — Inicio de integración continua y regresiones transversales
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H22; Pendiente → En curso.
+- **Avance y alcance:** Se automatizarán las pruebas y compilaciones existentes, auditorías de dependencias y regresiones reales MySQL, Nginx y recuperación. Se actualizarán herramientas de VS Code y generación de pruebas.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H20 confirmado; ya existen 46 pruebas backend estándar, integración MySQL y 25 frontend enfocadas en los fallos corregidos.
+- **Pendientes o límites:** Pipeline, ejecución local equivalente y documentación de comandos.
+- **Próximo paso:** Validar instalación limpia, pruebas, builds y runners de infraestructura.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R045 — 2026-11-18 — H22 — CI y regresiones ejecutables desde un clon limpio
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H22; En curso → Completado.
+- **Avance y alcance:** Workflow con permisos de lectura y acciones fijadas por SHA verificado: instalación limpia, pruebas/build frontend, auditorías, pruebas backend, MySQL real, Nginx, backup/restauración y construcción/smoke de imágenes. Se habilita creación de tests por generadores, tareas VS Code sin Karma y bloqueo NuGet de avisos altos/críticos. Se agrega smoke del runtime completo con MySQL aislado, foto real y reinicio.
+- **Archivos y evidencia:** [ci.yml](.github/workflows/ci.yml), [.nvmrc](.nvmrc), [Directory.Build.props](Directory.Build.props), [angular.json](angular.json), [tasks.json](.vscode/tasks.json), [launch.json](.vscode/launch.json), [test-runtime.cjs](scripts/test-runtime.cjs), [README.md](README.md)
+- **Validación:** npm ci limpio con npm11.6.2, 25/25 frontend, 46/46 backend estándar y build pasan. Workflow validado con actionlint1.7.12; tags oficiales resueltos a SHA. Imagen fullstack construida y smoke real pasa: SPA/API, migración/bootstrap MySQL, foto WebP normalizada a PNG, descarga 401 sin token/200 con token y conservación tras reinicio. Los runners MySQL, Nginx y backup pasaron en H18–H20; servicios de smoke retirados. Diff correcto.
+- **Pendientes o límites:** El workflow remoto no se ejecutó porque los commits siguen locales; se activará al publicarlos. Las pruebas y builds equivalentes se ejecutaron localmente. Avisos moderados de desarrollo de H21 siguen documentados. La validación del runtime completa también el pendiente de imagen de H19.
+- **Próximo paso:** H23: paginar pedidos y reemplazar cargas históricas completas por resúmenes agregados.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

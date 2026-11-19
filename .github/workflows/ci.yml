@@ -1,0 +1,45 @@
+name: Verification
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: verification-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm install --global npm@11.6.2
+      - run: npm ci
+      - run: npm test -- --watch=false
+      - run: npm run build
+      - run: npm audit --omit=dev --audit-level=moderate
+      - run: npm audit --audit-level=high
+  backend-and-infrastructure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6
+        with:
+          global-json-file: global.json
+      - run: dotnet restore backend/Leart.Api.Tests
+      - run: dotnet test backend/Leart.Api.Tests --no-restore --verbosity minimal
+      - run: dotnet list backend/Leart.Api/Leart.Api.csproj package --vulnerable --include-transitive
+      - run: node scripts/test-mysql.cjs
+      - run: node scripts/test-nginx.cjs
+      - run: node scripts/test-backup.cjs
+      - run: docker build -t leart-ci-api backend/Leart.Api
+      - run: docker build -t leart-ci-web .
+      - run: LEART_RUNTIME_IMAGE=leart-ci-web node scripts/test-runtime.cjs

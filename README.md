@@ -208,3 +208,29 @@ aplicar cambios. Verificar readiness y datos antes de reabrir tráfico.
 
 Para crear futuras migraciones usa dotnet-ef 10.0.15; la fábrica de diseño no conecta a
 una BD ni lee secretos. Revisar el SQL generado y ensayarlo sobre una copia antes de aplicar.
+
+## Verificación antes de integrar cambios
+
+Usar Node de [.nvmrc](.nvmrc), npm 11.6.2 y SDK de [global.json](global.json).
+[CI](.github/workflows/ci.yml) ejecuta instalación limpia, pruebas y compilación,
+auditorías de dependencias y regresiones reales de infraestructura sin secretos reales.
+Los avisos altos/críticos de NuGet bloquean restore; npm producción bloquea desde
+moderado y herramientas desde alto. Los avisos residuales se describen arriba.
+
+```bash
+npm ci
+npm test -- --watch=false
+npm run build
+dotnet test backend/Leart.Api.Tests
+# Requieren Docker; crean y retiran únicamente sus propios servicios de prueba:
+node scripts/test-mysql.cjs
+node scripts/test-nginx.cjs
+node scripts/test-backup.cjs
+```
+
+La integración MySQL figura omitida en el comando de tests estándar y la ejecuta
+explícitamente su runner. Las pruebas incluyen privacidad/revocación, límites y
+compensación de adjuntos, catálogo tras reinicio, contratos, precios, variantes,
+errores de envío y migración de BD anterior. VS Code ofrece tareas de pruebas sin
+abrir el antiguo puerto Karma. Los generadores Angular vuelven a crear tests por defecto.
+El workflow solo se ejecutará en GitHub después de publicar estos commits.
