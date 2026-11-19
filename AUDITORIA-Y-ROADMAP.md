@@ -173,7 +173,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 
 ## 9. Seguimiento de ítems
 
-**Situación vigente:** 23 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
+**Situación vigente:** 24 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
 
 | ID | Fase | Estado vigente | Última entrada de avance o validación |
 | --- | --- | --- | --- |
@@ -200,7 +200,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | H21 | F4 | Completado | R041 |
 | H22 | Transversal / cierre F5 | Completado | R045 |
 | H23 | F5 | Completado | R047 |
-| H24 | F5 | En curso | R048 |
+| H24 | F5 | Completado | R051 |
 | H25 | F5 | Pendiente | — |
 | H26 | F5 | Pendiente | — |
 | O01 | Por definir | No programada | — |
@@ -762,6 +762,17 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** Regresión reproducida antes de corregir: cantidad esperada2, obtenida1. Tras el cambio pasan3/3 pruebas del componente, incluida la pulsación del botón. Diff correcto.
 - **Pendientes o límites:** H24 continúa en curso con sus archivos aún sin confirmar; no se incluyeron en este commit.
 - **Próximo paso:** Reanudar optimización de imágenes H24.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R051 — 2026-11-18 — H24 — Imágenes responsivas y transferencia medida
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H24; En curso → Completado.
+- **Avance y alcance:** Pipeline con Sharp genera variantes WebP320/640/1280 sin ampliar fuentes pequeñas y manifiesto reproducible para124 imágenes empaquetadas. Una directiva aporta srcset/sizes, dimensiones, lazy loading y prioridad del hero/ficha, respetando URLs de uploads. Los originales no se alteran; el seed nuevo y respaldos visuales usan WebP disponible. Caché immutable solo para archivos con hash y compresión de JS/CSS/SVG en Nginx/runtime.
+- **Archivos y evidencia:** [optimize-images.cjs](scripts/optimize-images.cjs), [measure-catalog.cjs](scripts/measure-catalog.cjs), [optimized-image.directive.ts](src/app/shared/optimized-image.directive.ts), [optimized-image.directive.spec.ts](src/app/shared/optimized-image.directive.spec.ts), [app.html](src/app/app.html), [app.ts](src/app/app.ts), [home.page.html](src/app/pages/home.page.html), [catalog.page.html](src/app/pages/catalog.page.html), [product.page.html](src/app/pages/product.page.html), [admin-products.component.ts](src/app/admin/pages/admin-products.component.ts), [DbInitializer.cs](backend/Leart.Api/Data/DbInitializer.cs), [Program.cs](backend/Leart.Api/Program.cs), [nginx.conf](nginx.conf), [test-nginx.cjs](scripts/test-nginx.cjs), [package.json](package.json), [package-lock.json](package-lock.json), [.dockerignore](.dockerignore), [.gitignore](.gitignore), [README.md](README.md)
+- **Validación:** 28/28 frontend y47/47 backend estándar pasan; build producción y Docker frontend Alpine correctos, validando el encoder musl. Nginx real pasa rutas privadas/públicas, gzip y caché diferenciada. Chromium local390×844 DPR1,80ms,200000B/s: imágenes2.490.199→207.218 bytes (−91,7%),13→5 peticiones. LCP observado2680→2780ms; segunda comprobación2752ms sin imágenes rotas. Auditoría npm sigue16 moderados de desarrollo, sin altos/críticos. Sin diagnósticos ni errores de diff.
+- **Pendientes o límites:** No se demuestra mejora de LCP con estas corridas locales; queda medición del hosting con usuarios reales. Los activos subidos conservan su URL y dependen de su tamaño administrado. Las pruebas de imágenes usan el catálogo inicial con API controlada, no una instalación productiva.
+- **Próximo paso:** H25: estados de error, reintento y confirmación de operaciones administrativas.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

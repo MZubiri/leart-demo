@@ -5,7 +5,6 @@ dist
 .vscode
 *.log
 tmp
-scripts
 
 .env
 .env.*
@@ -15,3 +14,6 @@ backend/**/storage
 backend/**/wwwroot/uploads
 backend/**/bin
 backend/**/obj
+
+public/optimized
+src/generated

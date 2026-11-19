@@ -1,3 +1,4 @@
+import { OptimizedImageDirective } from '../shared/optimized-image.directive';
 import { Component, computed, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { formatCop } from '../store/pricing';
@@ -6,7 +7,7 @@ import { StoreService } from '../store/store.service';
 @Component({
   selector: 'app-product-page',
   standalone: true,
-  imports: [RouterLink],
+  imports: [OptimizedImageDirective, RouterLink],
   templateUrl: './product.page.html',
 })
 export class ProductPage {

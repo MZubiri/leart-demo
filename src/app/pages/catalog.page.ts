@@ -1,3 +1,4 @@
+import { OptimizedImageDirective } from '../shared/optimized-image.directive';
 import { Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -8,7 +9,7 @@ import { StoreService } from '../store/store.service';
 @Component({
   selector: 'app-catalog-page',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [OptimizedImageDirective, FormsModule, RouterLink],
   templateUrl: './catalog.page.html',
 })
 export class CatalogPage {

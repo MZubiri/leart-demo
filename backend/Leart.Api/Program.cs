@@ -30,6 +30,7 @@ builder.Services.AddControllers()
 
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddProblemDetails();
+builder.Services.AddResponseCompression(options => options.MimeTypes = ["text/html", "text/css", "application/javascript", "text/javascript", "image/svg+xml"]);
 builder.Services.AddHealthChecks().AddCheck<DatabaseReadinessCheck>("database", tags: ["ready"], timeout: TimeSpan.FromSeconds(3));
 
 // OpenAPI
@@ -133,8 +134,12 @@ app.Use(async (context, next) =>
     await next();
 });
 
+app.UseResponseCompression();
 app.UseDefaultFiles();
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions { OnPrepareResponse = context => {
+    if (context.Context.Request.Path.StartsWithSegments("/optimized")) context.Context.Response.Headers.CacheControl = "public,max-age=31536000,immutable";
+    else context.Context.Response.Headers.CacheControl = "public,max-age=0,must-revalidate";
+} });
 
 if (app.Environment.IsDevelopment())
 {

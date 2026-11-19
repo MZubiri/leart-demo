@@ -764,7 +764,7 @@ export class AdminProductsComponent implements OnInit {
       category: this.formCategory(),
       detail: this.formDetail().trim(),
       tag: this.formTag().trim(),
-      image: this.formImage().trim() || '/images/cuadro-personalizado.png',
+      image: this.formImage().trim() || '/images/cuadro-personalizado.webp',
       description: this.formDescription().trim(),
       minFigures: Number(this.formMinFigures()),
       maxFigures: Number(this.formMaxFigures()),
@@ -804,6 +804,6 @@ export class AdminProductsComponent implements OnInit {
   }
 
   onImgError(event: Event): void {
-    (event.target as HTMLImageElement).src = '/images/cuadro-personalizado.png';
+    (event.target as HTMLImageElement).src = '/images/cuadro-personalizado.webp';
   }
 }

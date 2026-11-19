@@ -9,12 +9,12 @@
         <div class="gallery-thumbs">
           @for(image of gallery();track image){
             <button type="button" [class.active]="activeImage()===image" (click)="activeImage.set(image)">
-              <img [src]="image" alt="Vista del producto">
+              <img imageSizes="80px" [leartImage]="image" alt="Vista del producto">
             </button>
           }
         </div>
         <div class="gallery-main">
-          <img [src]="activeImage()||item.image" [alt]="item.name">
+          <img [imagePriority]="true" imageSizes="(max-width: 700px) 90vw, 50vw" [leartImage]="activeImage()||item.image" [alt]="item.name">
           <span>Foto de referencia</span>
         </div>
       </div>
@@ -91,7 +91,7 @@
         @for(relatedItem of related();track relatedItem.id){
           <article class="product-card">
             <a class="product-image" [routerLink]="['/producto',relatedItem.id]" (click)="activeImage.set(relatedItem.image)">
-              <img [src]="relatedItem.image" [alt]="relatedItem.name"><span class="image-arrow">→</span>
+              <img [leartImage]="relatedItem.image" [alt]="relatedItem.name"><span class="image-arrow">→</span>
             </a>
             <div class="product-info">
               <div>

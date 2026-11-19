@@ -1,3 +1,4 @@
+import { OptimizedImageDirective } from '../shared/optimized-image.directive';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { formatCop } from '../store/pricing';
@@ -7,7 +8,7 @@ import { StoreService } from '../store/store.service';
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [RouterLink],
+  imports: [OptimizedImageDirective, RouterLink],
   templateUrl: './home.page.html',
 })
 export class HomePage {

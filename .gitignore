@@ -57,3 +57,7 @@ Thumbs.db
 !.env.example
 
 backend/**/storage/
+
+# Reproducible image build outputs
+/public/optimized/
+/src/generated/

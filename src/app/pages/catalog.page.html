@@ -8,7 +8,7 @@
   <section class="category-strip" aria-label="Líneas de producto">
     @for (item of categoryShowcase; track item.name) {
       <button type="button" [class.active]="category() === item.name" (click)="setCategory(item.name)">
-        <img [src]="item.image" [alt]="item.name"><span><b>{{item.shortName}}</b><small>{{item.description}}</small></span><i>→</i>
+        <img [leartImage]="item.image" [alt]="item.name"><span><b>{{item.shortName}}</b><small>{{item.description}}</small></span><i>→</i>
       </button>
     }
   </section>
@@ -41,7 +41,7 @@
       <div class="product-grid catalog-grid">
         @for (product of shown(); track product.id) {
           <article class="product-card">
-            <a class="product-image" [routerLink]="['/producto', product.id]">@if (product.tag) {<span class="product-tag">{{product.tag}}</span>}<img [src]="product.image" [alt]="product.name"><span class="image-arrow">→</span></a>
+            <a class="product-image" [routerLink]="['/producto', product.id]">@if (product.tag) {<span class="product-tag">{{product.tag}}</span>}<img [leartImage]="product.image" [alt]="product.name"><span class="image-arrow">→</span></a>
             <div class="product-info">
               <div>
                 <small>{{product.kicker}}</small>

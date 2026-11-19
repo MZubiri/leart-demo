@@ -248,3 +248,29 @@ EXPLAIN con 10.000 pedidos sintéticos, estadísticas actualizadas y LIMIT20: am
 consultas pasaron de filesort a backward index scan. Es evidencia local del plan,
 no una estimación de latencia productiva. Las páginas profundas aún usan OFFSET;
 medir su uso real antes de plantear paginación por cursor.
+
+## Activos gráficos y medición
+
+`npm start`, `npm test` y `npm run build` generan variantes WebP de320/640/1280px
+(sin ampliar originales pequeños) mediante Sharp, conservando las fotografías fuente.
+Los resultados y el manifiesto son reproducibles y están ignorados por Git. No omitir
+las dependencias de desarrollo durante la construcción: Sharp solo se usa al construir.
+El frontend reserva dimensiones, ofrece srcset/sizes y difiere imágenes fuera de pantalla;
+hero y foto principal de producto tienen prioridad. Las imágenes subidas mantienen su URL.
+Los archivos generados llevan hash de fuente/encoder; solo esos activos y bundles con
+hash usan caché immutable. Activos mutables se revalidan; JS/CSS/SVG se comprimen.
+
+`node scripts/measure-catalog.cjs` mide un build servido localmente con API controlada
+y los75 productos iniciales. Requiere `npx playwright install chromium`.
+Prueba del2026-11-18: Chromium, caché vacía,390×844 DPR1, latencia80ms y200000B/s:
+
+| Métrica local | Antes | Después |
+| --- | --- | --- |
+| Bytes codificados de imágenes | 2.490.199 | 207.218 |
+| Peticiones de imagen | 13 | 5 |
+| LCP observado | 2.680ms | 2.780ms |
+
+Se redujo aproximadamente91,7% la transferencia de imágenes. Una corrida por condición
+no demuestra mejora de LCP; medir en hosting con datos reales de usuarios antes de
+atribuir cambios de experiencia a estas optimizaciones. El script verifica además que
+las imágenes solicitadas se decodifiquen correctamente.
