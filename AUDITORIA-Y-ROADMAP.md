@@ -173,7 +173,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 
 ## 9. Seguimiento de ítems
 
-**Situación vigente:** 17 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
+**Situación vigente:** 18 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
 
 | ID | Fase | Estado vigente | Última entrada de avance o validación |
 | --- | --- | --- | --- |
@@ -194,7 +194,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | H15 | F2 | Completado | R031 |
 | H16 | F2 | Completado | R033 |
 | H17 | F3 | Completado | R035 |
-| H18 | F2 | Pendiente | — |
+| H18 | F2 | Completado | R037 |
 | H19 | F4 | Pendiente | — |
 | H20 | F4 | Pendiente | — |
 | H21 | F4 | Pendiente | — |
@@ -597,6 +597,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 44/44 pruebas backend y 25/25 frontend pasan; build producción correcto. Pruebas verifican persistencia de plantilla, rechazo de variable desconocida, conservación de detalles e interpolación sin recursión. Sin diagnósticos ni errores de diff.
 - **Pendientes o límites:** Sin pendientes en el alcance comprobado; la aplicación en instalaciones existentes requiere el procedimiento documentado de despliegue.
 - **Próximo paso:** H18: corregir precedencia de Nginx y verificar rutas con un proxy real.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R036 — 2026-11-18 — H18 — Inicio de corrección de ubicaciones Nginx
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H18; Pendiente → En curso.
+- **Avance y alcance:** Se dará precedencia a las rutas API y uploads y se bloquearán explícitamente las rutas históricas privadas.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H17 confirmado; se preparará una comprobación HTTP con Nginx aislado.
+- **Pendientes o límites:** Configuración y regresión real del proxy.
+- **Próximo paso:** Probar JPG público, ruta API con extensión de imagen y rutas de fotos privadas.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R037 — 2026-11-18 — H18 — Proxy de imágenes con precedencia correcta
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H18; En curso → Completado.
+- **Avance y alcance:** Las ubicaciones API y uploads usan ^~ para no ser interceptadas por la expresión regular de activos. Fotos históricas de pedidos y almacenamiento privado se bloquean explícitamente en Nginx además de la API.
+- **Archivos y evidencia:** [nginx.conf](nginx.conf), [test-nginx.cjs](scripts/test-nginx.cjs)
+- **Validación:** Nginx real en Docker desechable: cinco comprobaciones HTTP pasan. JPG público, API terminada en .png y descarga administrativa alcanzan upstream; rutas privadas e históricas devuelven 404. Contenedor y archivos temporales retirados; diff correcto.
+- **Pendientes o límites:** Sin pendientes en el alcance comprobado; la aplicación en instalaciones existentes requiere el procedimiento documentado de despliegue.
+- **Próximo paso:** H19: persistencia y recuperación conjunta de base y archivos.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada
