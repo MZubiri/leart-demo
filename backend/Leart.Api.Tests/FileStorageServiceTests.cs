@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
 using Xunit;
+using Microsoft.Extensions.Configuration;
 
 namespace Leart.Api.Tests;
 
@@ -109,5 +110,14 @@ public class FileStorageServiceTests : IDisposable
         using var stored = _storageService.OpenOrderFile("/uploads/orders/legacy.png");
         Assert.NotNull(stored);
         Assert.Null(_storageService.OpenOrderFile("/private/orders/../secret"));
+    }
+    [Fact]
+    public async Task QuotaRejectsWriteBeforeCreatingAFile()
+    {
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?> { ["Storage:MaxOrderBytes"] = "3" }).Build();
+        var service = new FileStorageService(new TestWebHostEnvironment { ContentRootPath = _tempDir, WebRootPath = Path.Combine(_tempDir, "wwwroot") }, configuration);
+        using var content = new MemoryStream(new byte[4]);
+        await Assert.ThrowsAsync<StorageQuotaExceededException>(() => service.SaveFileAsync(new FormFile(content, 0, 4, "photos", "photo.png"), "orders"));
+        Assert.Empty(Directory.GetFiles(Path.Combine(_tempDir, "storage", "orders")));
     }
 }

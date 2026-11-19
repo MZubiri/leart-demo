@@ -70,7 +70,7 @@ Confirmado significa reproducido en el entorno local descrito o demostrado por u
 | H01 | **P0 · Crítico:** control administrativo y de datos. | Completado | R003 |
 | H02 | **P0 · Crítico:** confidencialidad de fotografías. | Completado | R005 |
 | H03 | **P1 · Alto:** exposición de información interna. | Completado | R007 |
-| H04 | **P1 · Alto:** abuso del login y almacenamiento. | El login en [AdminAuthController.cs:24](backend/Leart.Api/Controllers/AdminAuthController.cs#L24) y la recepción pública de pedidos y archivos en [PublicController.cs:94](backend/Leart.Api/Controllers/PublicController.cs#L94) carecen de limitación de frecuencia y cuotas de aplicación. La referencia del pedido es texto libre, sin comprobación de pedido confirmado. | Limitar intentos y concurrencia, establecer cuotas de almacenamiento y protección contra envíos automatizados. Definir si la personalización requerirá una invitación vinculada al pedido. **1–2 d**. |
+| H04 | **P1 · Alto:** abuso del login y almacenamiento. | Completado | R009 |
 | H05 | **P1 · Alto:** sesiones comprometidas siguen vigentes. | Los tokens duran 24 horas en [TokenService.cs:31](backend/Leart.Api/Services/TokenService.cs#L31). Cambiar la contraseña solo actualiza su hash en [AdminAuthController.cs:93](backend/Leart.Api/Controllers/AdminAuthController.cs#L93). El token anterior siguió funcionando después del cambio. | Incorporar revocación o versión de sesión comprobada por el servidor y definir una duración adecuada. **1 d**. |
 | H06 | **P2 · Medio:** archivos no verificados. | La validación comprueba extensión y tamaño, pero no el contenido real: [FileStorageService.cs:43](backend/Leart.Api/Services/FileStorageService.cs#L43). Un archivo de texto renombrado a JPG fue aceptado y servido. | Validar y decodificar imágenes, limitar dimensiones y normalizarlas. Definir una política separada para PDF si realmente se necesita. **1–2 d**. |
 
@@ -289,6 +289,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 20/20 pruebas backend pasan; fallo HTTP controlado devuelve 500 application/problem+json con traceId, sin el detalle privado ni el tipo de excepción. Diff sin errores.
 - **Pendientes o límites:** Sin pendientes en este alcance; el destino operativo de logs depende del despliegue.
 - **Próximo paso:** H04: límites de intentos, concurrencia y cuota de almacenamiento.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R008 — 2026-11-18 — H04 — Inicio de protección contra abuso
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H04; El login en [AdminAuthController.cs:24](backend/Leart.Api/Controllers/AdminAuthController.cs#L24) y la recepción pública de pedidos y archivos en [PublicController.cs:94](backend/Leart.Api/Controllers/PublicController.cs#L94) carecen de limitación de frecuencia y cuotas de aplicación. La referencia del pedido es texto libre, sin comprobación de pedido confirmado. → En curso.
+- **Avance y alcance:** Se añaden límites por IP al login y formulario, concurrencia global acotada y cuota de fotos privadas. El formulario continúa público: la referencia por sí sola no se tratará como prueba de pago.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H03 confirmado en eb3bc61. Se comprobarán 429, Retry-After y cuota antes de aceptar archivos.
+- **Pendientes o límites:** Implementación y pruebas de límites.
+- **Próximo paso:** Validar rechazos y documentar configuración de proxy confiable.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R009 — 2026-11-18 — H04 — Límites de envío, concurrencia y almacenamiento
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H04; En curso → Completado.
+- **Avance y alcance:** Login limitado a 5 intentos por IP/minuto y formulario a 10 envíos por IP/hora; concurrencia global de 16 sin cola y respuestas 429 con Retry-After. Cuota privada de 1 GiB configurable, comprobada bajo exclusión de escrituras. Solo se aceptan IP reenviadas desde proxies explícitamente confiables.
+- **Archivos y evidencia:** [AbuseProtection.cs](backend/Leart.Api/Services/AbuseProtection.cs), [FileStorageService.cs](backend/Leart.Api/Services/FileStorageService.cs), [StorageQuotaExceededException.cs](backend/Leart.Api/Services/StorageQuotaExceededException.cs), [AbuseProtectionTests.cs](backend/Leart.Api.Tests/AbuseProtectionTests.cs), [README.md](README.md)
+- **Validación:** 23/23 pruebas backend pasan, incluidas rechazo HTTP del sexto login y undécimo envío con políticas independientes y cuota sin crear archivo. Diff correcto.
+- **Pendientes o límites:** Políticas locales para una instancia de API; varias réplicas requieren coordinación compartida. Formulario público deliberado: la referencia no acredita pago; README lo explicita. Configurar las IP reales del proxy al desplegar.
+- **Próximo paso:** H05: invalidar tokens al cambiar/restablecer contraseña o eliminar un administrador.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

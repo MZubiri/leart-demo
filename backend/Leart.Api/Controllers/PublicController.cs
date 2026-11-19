@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.RateLimiting;
 using System.Text.Json;
 using Leart.Api.Data;
 using Leart.Api.DTOs;
@@ -92,6 +93,7 @@ public class PublicController : ControllerBase
     }
 
     [HttpPost("personalization")]
+    [EnableRateLimiting("personalization")]
     [Consumes("multipart/form-data")]
     public async Task<ActionResult<OrderResponseDto>> SubmitPersonalization(
         [FromForm] PersonalizationCreateDto dto,

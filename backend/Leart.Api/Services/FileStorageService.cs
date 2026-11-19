@@ -12,11 +12,15 @@ public class FileStorageService : IFileStorageService
 {
     private readonly IWebHostEnvironment _env;
     private readonly string _privateRoot;
+    private readonly long _maxOrderBytes;
+    private static readonly SemaphoreSlim OrderWrites = new(1, 1);
 
     public FileStorageService(IWebHostEnvironment env, IConfiguration? configuration = null)
     {
         _env = env;
         _privateRoot = configuration?["Storage:Root"] ?? Path.Combine(env.ContentRootPath, "storage");
+        _maxOrderBytes = configuration?.GetValue<long?>("Storage:MaxOrderBytes") ?? 1024L * 1024 * 1024;
+        if (_maxOrderBytes < 1) throw new InvalidOperationException("Storage:MaxOrderBytes debe ser positivo.");
     }
 
     private const long MaxFileSizeBytes = 20 * 1024 * 1024; // 20 MB max
@@ -55,10 +59,16 @@ public class FileStorageService : IFileStorageService
         var storedFileName = $"{Guid.NewGuid():N}{ext}";
         var fullPath = Path.Combine(uploadsRoot, storedFileName);
 
-        using (var stream = new FileStream(fullPath, FileMode.Create))
+        var isOrder = sanitizedSubFolder == "orders";
+        if (isOrder) await OrderWrites.WaitAsync();
+        try
         {
+            if (isOrder && Directory.EnumerateFiles(uploadsRoot).Sum(path => new FileInfo(path).Length) > _maxOrderBytes - file.Length)
+                throw new StorageQuotaExceededException();
+            await using var stream = new FileStream(fullPath, FileMode.CreateNew);
             await file.CopyToAsync(stream);
         }
+        finally { if (isOrder) OrderWrites.Release(); }
 
         var relativePath = sanitizedSubFolder == "orders"
             ? $"/private/orders/{storedFileName}"

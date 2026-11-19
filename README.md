@@ -115,3 +115,7 @@ docker run -d -p 80:80 --env-file .env.runtime --name leart-store leart-store
 ## Almacenamiento de fotografías
 
 Las imágenes del catálogo son públicas. Las fotos de pedidos se guardan en `storage/orders` (configurable con `Storage__Root`) y solo se descargan mediante la API administrativa autenticada. Compose monta `private_data` en `/app/storage`. Incluye este volumen y `uploads_data` junto a MySQL en las copias de seguridad. En el primer arranque se trasladan los archivos antiguos de `wwwroot/uploads/orders` a almacenamiento privado; si hay una colisión con contenido distinto, el inicio se detiene para revisión. Las URLs públicas antiguas devuelven 404.
+
+## Límites de recepción
+
+El login admite 5 intentos por IP y minuto; el formulario público admite 10 envíos por IP y hora. La API limita a 16 peticiones concurrentes y devuelve 429 con Retry-After al excederlos. Las fotos privadas tienen una cuota total inicial de 1 GiB, configurable con `Storage__MaxOrderBytes`. El almacenamiento local está previsto para una única instancia de API; varias instancias requieren límites y cuota compartidos. Si hay un proxy, configura únicamente sus IP confiables mediante `ReverseProxy__KnownProxies__0`, etc.; no se aceptan cabeceras de IP de clientes arbitrarios. Sin esa configuración, los clientes detrás del mismo proxy comparten el límite. El formulario es público y la referencia no verifica un pago: la confirmación comercial sigue en manos de la tienda.
