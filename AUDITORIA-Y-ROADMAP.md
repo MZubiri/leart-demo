@@ -190,7 +190,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | H11 | F2 | Completado | R023 |
 | H12 | F2 | Completado | R025 |
 | H13 | F2 | Completado | R050 |
-| H14 | F3 | Completado | R060 |
+| H14 | F3 | Completado | R065 |
 | H15 | F2 | Completado | R031 |
 | H16 | F2 | Completado | R033 |
 | H17 | F3 | Completado | R035 |
@@ -908,6 +908,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 39/39 pruebas frontend pasan. El test reproduce el fallo de creación que antes quedaba silencioso y verifica la recuperación. Diff correcto.
 - **Pendientes o límites:** La validación de imagen y despliegue continúa bajo D01.
 - **Próximo paso:** Revisar la última etiqueta de precio estática detectada en la ficha y completar el candidato.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R064 — 2026-11-18 — H14 — Etiqueta de fondo personalizado todavía fija en la ficha
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H14; Completado → En curso.
+- **Avance y alcance:** La revisión encuentra una etiqueta pública de $8000 para fondo personalizado escrita directamente en la plantilla. Aunque el cálculo ya usa la matriz de BD, esa etiqueta no cambiaría con las tarifas vigentes. Se conectará a la misma respuesta de PricingService y se evitará mostrar un importe si faltan reglas.
+- **Archivos y evidencia:** [product.page.html](src/app/pages/product.page.html), [product.page.ts](src/app/pages/product.page.ts)
+- **Validación:** Búsqueda de importes en el frontend y revisión de la ficha: única etiqueta monetaria literal fuera de los datos heredados de fixtures.
+- **Pendientes o límites:** Regresión de cambio de tarifa y ausencia de BD/reglas; commit independiente antes del despliegue.
+- **Próximo paso:** Comprobar que la etiqueta refleje valores HTTP y no utilice un precio local alternativo.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R065 — 2026-11-18 — H14 — Etiqueta de fondo conectada a la tarifa persistida
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H14; En curso → Completado.
+- **Avance y alcance:** La ficha consulta fondoPersonalizado en PricingService, que recibe la matriz de BD. La etiqueta se actualiza con esa tarifa y muestra sujeto a cotización si faltan reglas. Se conserva el texto comercial administrado en la BD sin reescribirlo automáticamente.
+- **Archivos y evidencia:** [product.page.ts](src/app/pages/product.page.ts), [product.page.html](src/app/pages/product.page.html), [product.page.spec.ts](src/app/pages/product.page.spec.ts)
+- **Validación:** 40/40 pruebas frontend pasan; regresión DOM comprueba cambio 8000→9000 y ausencia de precio cuando faltan reglas. Se normaliza el espacio de formato monetario en la aserción. El editor conserva diagnósticos de inyección con referencias desfasadas; el compilador Angular y sus pruebas actuales pasan. Diff correcto.
+- **Pendientes o límites:** La matriz conserva precios simulados autorizados. D01 continúa con imagen final y validación ARM64.
+- **Próximo paso:** Finalizar imagen con readiness de Docker, validar migración de la copia real y publicar el candidato.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

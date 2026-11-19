@@ -1,8 +1,9 @@
 import { OptimizedImageDirective } from '../shared/optimized-image.directive';
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { formatCop } from '../store/pricing';
 import { StoreService } from '../store/store.service';
+import { PricingService } from '../core/services/pricing.service';
 
 @Component({
   selector: 'app-product-page',
@@ -11,6 +12,11 @@ import { StoreService } from '../store/store.service';
   templateUrl: './product.page.html',
 })
 export class ProductPage {
+  private readonly pricing = inject(PricingService);
+  readonly formattedBackgroundPrice = computed(() => {
+    const price = this.pricing.rules()?.extraPrices['fondoPersonalizado'];
+    return typeof price === 'number' && Number.isSafeInteger(price) && price >= 0 ? formatCop(price) : null;
+  });
   readonly id = signal('');
   readonly activeImage = signal('');
   readonly product = computed(() => {

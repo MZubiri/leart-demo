@@ -54,7 +54,7 @@
             } @else if(item.category === 'Cajas acrílicas') {
               <li>🧰 Caja acrílica de alta transparencia</li>
               <li>🧸 1 accesorio del catálogo Grupo 1</li>
-              <li>🎨 Fondo temático prediseñado (o personalizado por $8.000)</li>
+              <li>🎨 Fondo temático prediseñado @if (formattedBackgroundPrice(); as price) {(o personalizado por {{price}})} @else {(personalizado sujeto a cotización)}</li>
               <li>🎁 Empaque especial para regalo</li>
             } @else if(item.category === 'Mini momentos') {
               <li>✨ Escena decorativa en piezas armables personalizadas</li>
