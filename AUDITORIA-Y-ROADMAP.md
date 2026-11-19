@@ -173,7 +173,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 
 ## 9. Seguimiento de ítems
 
-**Situación vigente:** 16 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
+**Situación vigente:** 17 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
 
 | ID | Fase | Estado vigente | Última entrada de avance o validación |
 | --- | --- | --- | --- |
@@ -193,7 +193,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | H14 | F3 | Completado | R029 |
 | H15 | F2 | Completado | R031 |
 | H16 | F2 | Completado | R033 |
-| H17 | F3 | Pendiente | — |
+| H17 | F3 | Completado | R035 |
 | H18 | F2 | Pendiente | — |
 | H19 | F4 | Pendiente | — |
 | H20 | F4 | Pendiente | — |
@@ -575,6 +575,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 43/43 pruebas backend y 24/24 frontend pasan; build producción correcto. Se verifican HTTP 400 de entradas inválidas y recepción válida con campos opcionales vacíos. Diagnósticos sin errores. Se cotejaron los 16 estados del registro con la bitácora y se restauró la tabla histórica.
 - **Pendientes o límites:** El aviso de versiones EF permanece para H21. No se modificaron datos productivos.
 - **Próximo paso:** H17: aplicar las plantillas configuradas y validar sus variables.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R034 — 2026-11-18 — H17 — Inicio de conexión de plantillas
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H17; Pendiente → En curso.
+- **Avance y alcance:** Se usarán las plantillas guardadas en los mensajes reales de cotización y personalización, con variables permitidas y conservación de detalles esenciales.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H16 confirmado en 02d4c69; revisión de los consumidores y configuración.
+- **Pendientes o límites:** Implementación y pruebas de interpolación y mensajes de fallo.
+- **Próximo paso:** Validar plantillas personalizadas sin perder datos ni afirmar recepción fallida.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R035 — 2026-11-18 — H17 — Plantillas aplicadas con detalles preservados
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H17; En curso → Completado.
+- **Avance y alcance:** Cotización y personalización consumen las plantillas guardadas. La interpolación ocurre una sola vez, conserva los valores literales del cliente y agrega los detalles omitidos. La API rechaza variables desconocidas; el panel explica las permitidas. La asistencia ante un fallo mantiene el mensaje de recepción no confirmada y el estado real de fotos se informa siempre fuera de la plantilla.
+- **Archivos y evidencia:** [message-template.ts](src/app/core/services/message-template.ts), [settings.service.ts](src/app/core/services/settings.service.ts), [message-template.spec.ts](src/app/core/services/message-template.spec.ts), [store.service.ts](src/app/store/store.service.ts), [personalization.page.ts](src/app/pages/personalization.page.ts), [SettingDtos.cs](backend/Leart.Api/DTOs/SettingDtos.cs), [InputValidationTests.cs](backend/Leart.Api.Tests/InputValidationTests.cs), [admin-settings.component.ts](src/app/admin/pages/admin-settings.component.ts)
+- **Validación:** 44/44 pruebas backend y 25/25 frontend pasan; build producción correcto. Pruebas verifican persistencia de plantilla, rechazo de variable desconocida, conservación de detalles e interpolación sin recursión. Sin diagnósticos ni errores de diff.
+- **Pendientes o límites:** Sin pendientes en el alcance comprobado; la aplicación en instalaciones existentes requiere el procedimiento documentado de despliegue.
+- **Próximo paso:** H18: corregir precedencia de Nginx y verificar rutas con un proxy real.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

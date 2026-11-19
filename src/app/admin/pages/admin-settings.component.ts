@@ -139,7 +139,7 @@ import { SettingsService } from '../../core/services/settings.service';
 
             <div class="form-grid">
               <div class="field-group full-width">
-                <label for="quoteTemplate">Saludo de Cotización Inicial</label>
+                <label for="quoteTemplate">Plantilla de cotización</label><small>Variable: &#123;lines&#125;. La selección se agrega siempre, aunque omitas la variable.</small>
                 <input
                   id="quoteTemplate"
                   type="text"
@@ -150,7 +150,7 @@ import { SettingsService } from '../../core/services/settings.service';
               </div>
 
               <div class="field-group full-width">
-                <label for="personalizationTemplate">Mensaje al enviar Personalización Post-pago</label>
+                <label for="personalizationTemplate">Personalización recibida</label><small>Variables: &#123;reference&#125;, &#123;name&#125;, &#123;phone&#125;, &#123;product&#125;, &#123;people&#125;, &#123;story&#125;, &#123;phrase&#125;, &#123;requirements&#125;. Los datos omitidos se agregan al final; la recepción de fotos siempre se informa.</small>
                 <input
                   id="personalizationTemplate"
                   type="text"

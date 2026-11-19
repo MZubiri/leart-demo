@@ -15,7 +15,7 @@ describe('Quotation lines', () => {
     TestBed.configureTestingModule({ providers: [
       { provide: PricingService, useValue: { rules: signal(rulesData as PricingRules) } },
       { provide: ProductsService, useValue: { products: signal(PRODUCTS), loaded: signal(true), loading: signal(false), error: signal('') } },
-      { provide: SettingsService, useValue: { canContact: signal(true), buildWhatsAppUrl: (message: string) => message } },
+      { provide: SettingsService, useValue: { canContact: signal(true), buildQuoteMessage: (lines: string) => lines, buildWhatsAppUrl: (message: string) => message } },
     ] });
   });
   afterEach(() => { document.body.style.overflow = ''; });

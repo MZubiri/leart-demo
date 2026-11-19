@@ -37,23 +37,12 @@ export class PersonalizationPage {
   readonly ready = computed(() => Boolean(this.order().trim() && this.name().trim() && /^\+?[0-9]{8,15}$/.test(this.phone().trim()) && this.product()));
 
   readonly whatsappUrl = computed(() => {
-    const ref = this.submittedReference() || this.order();
-    const message = [
-      this.submitted() ? 'Hola Leart 👋 Mi personalización quedó registrada en la web.' : 'Hola Leart 👋 Necesito ayuda para enviar mi personalización. Su registro todavía no está confirmado.',
-      '',
-      `Pedido o referencia: ${ref}`,
-      `Nombre: ${this.name()}`,
-      `Teléfono: ${this.phone()}`,
-      `Producto: ${this.product()}`,
-      `Personas o mascotas: ${this.people()}`,
-      `Historia u ocasión: ${this.story()}`,
-      `Nombres, fecha o frase: ${this.phrase()}`,
-      `Requerimientos especiales: ${this.requirements()}`,
-      '',
-      this.submitted()
-        ? `Fotos recibidas por la web: ${this.receivedPhotos()}.`
-        : `Tengo ${this.photoNames().length} foto(s) que necesito enviar con mi pedido.`,
-    ].join('\n');
+    const message = this.settingsService.buildPersonalizationMessage({
+      reference: this.submittedReference() || this.order(), name: this.name(), phone: this.phone(), product: this.product(),
+      people: this.people(), story: this.story(), phrase: this.phrase(), requirements: this.requirements(),
+    }, this.submitted()) + '\n\n' + (this.submitted()
+      ? 'Fotos recibidas por la web: ' + this.receivedPhotos() + '.'
+      : 'Tengo ' + this.photoNames().length + ' foto(s) que necesito enviar con mi pedido.');
 
     return this.settingsService.buildWhatsAppUrl(message);
   });

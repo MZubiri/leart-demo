@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace Leart.Api.DTOs;
 
@@ -22,6 +23,13 @@ public record UpdateSettingsDto(
 {
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
+        foreach (var (template, field, allowed) in new[] {
+            (WhatsAppQuoteTemplate, nameof(WhatsAppQuoteTemplate), new[] { "lines" }),
+            (WhatsAppPersonalizationTemplate, nameof(WhatsAppPersonalizationTemplate), new[] { "reference", "name", "phone", "product", "people", "story", "phrase", "requirements" }) })
+        {
+            if (template != null && Regex.Matches(template, @"\{([^{}]+)\}").Any(m => !allowed.Contains(m.Groups[1].Value)))
+                yield return new ValidationResult("La plantilla contiene variables no admitidas.", [field]);
+        }
         if (!string.IsNullOrEmpty(InstagramUrl) && (!Uri.TryCreate(InstagramUrl, UriKind.Absolute, out var url) || url.Scheme != "https" || url.UserInfo.Length > 0))
             yield return new ValidationResult("La red social requiere una URL HTTPS válida.", [nameof(InstagramUrl)]);
     }

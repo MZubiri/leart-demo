@@ -12,7 +12,7 @@ describe('Personalization submission', () => {
     TestBed.configureTestingModule({
       imports: [PersonalizationPage],
       providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]),
-        { provide: SettingsService, useValue: { buildWhatsAppUrl: (message: string) => message } }],
+        { provide: SettingsService, useValue: { buildPersonalizationMessage: (_: unknown, submitted: boolean) => submitted ? 'Confirmado' : 'todavía no está confirmado', buildWhatsAppUrl: (message: string) => message } }],
     });
     page = TestBed.createComponent(PersonalizationPage).componentInstance;
     http = TestBed.inject(HttpTestingController);

@@ -1,3 +1,4 @@
+import { renderMessageTemplate } from './message-template';
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
@@ -53,6 +54,20 @@ export class SettingsService {
         this.loaded.set(true);
       },
     });
+  }
+
+  buildQuoteMessage(lines: string): string {
+    return renderMessageTemplate(this.settings().whatsAppQuoteTemplate || DEFAULT_SETTINGS.whatsAppQuoteTemplate,
+      { lines }, { lines: '' });
+  }
+
+  buildPersonalizationMessage(values: Record<string, string>, submitted: boolean): string {
+    const template = submitted
+      ? this.settings().whatsAppPersonalizationTemplate || DEFAULT_SETTINGS.whatsAppPersonalizationTemplate
+      : 'Hola Leart 👋 Necesito ayuda para enviar mi personalización. Su registro todavía no está confirmado.';
+    return renderMessageTemplate(template, values, { reference: 'Pedido o referencia', name: 'Nombre', phone: 'Teléfono',
+      product: 'Producto', people: 'Personas o mascotas', story: 'Historia u ocasión', phrase: 'Nombres, fecha o frase',
+      requirements: 'Requerimientos especiales' });
   }
 
   buildWhatsAppUrl(message: string): string {

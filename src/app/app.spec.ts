@@ -15,7 +15,7 @@ describe('Guided quote', () => {
     TestBed.configureTestingModule({ imports: [App], providers: [provideRouter([]),
       { provide: ProductsService, useValue: { products: signal(PRODUCTS.filter(product => product.isActive !== false)), loaded: signal(true), loading: signal(false), error: signal('') } },
       { provide: PricingService, useValue: { rules: signal(rulesData as PricingRules), error: signal('') } },
-      { provide: SettingsService, useValue: { settings: signal({ announcementText: '', instagramUrl: '' }), canContact: signal(true), buildWhatsAppUrl: (message: string) => message } },
+      { provide: SettingsService, useValue: { settings: signal({ announcementText: '', instagramUrl: '' }), canContact: signal(true), buildQuoteMessage: (lines: string) => lines, buildWhatsAppUrl: (message: string) => message } },
     ] });
   });
   afterEach(() => { document.body.style.overflow = ''; });

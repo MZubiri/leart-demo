@@ -40,6 +40,17 @@ public class InputValidationTests
     }
 
     [Fact]
+    public async Task UnknownMessageVariablesAreRejectedAndValidTemplatesPersist()
+    {
+        using var factory = new ApiFactory(); using var client = factory.CreateClient(); await Authenticate(client);
+        object Body(string quote) => new { storeName = "Tienda", whatsAppNumber = "573001112233", announcementText = "", instagramUrl = "", whatsAppQuoteTemplate = quote, whatsAppPersonalizationTemplate = "Hola {name}: {reference}" };
+        Assert.Equal(HttpStatusCode.BadRequest, (await client.PutAsJsonAsync("/api/admin/settings", Body("Hola {unknown}"))).StatusCode);
+        (await client.PutAsJsonAsync("/api/admin/settings", Body("Oferta {lines}"))).EnsureSuccessStatusCode();
+        var saved = await client.GetFromJsonAsync<PublicSettingsDto>("/api/public/settings");
+        Assert.Equal("Oferta {lines}", saved!.WhatsAppQuoteTemplate);
+    }
+
+    [Fact]
     public async Task OptionalFormFieldsMayBeEmptyButLongNamesAndInvalidPhonesAreRejected()
     {
         using var factory = new ApiFactory(); using var client = factory.CreateClient();

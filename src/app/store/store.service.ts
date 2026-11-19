@@ -179,11 +179,7 @@ export class StoreService {
         }`,
     );
 
-    const message = this.cartLines().length
-      ? `Hola Leart 👋 Quiero cotizar esta selección:\n\n${lines.join(
-          '\n',
-        )}\n\nMi nombre es:\nCiudad de envío:\nFecha en que lo necesito:`
-      : 'Hola Leart 👋 Quiero información para cotizar un regalo personalizado.';
+    const message = this.settingsService.buildQuoteMessage(lines.join('\n'));
 
     return this.settingsService.buildWhatsAppUrl(message);
   }
