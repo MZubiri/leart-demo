@@ -63,7 +63,7 @@ El contenedor MySQL solo se expone en la red interna de Compose. Para desarrollo
 cd backend/Leart.Api
 dotnet run
 ```
-La API arrancará en `http://localhost:5000` y creará/sincronizará automáticamente las tablas y catálogo inicial en MySQL al primer inicio.
+La API arrancará en `http://localhost:5000` y inicializará el catálogo solo en una base nueva. Los reinicios conservan ediciones, pausas y eliminaciones, incluso si se vacía todo el catálogo. Las futuras actualizaciones de datos deben ser explícitas y versionadas; no se sincroniza el catálogo administrado con el código al arrancar.
 
 ### 3. Iniciar Frontend (Angular 21)
 

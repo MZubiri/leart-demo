@@ -10,6 +10,8 @@ public static class DbInitializer
     {
         try
         {
+            var initializeCatalog = !await context.SiteSettings.AnyAsync() && !await context.Products.AnyAsync();
+
             // Seed Settings if missing
             if (!await context.SiteSettings.AnyAsync())
             {
@@ -24,50 +26,15 @@ public static class DbInitializer
                     WhatsAppQuoteTemplate = "Hola Leart 👋 Quiero cotizar esta selección:\n\n{lines}\n\nMi nombre es:\nCiudad de envío:\nFecha en que lo necesito:",
                     WhatsAppPersonalizationTemplate = "Hola Leart 👋 Ya realicé mi pedido y quiero completar la información de personalización."
                 });
-                await context.SaveChangesAsync();
             }
 
-            // Upsert / Seed Products
-            logger.LogInformation("Verificando y sincronizando catálogo completo de productos en MySQL...");
-            var oldCuadro = await context.Products.FindAsync("cuadro-personalizado");
-            if (oldCuadro != null)
+            if (initializeCatalog)
             {
-                oldCuadro.IsActive = false;
-            }
-
-            var initialProducts = GetInitialProducts();
-            foreach (var p in initialProducts)
-            {
-                var existing = await context.Products.FindAsync(p.Id);
-                if (existing == null)
-                {
-                    context.Products.Add(p);
-                }
-                else
-                {
-                    existing.Name = p.Name;
-                    existing.Kicker = p.Kicker;
-                    existing.Category = p.Category;
-                    existing.Detail = p.Detail;
-                    existing.Image = p.Image;
-                    existing.Tag = p.Tag;
-                    existing.Group = p.Group;
-                    existing.OccasionJson = p.OccasionJson;
-                    existing.Description = p.Description;
-                    existing.MinFigures = p.MinFigures;
-                    existing.MaxFigures = p.MaxFigures;
-                    existing.VariantsJson = p.VariantsJson;
-                    existing.AllowsPets = p.AllowsPets;
-                    existing.AllowsAccessories = p.AllowsAccessories;
-                    existing.Rule = p.Rule;
-                    existing.BasePrice = p.BasePrice;
-                    existing.Code = p.Code;
-                    existing.DisplayOrder = p.DisplayOrder;
-                    existing.UpdatedAt = DateTime.UtcNow;
-                }
+                var initialProducts = GetInitialProducts();
+                context.Products.AddRange(initialProducts);
+                logger.LogInformation("Cargando catálogo inicial ({Count} productos).", initialProducts.Count);
             }
             await context.SaveChangesAsync();
-            logger.LogInformation("Catálogo sincronizado exitosamente ({Count} productos).", initialProducts.Count);
         }
         catch (Exception ex)
         {

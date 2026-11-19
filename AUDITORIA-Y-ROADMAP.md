@@ -81,7 +81,7 @@ Confirmado significa reproducido en el entorno local descrito o demostrado por u
 | H07 | **P1 · Alto:** confirmación falsa de recepción. | Completado | R015 |
 | H08 | **P1 · Alto:** pedidos incompletos y archivos huérfanos. | Completado | R017 |
 | H09 | **P1 · Alto:** borrar un pedido conserva sus fotos. | Completado | R019 |
-| H10 | **P1 · Alto:** se revierten cambios administrativos. | Cada arranque sobrescribe nombre, imagen, descripción, variantes, precio y otros campos de los productos iniciales: [DbInitializer.cs:53](backend/Leart.Api/Data/DbInitializer.cs#L53), invocado desde [Program.cs:192](backend/Leart.Api/Program.cs#L192). Una edición se perdió al reiniciar. Un producto inicial eliminado también se vuelve a insertar. | Separar carga inicial y migraciones de datos, preservar las ediciones del negocio y versionar cualquier actualización del catálogo. **1 d**. |
+| H10 | **P1 · Alto:** se revierten cambios administrativos. | Completado | R021 |
 | H11 | **P1 · Alto:** editor de productos defectuoso. | Dentro del formulario hay controles con `ngModel` sin nombre ni configuración independiente: [admin-products.component.ts:124](src/app/admin/pages/admin-products.component.ts#L124). En producción, varios campos mostraron el texto de la regla comercial en lugar de su valor. | Asignar nombres únicos o utilizar un formulario reactivo tipado. Verificar creación y edición en desarrollo y producción. **0,5–1 d**. |
 | H12 | **P1 · Alto:** editar destruye metadatos. | El payload fija ocasiones y reduce las variantes a una etiqueta; omite grupo, precio, código y orden: [admin-products.component.ts:718](src/app/admin/pages/admin-products.component.ts#L718). El PUT reemplaza esos campos con valores vacíos o predeterminados: [AdminProductsController.cs:101](backend/Leart.Api/Controllers/AdminProductsController.cs#L101). | Definir un contrato explícito de actualización: formulario completo o PATCH con campos presentes. Preservar los datos no editados. **1–2 d**. |
 | H13 | **P1 · Alto:** mezcla de configuraciones en una cotización. | La selección se identifica únicamente por producto y la nota nueva reemplaza la anterior: [store.service.ts:61](src/app/store/store.service.ts#L61). Agregar un cuadro S y otro M terminó como dos unidades con la configuración M. | Modelar líneas con identificador propio y configuración estructurada. Agrupar solo configuraciones equivalentes y migrar la selección guardada. **1 d**. |
@@ -421,6 +421,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 31/31 pruebas backend pasan: borrado real de foto y metadata, fallo de disco conserva pedido, reintento/idempotencia, limpieza de huérfano antiguo y conservación de fotos referenciadas o recientes, rechazo de raíz pública. Sin diagnósticos ni errores de diff.
 - **Pendientes o límites:** Las copias de seguridad tienen retención propia del operador. Si la BD falla después del borrado físico, el pedido conserva metadata y su eliminación puede reintentarse.
 - **Próximo paso:** H10: dejar de sobrescribir o reinsertar catálogo al reiniciar.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R020 — 2026-11-18 — H10 — Inicio de preservación del catálogo administrado
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H10; Cada arranque sobrescribe nombre, imagen, descripción, variantes, precio y otros campos de los productos iniciales: [DbInitializer.cs:53](backend/Leart.Api/Data/DbInitializer.cs#L53), invocado desde [Program.cs:192](backend/Leart.Api/Program.cs#L192). Una edición se perdió al reiniciar. Un producto inicial eliminado también se vuelve a insertar. → En curso.
+- **Avance y alcance:** Se sustituirá la sincronización destructiva en cada inicio por una carga inicial única. Los cambios y eliminaciones del negocio seguirán siendo la fuente vigente.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H09 confirmado; se comprobará reinicio lógico tras editar, borrar y vaciar productos.
+- **Pendientes o límites:** Implementar inicialización no destructiva y pruebas.
+- **Próximo paso:** Verificar conservación de catálogo y documentar futuras actualizaciones versionadas.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R021 — 2026-11-18 — H10 — Inicialización única sin sobrescribir catálogo
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H10; En curso → Completado.
+- **Avance y alcance:** El catálogo se carga únicamente si no hay ajustes ni productos previos. Ajustes y productos iniciales se persisten en una sola operación. Los reinicios no actualizan campos, no fuerzan pausas ni reinsertan productos borrados, incluso si se vacía el catálogo. Datos propios anteriores a los ajustes se conservan.
+- **Archivos y evidencia:** [DbInitializer.cs](backend/Leart.Api/Data/DbInitializer.cs), [CatalogInitializationTests.cs](backend/Leart.Api.Tests/CatalogInitializationTests.cs), [README.md](README.md)
+- **Validación:** 33/33 pruebas backend pasan. Se comprobaron edición de nombre/precio/estado, borrado individual, catálogo deliberadamente vacío y productos existentes sin ajustes. Diff y diagnósticos correctos.
+- **Pendientes o límites:** Actualizaciones comerciales futuras deben ser explícitas y versionadas; H20 aborda la evolución del esquema.
+- **Próximo paso:** H11: corregir registro de controles en el editor de productos.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada
