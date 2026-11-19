@@ -23,9 +23,18 @@ describe('Commercial pricing and capacity', () => {
   it('rejects quantities below the product minimum instead of silently clamping', () => {
     expect(calculatePrice({ category: 'Cuadros', product: { ...frame, minFigures: 2, basePrice: 124000 }, rules, variant: frame.variants[0], figures: 1 }).valid).toBe(false);
   });
-  it('does not invent unconfirmed prices for larger frames with fewer figures', () => {
-    const quote = calculatePrice({ category: 'Cuadros', product: frame, rules, variant: frame.variants[1], figures: 1 });
-    expect(quote.valid).toBe(true); expect(quote.totalPrice).toBeNull();
+  it('calculates the authorized simulated prices returned by the API for larger frames', () => {
+    for (const [variant, figures, price] of [[frame.variants[1], 1, 116000], [frame.variants[2], 1, 146000], [frame.variants[2], 2, 168000]] as const) {
+      const quote = calculatePrice({ category: 'Cuadros', product: frame, rules, variant, figures });
+      expect(quote.valid).toBe(true); expect(quote.totalPrice).toBe(price);
+      expect(quote.notes.join(' ')).toContain('Precio simulado');
+    }
+  });
+  it('calculates using changed database rates without a frontend price fallback', () => {
+    const updated = structuredClone(rules); updated.frames['M']['1'] = 117000;
+    expect(calculatePrice({ category: 'Cuadros', product: frame, rules: updated, variant: frame.variants[1], figures: 1 }).totalPrice).toBe(117000);
+    updated.frames['M']['1'] = null;
+    expect(calculatePrice({ category: 'Cuadros', product: frame, rules: updated, variant: frame.variants[1], figures: 1 }).totalPrice).toBeNull();
   });
   it('does not ignore a custom base price or invent a markup rule', () => {
     const quote = calculatePrice({ category: 'Cuadros', product: { ...frame, basePrice: 500000 }, rules, variant: frame.variants[0], figures: 1 });

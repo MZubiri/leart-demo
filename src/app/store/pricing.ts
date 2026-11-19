@@ -3,6 +3,7 @@ import { Category, Product } from './products';
 export interface PricingRules {
   currency: string;
   version: number;
+  simulated?: boolean;
   extraPrices: Record<string, number>;
   frames: Record<string, Record<string, number | null>>;
   sets: Record<string, { p1: number; p2: number; extra: number }>;
@@ -95,7 +96,7 @@ export function calculatePrice(options: {
   let basePrice = 0;
   let figuresExtra = 0;
   const petsExtra = pets * rules.extraPrices['mascota'];
-  const notes: string[] = [];
+  const notes: string[] = rules.simulated ? ['Precio simulado de demostración; pendiente de tarifa comercial.'] : [];
   switch (category) {
     case 'Cuadros': {
       const price = rules.frames[frameSize(variant) ?? '']?.[figures];

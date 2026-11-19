@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Data/pricing-rules.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Remove="Data/pricing-rules.json" />
+    <EmbeddedResource Include="Data/pricing-rules.json" />
   </ItemGroup>
 </Project>

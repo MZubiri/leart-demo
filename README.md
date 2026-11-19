@@ -156,9 +156,19 @@ Al eliminar un pedido se borran sus fotos; si el almacenamiento falla, se conser
 
 ## Tarifas y capacidades
 
-La matriz de cálculo se mantiene en [pricing-rules.json](backend/Leart.Api/Data/pricing-rules.json), con versión explícita, y la API la sirve en `/api/public/pricing`. El frontend no incluye otra tabla de precios: sin reglas cargadas no permite confirmar una configuración. Cantidades y extras respetan el producto y la presentación; las cajas usan los límites de mascotas por cantidad de figuras de la matriz comercial.
+La matriz vigente está persistida en MySQL: tabla `PricingConfigurations`, fila `Id = 1`, columna JSON `RulesJson`. La migración crea la tabla y el arranque carga una sola vez los valores iniciales de [pricing-rules.json](backend/Leart.Api/Data/pricing-rules.json), incorporado en el ensamblado como recurso de inicialización. No sobrescribe una matriz existente. Cada petición a `/api/public/pricing` consulta esa fila, sin caché ni fallback al archivo. El frontend usa la respuesta HTTP; si faltan las reglas o falla la BD, la API devuelve 503 y no se permite confirmar una configuración. Cantidades y extras respetan el producto y la presentación.
 
-Los cuadros M con una figura y L con una o dos no tienen precio confirmado en la planilla disponible: se muestran como **A cotizar**, conservando la posibilidad de elegir esa presentación. Si el precio base administrado difiere del estándar de la matriz, también se solicita cotización; no se ignora el cambio ni se inventa un recargo. Para habilitar importes exactos adicionales se debe confirmar la matriz comercial y actualizar sus reglas con pruebas. Los estimados excluyen accesorios sin precio definido y el valor final se confirma por WhatsApp.
+Por autorización del usuario se cargan **precios simulados de demostración en COP**, con `version = 2` y `simulated = true`. Se conservan los importes de referencia anteriores y se completan cuadro M/1 figura a **116.000**, L/1 a **146.000** y L/2 a **168.000**. El desglose identifica el precio simulado. Son datos de la BD utilizados por el cotizador real; no son tarifas comerciales aprobadas. Los precios base de los productos también permanecen en `Products.BasePrice` y se administran desde el panel.
+
+Para cambiar una tarifa desde la BD, por ejemplo, ejecutar en la instancia correspondiente:
+
+```sql
+UPDATE PricingConfigurations
+SET RulesJson = JSON_SET(RulesJson, '$.frames.M."1"', 117000), UpdatedAt = UTC_TIMESTAMP(6)
+WHERE Id = 1;
+```
+
+La siguiente consulta HTTP y una recarga de la página utilizan el valor guardado. El cambio persiste al reiniciar API/MySQL; editar el recurso inicial no actualiza una BD ya inicializada. Al publicar tarifas reales, revisar toda la matriz, sus capacidades y los precios base de productos, aumentar `version` y establecer `simulated = false` en la misma fila. Si se cambia la tarifa base de referencia de un producto, actualizar también su `Products.BasePrice`: una discrepancia o precio base vacío mantiene **A cotizar**, evitando ignorar una edición administrativa. Los accesorios sin tarifa definida quedan excluidos del estimado y el valor final se confirma por WhatsApp.
 
 ## Plataforma y dependencias
 

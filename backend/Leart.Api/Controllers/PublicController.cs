@@ -16,9 +16,9 @@ public class PublicController : ControllerBase
     private readonly AppDbContext _context;
     private readonly IFileStorageService _fileStorage;
     private readonly ILogger<PublicController> _logger;
-    private readonly PricingCatalog _pricing;
+    private readonly IPricingCatalog _pricing;
 
-    public PublicController(AppDbContext context, IFileStorageService fileStorage, ILogger<PublicController> logger, PricingCatalog pricing)
+    public PublicController(AppDbContext context, IFileStorageService fileStorage, ILogger<PublicController> logger, IPricingCatalog pricing)
     {
         _context = context;
         _fileStorage = fileStorage;
@@ -27,7 +27,15 @@ public class PublicController : ControllerBase
     }
 
     [HttpGet("pricing")]
-    public ActionResult<System.Text.Json.JsonElement> GetPricing() => Ok(_pricing.Rules);
+    [EndpointSummary("Consulta la matriz de precios vigente almacenada en la base de datos.")]
+    [ProducesResponseType<JsonElement>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status503ServiceUnavailable)]
+    public async Task<ActionResult<JsonElement>> GetPricing(CancellationToken cancellationToken)
+    {
+        var rules = await _pricing.GetRulesAsync(cancellationToken);
+        return rules.HasValue ? Ok(rules.Value)
+            : Problem(statusCode: StatusCodes.Status503ServiceUnavailable, title: "Las tarifas no están disponibles temporalmente.");
+    }
 
     [HttpGet("settings")]
     public async Task<ActionResult<PublicSettingsDto>> GetSettings()

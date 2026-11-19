@@ -15,11 +15,18 @@ public class AppDbContext : DbContext
     public DbSet<AdminUser> AdminUsers => Set<AdminUser>();
     public DbSet<PersonalizationOrder> PersonalizationOrders => Set<PersonalizationOrder>();
     public DbSet<OrderAttachment> OrderAttachments => Set<OrderAttachment>();
+    public DbSet<PricingConfiguration> PricingConfigurations => Set<PricingConfiguration>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<PricingConfiguration>(entity =>
+        {
+            entity.HasKey(configuration => configuration.Id);
+            entity.Property(configuration => configuration.Id).ValueGeneratedNever();
+            entity.Property(configuration => configuration.RulesJson).HasColumnType("json").IsRequired();
+        });
 
         modelBuilder.Entity<SiteSetting>(entity =>
         {

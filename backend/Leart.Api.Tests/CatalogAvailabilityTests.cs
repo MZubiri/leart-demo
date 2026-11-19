@@ -13,7 +13,7 @@ public class CatalogAvailabilityTests
     private sealed class FailureSwitch { public bool Fail { get; set; } }
     private sealed class ControlledReads(DbContextOptions<AppDbContext> options, FailureSwitch gate) : AppDbContext(options)
     {
-        public override DbSet<TEntity> Set<TEntity>() => gate.Fail && (typeof(TEntity) == typeof(Product) || typeof(TEntity) == typeof(SiteSetting))
+        public override DbSet<TEntity> Set<TEntity>() => gate.Fail && (typeof(TEntity) == typeof(Product) || typeof(TEntity) == typeof(SiteSetting) || typeof(TEntity) == typeof(PricingConfiguration))
             ? throw new IOException("Test database unavailable") : base.Set<TEntity>();
     }
 
@@ -25,6 +25,7 @@ public class CatalogAvailabilityTests
         using var client = factory.CreateClient(); gate.Fail = true;
         Assert.Equal(HttpStatusCode.ServiceUnavailable, (await client.GetAsync("/api/public/products")).StatusCode);
         Assert.Equal(HttpStatusCode.ServiceUnavailable, (await client.GetAsync("/api/public/settings")).StatusCode);
+        Assert.Equal(HttpStatusCode.ServiceUnavailable, (await client.GetAsync("/api/public/pricing")).StatusCode);
     }
 
     [Fact]

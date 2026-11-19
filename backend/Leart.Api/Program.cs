@@ -39,7 +39,7 @@ builder.Services.AddOpenApi();
 // MySQL 8+, proveedor EF10. No se abre una conexión para autodetectar por petición.
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySQL(connectionString));
 
-builder.Services.AddSingleton<PricingCatalog>();
+builder.Services.AddScoped<IPricingCatalog, PricingCatalog>();
 
 // Services
 builder.Services.AddScoped<ITokenService, TokenService>();

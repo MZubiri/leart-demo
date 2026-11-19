@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
 using Leart.Api.DTOs;
 using Leart.Api.Data;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,8 @@ public class MySqlIntegrationTests
             using var client = factory.CreateClient();
             var products = await client.GetFromJsonAsync<List<ProductDto>>("/api/public/products");
             Assert.NotEmpty(products!);
+            var rules = await client.GetFromJsonAsync<JsonElement>("/api/public/pricing");
+            Assert.Equal(116000, rules.GetProperty("frames").GetProperty("M").GetProperty("1").GetInt32());
             var login = await client.PostAsJsonAsync("/api/admin/auth/login", new { username = "owner", password = "Test-only-bootstrap-password-2026" });
             login.EnsureSuccessStatusCode();
             var token = (await login.Content.ReadFromJsonAsync<LoginResponseDto>())!.Token;
@@ -31,19 +34,25 @@ public class MySqlIntegrationTests
             Assert.NotNull(await client.GetFromJsonAsync<AdminDashboardDto>("/api/admin/orders/dashboard"));
             using var scope = factory.Services.CreateScope(); var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var product = await db.Products.FirstAsync(); product.Name = "Retained after restart"; await db.SaveChangesAsync();
+            await db.Database.ExecuteSqlRawAsync("UPDATE PricingConfigurations SET RulesJson=JSON_SET(RulesJson, '$.frames.M.\"1\"', 117000), UpdatedAt=UTC_TIMESTAMP(6) WHERE Id=1");
+            var changed = await client.GetFromJsonAsync<JsonElement>("/api/public/pricing");
+            Assert.Equal(117000, changed.GetProperty("frames").GetProperty("M").GetProperty("1").GetInt32());
         }
         using (var factory = new ApiFactory { MySqlConnection = connection })
         {
             using var client = factory.CreateClient();
             var products = await client.GetFromJsonAsync<List<ProductDto>>("/api/public/products");
             Assert.Contains(products!, product => product.Name == "Retained after restart");
+            var rules = await client.GetFromJsonAsync<JsonElement>("/api/public/pricing");
+            Assert.Equal(117000, rules.GetProperty("frames").GetProperty("M").GetProperty("1").GetInt32());
+            Assert.True(rules.GetProperty("simulated").GetBoolean());
         }
         using (var benchmark = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseMySQL(connection).Options))
             await VerifyOrderQueryPlans(benchmark);
         // Importar el SQL real del esquema anterior (Pomelo/EF9), sin historial.
         var options = new DbContextOptionsBuilder<AppDbContext>().UseMySQL(connection).Options;
         using var legacy = new AppDbContext(options);
-        await legacy.Database.ExecuteSqlRawAsync("DROP TABLE OrderAttachments, PersonalizationOrders, Products, SiteSettings, AdminUsers, __EFMigrationsHistory");
+        await legacy.Database.ExecuteSqlRawAsync("DROP TABLE OrderAttachments, PersonalizationOrders, Products, SiteSettings, AdminUsers, PricingConfigurations, __EFMigrationsHistory");
         await legacy.Database.ExecuteSqlRawAsync(await File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "Fixtures/LegacySchema.sql")));
         legacy.Products.Add(new Leart.Api.Models.Product { Id = "legacy", Name = "Retained legacy product", Category = "Cuadros" });
         legacy.SiteSettings.Add(new Leart.Api.Models.SiteSetting { StoreName = "Retained legacy store" });

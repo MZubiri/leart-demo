@@ -10,6 +10,15 @@ public static class DbInitializer
     {
         try
         {
+            if (!await context.PricingConfigurations.AnyAsync(configuration => configuration.Id == 1))
+            {
+                // El recurso solo inicializa la BD. Las consultas HTTP leen siempre la fila persistida.
+                await using var seed = typeof(DbInitializer).Assembly.GetManifestResourceStream("Leart.Api.Data.pricing-rules.json")
+                    ?? throw new InvalidOperationException("No se encontró la carga inicial de tarifas.");
+                using var reader = new StreamReader(seed);
+                context.PricingConfigurations.Add(new PricingConfiguration { Id = 1, RulesJson = await reader.ReadToEndAsync() });
+                logger.LogInformation("Cargando tarifas simuladas iniciales en la base de datos.");
+            }
             var initializeCatalog = !await context.SiteSettings.AnyAsync() && !await context.Products.AnyAsync();
 
             // Seed Settings if missing

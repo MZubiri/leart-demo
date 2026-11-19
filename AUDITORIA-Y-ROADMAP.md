@@ -138,7 +138,7 @@ Dependencias principales:
 - Coordinar H08 y H09 para que almacenamiento, eliminación y compensación compartan una política consistente.
 - Coordinar H10 y H20 para separar catálogo inicial, evolución de datos y migraciones de esquema.
 - Resolver H11 y H12 antes de confiar en la edición comercial usada para validar H14.
-- Confirmar la matriz comercial antes de cerrar H14; no deducir precios ni capacidades de documentos contradictorios.
+- Confirmar la matriz comercial antes de cerrar H14; no deducir precios ni capacidades de documentos contradictorios. **Decisión posterior del usuario:** se autoriza cerrar el alcance de demostración con tarifas simuladas persistidas en BD (R058–R060). Publicar tarifas comerciales reales requiere su validación específica.
 - Crear comprobaciones de regresión durante F1–F4 y completar CI y mediciones en F5.
 
 ## 8. Cómo mantener este documento
@@ -173,7 +173,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 
 ## 9. Seguimiento de ítems
 
-**Situación vigente:** 25 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
+**Situación vigente:** 26 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
 
 | ID | Fase | Estado vigente | Última entrada de avance o validación |
 | --- | --- | --- | --- |
@@ -190,7 +190,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | H11 | F2 | Completado | R023 |
 | H12 | F2 | Completado | R025 |
 | H13 | F2 | Completado | R050 |
-| H14 | F3 | Implementado; pendiente de validación | R056 |
+| H14 | F3 | Completado | R060 |
 | H15 | F2 | Completado | R031 |
 | H16 | F2 | Completado | R033 |
 | H17 | F3 | Completado | R035 |
@@ -839,6 +839,39 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 37/37 frontend y47/47 backend estándar pasan, con1 integración omitida explícitamente fuera de su runner. Runner MySQL real pasa migración nueva, adopción anterior, consultas y planes sobre10000 pedidos. Chromium pasa tres pasos, transición y cantidad del panel, creación/edición de producto, detalle de pedido, foco inicial, Tab/Shift+Tab, Escape y restauración. La prueba DOM verifica capas y scroll anterior. Imagen fullstack final construida y smoke real pasa con foto privada normalizada, autorización y reinicio. Nginx y copia/restauración pasan de nuevo; actionlint correcto. Auditorías npm producción y NuGet transitivas0avisos; diff limpio.
 - **Pendientes o límites:** No equivale a certificación completa de accesibilidad ni a prueba con lectores de pantalla. El editor conserva diagnósticos de imports que no aparecen en compilación ni pruebas; los resultados del compilador actual y Chromium son la evidencia de ejecución. H14 queda pendiente de confirmación comercial, según R056.
 - **Próximo paso:** Registrar la confirmación comercial pendiente de H14 y conservar seguimiento en futuras correcciones.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R058 — 2026-11-18 — H14 — Tarifas simuladas persistidas por autorización del usuario
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H14; Implementado; pendiente de validación → En curso.
+- **Avance y alcance:** El usuario autoriza importes simulados desde la BD. Se trasladará la matriz a una tabla MySQL, con carga inicial única, importes provisionales M/1 y L/1–2, consulta HTTP desde persistencia y conservación al reiniciar. No constituye aprobación de tarifas comerciales definitivas.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** Revisado el flujo vigente: la API sirve un JSON estático; el frontend ya consulta HTTP. No existe una instalación local de Leart en Docker ni archivo .env en este checkout.
+- **Pendientes o límites:** Migración, carga inicial, consultas asíncronas, pruebas con MySQL y arranque local persistente.
+- **Próximo paso:** Implementar fuente de precios en BD y verificar modificaciones y reinicio reales.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R059 — 2026-11-18 — H14 — Matriz persistida y regresiones MySQL verificadas
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H14; En curso → Implementado; pendiente de validación.
+- **Avance y alcance:** Creada PricingConfigurations con RulesJson de tipo JSON, consultada por IPricingCatalog en cada petición. La carga inicial es única y no sobrescribe ediciones; precios simulados versión 2 con M/1=116000, L/1=146000 y L/2=168000 COP. El desglose identifica su carácter provisional. La administración consulta las capacidades de la misma fila y propaga cancelación.
+- **Archivos y evidencia:** [PricingConfiguration.cs](backend/Leart.Api/Models/PricingConfiguration.cs), [DbInitializer.cs](backend/Leart.Api/Data/DbInitializer.cs), [PricingCatalog.cs](backend/Leart.Api/Services/PricingCatalog.cs), [IPricingCatalog.cs](backend/Leart.Api/Services/IPricingCatalog.cs), [PublicController.cs](backend/Leart.Api/Controllers/PublicController.cs), [AdminProductsController.cs](backend/Leart.Api/Controllers/AdminProductsController.cs), [20261119031306_PersistPricingConfiguration.cs](backend/Leart.Api/Data/Migrations/20261119031306_PersistPricingConfiguration.cs), [PricingCatalogTests.cs](backend/Leart.Api.Tests/PricingCatalogTests.cs), [CatalogAvailabilityTests.cs](backend/Leart.Api.Tests/CatalogAvailabilityTests.cs), [MySqlIntegrationTests.cs](backend/Leart.Api.Tests/MySqlIntegrationTests.cs), [pricing.ts](src/app/store/pricing.ts), [pricing.spec.ts](src/app/store/pricing.spec.ts), [README.md](README.md)
+- **Validación:** 38/38 frontend y 51/51 backend estándar pasan; 1 integración se omite fuera de su runner. El runner MySQL real pasa: nueva migración, cambio SQL reflejado por HTTP, retención tras reinicio de API, adopción de esquema anterior y planes de consulta. Casos de matriz ausente, inválida y BD caída devuelven 503 sin fallback al recurso. EF no detecta cambios pendientes; sin diagnósticos en los archivos comprobados ni errores de diff. Compose construyó frontend y backend y arrancó MySQL con volumen persistente en una instancia local nueva.
+- **Pendientes o límites:** Verificación final del cotizador en Chromium contra la instancia real y reinicio de MySQL. La aprobación de tarifas reales sigue fuera del alcance autorizado de demostración.
+- **Próximo paso:** Comprobar UI contra cambios SQL y persistencia tras reiniciar ambos servicios; registrar cierre y commit.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R060 — 2026-11-18 — H14 — Precios simulados desde MySQL comprobados en navegador y commit de cierre
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H14; Implementado; pendiente de validación → Completado.
+- **Avance y alcance:** Completado el alcance de demostración autorizado: tarifas versión 2 persistidas en PricingConfigurations, sin mock ni fallback de precios en ejecución. Se conservan capacidades S/M/L de 3/6/10 y la salvaguarda A cotizar para precios base personalizados sin matriz concordante. R058 sustituye la espera de tarifas definitivas de R056 por importes provisionales expresamente autorizados; no equivale a aprobación comercial. Queda una instancia local nueva disponible en http://127.0.0.1:8088, con 75 productos y una matriz, en volúmenes persistentes. La configuración local tiene permisos 600 y está ignorada por Git; no se publican puertos de BD o API.
+- **Archivos y evidencia:** [pricing-rules.json](backend/Leart.Api/Data/pricing-rules.json), [20261119031306_PersistPricingConfiguration.cs](backend/Leart.Api/Data/Migrations/20261119031306_PersistPricingConfiguration.cs), [PricingCatalog.cs](backend/Leart.Api/Services/PricingCatalog.cs), [MySqlIntegrationTests.cs](backend/Leart.Api.Tests/MySqlIntegrationTests.cs), [PricingCatalogTests.cs](backend/Leart.Api.Tests/PricingCatalogTests.cs), [pricing.ts](src/app/store/pricing.ts), [pricing.spec.ts](src/app/store/pricing.spec.ts), [README.md](README.md)
+- **Validación:** 38/38 frontend y 51/51 backend estándar pasan, más 1/1 integración MySQL en su runner. Build de producción frontend y publicación backend pasan en imágenes Compose. En Chromium, sin interceptar HTTP, M/1 muestra 116000 COP; UPDATE SQL a 117000 se refleja en API y cotizador tras recarga. Reiniciar MySQL y API conserva 117000 y el navegador lo confirma. Se restaura 116000, comprobado nuevamente por API y UI; sin errores JavaScript. Nueva tabla única, sin alteraciones de tablas comerciales previas; EF sin diferencias de modelo pendientes. Validaciones de matriz ausente/inválida y BD caída devuelven 503. Diff y diagnósticos de los archivos revisados correctos.
+- **Pendientes o límites:** Sin pendientes técnicos del alcance de demostración. Las tarifas reales y los accesorios sin precio definido requieren decisión comercial; no se modificó ninguna instalación productiva ni se hizo push. Las cinco mejoras opcionales continúan sin programar.
+- **Próximo paso:** Mantener esta bitácora en cada avance posterior; reemplazar los importes simulados en la fila de BD cuando se aprueben tarifas reales.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

@@ -17,9 +17,9 @@ public class AdminProductsController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IFileStorageService _fileStorage;
-    private readonly PricingCatalog _pricing;
+    private readonly IPricingCatalog _pricing;
 
-    public AdminProductsController(AppDbContext context, IFileStorageService fileStorage, PricingCatalog pricing)
+    public AdminProductsController(AppDbContext context, IFileStorageService fileStorage, IPricingCatalog pricing)
     {
         _context = context;
         _fileStorage = fileStorage;
@@ -48,9 +48,11 @@ public class AdminProductsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ProductDto>> Create([FromBody] ProductCreateOrUpdateDto dto)
+    public async Task<ActionResult<ProductDto>> Create([FromBody] ProductCreateOrUpdateDto dto, CancellationToken cancellationToken)
     {
-        if (ExceedsCategoryCapacity(dto)) return BadRequest(new { message = "El máximo de figuras supera la capacidad de esta categoría." });
+        var exceedsCapacity = await ExceedsCategoryCapacityAsync(dto, cancellationToken);
+        if (exceedsCapacity is null) return Problem(statusCode: 503, title: "Las tarifas no están disponibles temporalmente.");
+        if (exceedsCapacity.Value) return BadRequest(new { message = "El máximo de figuras supera la capacidad de esta categoría." });
         if (string.IsNullOrWhiteSpace(dto.Name))
             return BadRequest(new { message = "El nombre del producto es obligatorio." });
 
@@ -58,7 +60,7 @@ public class AdminProductsController : ControllerBase
             ? GenerateSlug(dto.Name)
             : GenerateSlug(dto.Id);
 
-        if (await _context.Products.AnyAsync(p => p.Id == slug))
+        if (await _context.Products.AnyAsync(p => p.Id == slug, cancellationToken))
         {
             var suffix = Guid.NewGuid().ToString("N")[..8];
             slug = $"{slug[..Math.Min(slug.Length, 90)]}-{suffix}";
@@ -90,16 +92,18 @@ public class AdminProductsController : ControllerBase
         };
 
         _context.Products.Add(product);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         return CreatedAtAction(nameof(GetById), new { id = product.Id }, MapToDto(product));
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<ProductDto>> Update(string id, [FromBody] ProductCreateOrUpdateDto dto)
+    public async Task<ActionResult<ProductDto>> Update(string id, [FromBody] ProductCreateOrUpdateDto dto, CancellationToken cancellationToken)
     {
-        if (ExceedsCategoryCapacity(dto)) return BadRequest(new { message = "El máximo de figuras supera la capacidad de esta categoría." });
-        var product = await _context.Products.FindAsync(id);
+        var exceedsCapacity = await ExceedsCategoryCapacityAsync(dto, cancellationToken);
+        if (exceedsCapacity is null) return Problem(statusCode: 503, title: "Las tarifas no están disponibles temporalmente.");
+        if (exceedsCapacity.Value) return BadRequest(new { message = "El máximo de figuras supera la capacidad de esta categoría." });
+        var product = await _context.Products.FindAsync([id], cancellationToken);
         if (product == null)
             return NotFound(new { message = "Producto no encontrado." });
 
@@ -125,7 +129,7 @@ public class AdminProductsController : ControllerBase
         product.Code = dto.Code?.Trim();
         product.UpdatedAt = DateTime.UtcNow;
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
         return Ok(MapToDto(product));
     }
 
@@ -167,10 +171,12 @@ public class AdminProductsController : ControllerBase
         return Ok(new { url = relativePath });
     }
 
-    private bool ExceedsCategoryCapacity(ProductCreateOrUpdateDto dto)
+    private async Task<bool?> ExceedsCategoryCapacityAsync(ProductCreateOrUpdateDto dto, CancellationToken cancellationToken)
     {
-        var max = dto.Category == "Cuadros" ? _pricing.Rules.GetProperty("frameLimits").EnumerateObject().Max(value => value.Value.GetInt32())
-            : _pricing.Rules.GetProperty("defaultLimits").GetProperty(dto.Category).GetInt32();
+        var rules = await _pricing.GetRulesAsync(cancellationToken);
+        if (rules is null) return null;
+        var max = dto.Category == "Cuadros" ? rules.Value.GetProperty("frameLimits").EnumerateObject().Max(value => value.Value.GetInt32())
+            : rules.Value.GetProperty("defaultLimits").GetProperty(dto.Category).GetInt32();
         return dto.MaxFigures > max;
     }
 

@@ -162,6 +162,23 @@ namespace Leart.Api.Data.Migrations
                     b.ToTable("PersonalizationOrders");
                 });
 
+            modelBuilder.Entity("Leart.Api.Models.PricingConfiguration", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RulesJson")
+                        .IsRequired()
+                        .HasColumnType("json");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PricingConfigurations");
+                });
+
             modelBuilder.Entity("Leart.Api.Models.Product", b =>
                 {
                     b.Property<string>("Id")
