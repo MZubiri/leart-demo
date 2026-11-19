@@ -82,7 +82,7 @@ Confirmado significa reproducido en el entorno local descrito o demostrado por u
 | H08 | **P1 · Alto:** pedidos incompletos y archivos huérfanos. | Completado | R017 |
 | H09 | **P1 · Alto:** borrar un pedido conserva sus fotos. | Completado | R019 |
 | H10 | **P1 · Alto:** se revierten cambios administrativos. | Completado | R021 |
-| H11 | **P1 · Alto:** editor de productos defectuoso. | Dentro del formulario hay controles con `ngModel` sin nombre ni configuración independiente: [admin-products.component.ts:124](src/app/admin/pages/admin-products.component.ts#L124). En producción, varios campos mostraron el texto de la regla comercial en lugar de su valor. | Asignar nombres únicos o utilizar un formulario reactivo tipado. Verificar creación y edición en desarrollo y producción. **0,5–1 d**. |
+| H11 | **P1 · Alto:** editor de productos defectuoso. | Completado | R023 |
 | H12 | **P1 · Alto:** editar destruye metadatos. | El payload fija ocasiones y reduce las variantes a una etiqueta; omite grupo, precio, código y orden: [admin-products.component.ts:718](src/app/admin/pages/admin-products.component.ts#L718). El PUT reemplaza esos campos con valores vacíos o predeterminados: [AdminProductsController.cs:101](backend/Leart.Api/Controllers/AdminProductsController.cs#L101). | Definir un contrato explícito de actualización: formulario completo o PATCH con campos presentes. Preservar los datos no editados. **1–2 d**. |
 | H13 | **P1 · Alto:** mezcla de configuraciones en una cotización. | La selección se identifica únicamente por producto y la nota nueva reemplaza la anterior: [store.service.ts:61](src/app/store/store.service.ts#L61). Agregar un cuadro S y otro M terminó como dos unidades con la configuración M. | Modelar líneas con identificador propio y configuración estructurada. Agrupar solo configuraciones equivalentes y migrar la selección guardada. **1 d**. |
 | H14 | **P1 · Alto:** precios y capacidades inconsistentes. | El precio usa tablas locales y prioriza el grupo del producto sobre la variante elegida: [pricing.ts:73](src/app/store/pricing.ts#L73), [pricing.ts:106](src/app/store/pricing.ts#L106). Elegir Grupo 4 en el flujo genérico calculó 130.000 COP en lugar de los 165.000 de su tabla. Los límites usan valores de categoría en [app.ts:109](src/app/app.ts#L109): Mini Hockey declara máximo cuatro en [DbInitializer.cs:1813](backend/Leart.Api/Data/DbInitializer.cs#L1813), pero el cotizador puede permitir ocho. | Establecer una fuente única de precios, variantes y restricciones. Usar identificadores estables y respetar mínimos, máximos y permisos de extras por producto. **3–5 d**. |
@@ -443,6 +443,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 33/33 pruebas backend pasan. Se comprobaron edición de nombre/precio/estado, borrado individual, catálogo deliberadamente vacío y productos existentes sin ajustes. Diff y diagnósticos correctos.
 - **Pendientes o límites:** Actualizaciones comerciales futuras deben ser explícitas y versionadas; H20 aborda la evolución del esquema.
 - **Próximo paso:** H11: corregir registro de controles en el editor de productos.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R022 — 2026-11-18 — H11 — Inicio de corrección de controles del editor
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H11; Dentro del formulario hay controles con `ngModel` sin nombre ni configuración independiente: [admin-products.component.ts:124](src/app/admin/pages/admin-products.component.ts#L124). En producción, varios campos mostraron el texto de la regla comercial en lugar de su valor. → En curso.
+- **Avance y alcance:** Se asignarán nombres únicos a los controles del formulario de productos y se comprobará que editar un campo no contamine los demás.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H10 confirmado; se probará con renderizado Angular real en modo de desarrollo.
+- **Pendientes o límites:** Regresión del formulario antes del commit H11.
+- **Próximo paso:** Verificar valores independientes y ausencia de errores de registro ngModel.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R023 — 2026-11-18 — H11 — Controles independientes en el editor
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H11; En curso → Completado.
+- **Avance y alcance:** Todos los controles ngModel del formulario de productos tienen nombres únicos. Se verificó el renderizado real y la edición aislada de un campo sin contaminar los demás.
+- **Archivos y evidencia:** [admin-products.component.ts](src/app/admin/pages/admin-products.component.ts), [admin-products.component.spec.ts](src/app/admin/pages/admin-products.component.spec.ts)
+- **Validación:** 5/5 pruebas frontend pasan, incluido montaje Angular en desarrollo sin NG01352 y conservación del subtítulo/regla al cambiar el nombre. Sin diagnósticos ni errores de diff.
+- **Pendientes o límites:** H12 debe corregir la construcción del payload para conservar metadatos no representados todavía.
+- **Próximo paso:** H12: editar todos los metadatos sin pérdida involuntaria.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

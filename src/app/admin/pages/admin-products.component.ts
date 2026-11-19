@@ -25,7 +25,7 @@ import { Category, Product } from '../../store/products';
       <div class="filter-bar">
         <div class="search-box">
           <span class="search-icon">🔍</span>
-          <input
+          <input name="productControl1"
             type="text"
             placeholder="Buscar por nombre o detalle..."
             [ngModel]="searchTerm()"
@@ -125,7 +125,7 @@ import { Category, Product } from '../../store/products';
               <div class="form-grid">
                 <div class="field-group full">
                   <label for="prodName">Nombre del producto *</label>
-                  <input
+                  <input name="prodName"
                     id="prodName"
                     type="text"
                     required
@@ -137,7 +137,7 @@ import { Category, Product } from '../../store/products';
 
                 <div class="field-group">
                   <label for="prodKicker">Kicker (Subtítulo corto)</label>
-                  <input
+                  <input name="prodKicker"
                     id="prodKicker"
                     type="text"
                     [ngModel]="formKicker()"
@@ -148,7 +148,7 @@ import { Category, Product } from '../../store/products';
 
                 <div class="field-group">
                   <label for="prodCategory">Categoría *</label>
-                  <select
+                  <select name="prodCategory"
                     id="prodCategory"
                     [ngModel]="formCategory()"
                     (ngModelChange)="formCategory.set($event)"
@@ -161,7 +161,7 @@ import { Category, Product } from '../../store/products';
 
                 <div class="field-group">
                   <label for="prodDetail">Detalle o piezas</label>
-                  <input
+                  <input name="prodDetail"
                     id="prodDetail"
                     type="text"
                     [ngModel]="formDetail()"
@@ -172,7 +172,7 @@ import { Category, Product } from '../../store/products';
 
                 <div class="field-group">
                   <label for="prodTag">Etiqueta (Tag / Grupo)</label>
-                  <input
+                  <input name="prodTag"
                     id="prodTag"
                     type="text"
                     [ngModel]="formTag()"
@@ -184,7 +184,7 @@ import { Category, Product } from '../../store/products';
                 <div class="field-group full">
                   <label>Imagen del Producto</label>
                   <div class="image-upload-row">
-                    <input
+                    <input name="productControl2"
                       type="text"
                       [ngModel]="formImage()"
                       (ngModelChange)="formImage.set($event)"
@@ -206,7 +206,7 @@ import { Category, Product } from '../../store/products';
 
                 <div class="field-group full">
                   <label for="prodDesc">Descripción detallada</label>
-                  <textarea
+                  <textarea name="prodDesc"
                     id="prodDesc"
                     rows="3"
                     [ngModel]="formDescription()"
@@ -217,7 +217,7 @@ import { Category, Product } from '../../store/products';
 
                 <div class="field-group">
                   <label for="minFig">Min. Figuras</label>
-                  <input
+                  <input name="minFig"
                     id="minFig"
                     type="number"
                     min="1"
@@ -229,7 +229,7 @@ import { Category, Product } from '../../store/products';
 
                 <div class="field-group">
                   <label for="maxFig">Máx. Figuras</label>
-                  <input
+                  <input name="maxFig"
                     id="maxFig"
                     type="number"
                     min="1"
@@ -241,7 +241,7 @@ import { Category, Product } from '../../store/products';
 
                 <div class="field-group full check-row">
                   <label class="checkbox-label">
-                    <input
+                    <input name="productControl3"
                       type="checkbox"
                       [ngModel]="formAllowsPets()"
                       (ngModelChange)="formAllowsPets.set($event)"
@@ -249,7 +249,7 @@ import { Category, Product } from '../../store/products';
                     <span>Permite mascotas</span>
                   </label>
                   <label class="checkbox-label">
-                    <input
+                    <input name="productControl4"
                       type="checkbox"
                       [ngModel]="formAllowsAccessories()"
                       (ngModelChange)="formAllowsAccessories.set($event)"
@@ -257,7 +257,7 @@ import { Category, Product } from '../../store/products';
                     <span>Permite accesorios</span>
                   </label>
                   <label class="checkbox-label">
-                    <input
+                    <input name="productControl5"
                       type="checkbox"
                       [ngModel]="formIsActive()"
                       (ngModelChange)="formIsActive.set($event)"
@@ -268,7 +268,7 @@ import { Category, Product } from '../../store/products';
 
                 <div class="field-group full">
                   <label for="prodRule">Regla comercial</label>
-                  <input
+                  <input name="prodRule"
                     id="prodRule"
                     type="text"
                     [ngModel]="formRule()"
