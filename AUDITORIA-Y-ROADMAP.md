@@ -208,7 +208,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | O03 | Por definir | No programada | — |
 | O04 | Por definir | No programada | — |
 | O05 | Por definir | No programada | — |
-| D01 | Despliegue | En curso | R066 |
+| D01 | Despliegue | Completado | R069 |
 
 **D01 — Revisión y despliegue autorizado:** revisar el código completo y ejecutar validaciones; respaldar datos/configuración actuales, preparar actualización y recuperación en Coolify, desplegar y verificar por HTTPS. Prioridad P1; impacto alto operativo; esfuerzo estimado 0,5–1 día, sujeto al estado real del servidor. No es un hallazgo nuevo ni autoriza las mejoras opcionales.
 
@@ -943,6 +943,39 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Próximo paso:** Publicar el candidato, construirlo en ARM64, verificar copia/migraciones y canario, y activar únicamente si esas comprobaciones pasan.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
+### R067 — 2026-11-18 — D01 — Candidato ARM64 aprobado y actualización preparada
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** D01; En curso → En curso.
+- **Avance y alcance:** El candidato 78aa5c55eb3deae351c08b638dde339724ac0edc fue publicado, compilado nativamente y probado en una instancia privada ARM64. La copia restaurada preserva todas las filas originales; se conservan 75 productos, incluidos 74 activos y el producto desactivado por administración. Se adoptó el esquema anterior y se aplicaron tres migraciones. La contraseña inicial publicada se reemplazó en la copia, con credencial guardada en archivo local protegido. Se recuperaron 4,135 GB de caché de esta compilación mediante IDs explícitos; sin eliminar imágenes, volúmenes ni datos de otros proyectos.
+- **Archivos y evidencia:** [Dockerfile](Dockerfile), [SchemaInitializer.cs](backend/Leart.Api/Data/SchemaInitializer.cs), [AUDITORIA-Y-ROADMAP.md](AUDITORIA-Y-ROADMAP.md)
+- **Validación:** GitHub Actions 44453268067: ambos jobs completados con éxito. Canario ARM64: healthcheck saludable, 74 productos públicos, matriz simulada en BD, login con clave nueva, upload real WebP normalizado a PNG, 401 sin autorización, foto conservada tras reinicio y cotizador Chromium a 116000 COP sin errores JS. Pedido y foto técnicos eliminados al terminar. Las pruebas de reinicio usan puerto privado fijo: Docker reasignaba el puerto aleatorio anterior al reiniciar. Se verificó el mismo comportamiento con la conexión corregida.
+- **Pendientes o límites:** Detener escrituras del backend antiguo, tomar copia final y comprobar cambios durante la preparación; activar el candidato y verificar HTTPS, administración y persistencia del contenedor final. WhatsApp real sigue pendiente de respuesta del usuario.
+- **Próximo paso:** Cambiar el servicio público mediante Coolify con copia final y recuperación disponible.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R068 — 2026-11-18 — D01 — Despliegue activado y HTTPS comprobado
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** D01; En curso → En curso.
+- **Avance y alcance:** Coolify finalizó el despliegue wihxvmhsr5zih0oeza0giiw7 del commit 78aa5c55eb3deae351c08b638dde339724ac0edc en https://leart.molinazdev.lat. Antes de cambiar se detuvieron escrituras del proceso antiguo, se compararon todas las filas con el respaldo y se generaron SQL final e imagen de recuperación. Se regeneraron etiquetas del proxy para el puerto 8080; cambiar solo ports_exposes conservaba las etiquetas anteriores del puerto 80.
+- **Archivos y evidencia:** [Dockerfile](Dockerfile), [AUDITORIA-Y-ROADMAP.md](AUDITORIA-Y-ROADMAP.md)
+- **Validación:** Coolify: finished. HTTPS devuelve readiness Healthy 200 y matriz simulada versión 2; 74 productos públicos y 75 administrativos, preservando la desactivación existente. Login y /me funcionan con nueva clave; pedidos 0. API administrativa sin token 401, rutas privadas y antiguas de adjuntos 404. Chromium público pasa cotizador M/1=116000 y login/dashboard, sin errores JavaScript.
+- **Pendientes o límites:** Guardar copia posterior del estado migrado, comprobar montajes e imagen exacta, documentar operación, restaurar auto-deploy y revocar token temporal. WhatsApp real continúa pendiente de respuesta.
+- **Próximo paso:** Cerrar verificación operativa y dejar documentación/credenciales protegidas para el usuario.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R069 — 2026-11-18 — D01 — Publicación verificada, respaldos y cierre operativo
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** D01; En curso → Completado.
+- **Avance y alcance:** Despliegue terminado y verificado en https://leart.molinazdev.lat con la imagen ARM64 exacta validada del commit 78aa5c55eb3deae351c08b638dde339724ac0edc. El proceso corre como app, MySQL es privado y los directorios públicos/privados usan sus volúmenes persistentes. Se dejaron copias anteriores y posteriores, SQL final e imagen de emergencia. Se documentó operación y recuperación. Auto-deploy recuperó su configuración original y el token API temporal fue revocado; se retiraron canario, túnel y variables remotas de restablecimiento de un solo uso.
+- **Archivos y evidencia:** [DESPLIEGUE-COOLIFY.md](DESPLIEGUE-COOLIFY.md), [AUDITORIA-Y-ROADMAP.md](AUDITORIA-Y-ROADMAP.md), [Dockerfile](Dockerfile), [test-runtime.cjs](scripts/test-runtime.cjs)
+- **Validación:** Coolify wihxvmhsr5zih0oeza0giiw7 finished; GitHub Actions 44453268067 verde. 40/40 frontend, 51/51 backend estándar y 1/1 integración MySQL; build, teclado, backup/restore, nginx e imagen completos pasan. Verificación pública HTTPS: readiness 200, matriz simulada versión 2, 74 productos públicos/75 administrados, login y dashboard Chromium, 401 administrativo sin token y 404 para rutas privadas. Clave publicada anterior rechazada con 401. BD final: 75 productos, 74 activos, 0 pedidos/adjuntos técnicos, 1 matriz y 3 migraciones. Montajes y SHA de imagen final coinciden con el canario. SQL/uploads/private posteriores tienen SHA-256 comprobado local/remotamente. VPS con aproximadamente 5,3 GiB libres. Enlaces del runbook y permisos 600 de la credencial local correctos; ningún secreto del despliegue en archivos versionados. Token temporal eliminado y auto-deploy true comprobado.
+- **Pendientes o límites:** Sin pendientes técnicos de esta publicación. Permanece pendiente configurar el WhatsApp real solicitado al usuario y aprobar tarifas comerciales definitivas; se conservan precios simulados y se bloquea el número de ejemplo. Las mejoras opcionales siguen sin programar.
+- **Próximo paso:** Mantener la bitácora en cada cambio. El commit final contiene únicamente documentación y usa [skip ci], admitido por este Coolify, para evitar otro despliegue del mismo código.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
 ### Plantilla para la siguiente entrada
 
 Copiar la plantilla, asignar el siguiente identificador `R002`, `R003`, etc., y completar los campos. Eliminar los textos de ejemplo de la entrada real.
@@ -1009,4 +1042,4 @@ No se encontraron esperas síncronas de Task, async void, stackalloc, clientes H
 | P2 — H14 | Etiqueta de fondo con importe fijo: corregida en caeff5c con prueba de tarifa y ausencia de reglas. |
 | Comercial | Tarifas simuladas autorizadas; WhatsApp de ejemplo. Se preserva configuración y se consulta el número real. |
 
-El candidato supera la validación local. La activación requiere validar ARM64 y la migración real; el resultado se registra en D01.
+El candidato superó la validación local, ARM64, migración real y comprobación pública HTTPS. El despliegue está completado según R069; la operación y recuperación se detallan en [DESPLIEGUE-COOLIFY.md](DESPLIEGUE-COOLIFY.md).
