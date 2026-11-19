@@ -215,7 +215,7 @@ export class AdminLoginComponent {
     this.loading.set(true);
     this.errorMessage.set('');
 
-    this.auth.login({ username: this.username().trim(), password: this.password().trim() }).subscribe({
+    this.auth.login({ username: this.username().trim(), password: this.password() }).subscribe({
       next: () => {
         this.loading.set(false);
         this.router.navigate(['/admin/dashboard']);

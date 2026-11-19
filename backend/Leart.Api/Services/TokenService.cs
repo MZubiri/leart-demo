@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -28,7 +29,7 @@ public class TokenService : ITokenService
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var expiresAt = DateTime.UtcNow.AddHours(24);
+        var expiresAt = DateTime.UtcNow.AddHours(1);
 
         var claims = new[]
         {
@@ -36,7 +37,8 @@ public class TokenService : ITokenService
             new Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(ClaimTypes.Role, user.Role),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim("session", SessionFingerprint(user, secret))
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -53,4 +55,6 @@ public class TokenService : ITokenService
 
         return (tokenHandler.WriteToken(token), expiresAt);
     }
+    public static string SessionFingerprint(AdminUser user, string secret) =>
+        Convert.ToHexString(HMACSHA256.HashData(Encoding.UTF8.GetBytes(secret), Encoding.UTF8.GetBytes(user.PasswordHash)));
 }

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using Leart.Api.Data;
 using Leart.Api.Services;
@@ -71,7 +72,19 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false;
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = async context =>
+        {
+            var id = context.Principal?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(id, out var userId)) { context.Fail("Sesión inválida."); return; }
+            var db = context.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
+            var user = await db.AdminUsers.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId);
+            if (user == null || user.Role != "Admin" || context.Principal?.FindFirstValue("session") != TokenService.SessionFingerprint(user, jwtSecret))
+                context.Fail("La sesión expiró o fue revocada.");
+        }
+    };
+    options.RequireHttpsMetadata = true;
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {

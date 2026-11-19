@@ -593,8 +593,8 @@ export class AdminSettingsComponent implements OnInit {
       return;
     }
 
-    if (this.newPassword().length < 8) {
-      this.passwordError.set('La nueva contraseña debe tener al menos 8 caracteres.');
+    if (this.newPassword().length < 12) {
+      this.passwordError.set('La nueva contraseña debe tener al menos 12 caracteres.');
       return;
     }
 
@@ -609,6 +609,7 @@ export class AdminSettingsComponent implements OnInit {
       next: () => {
         this.changingPassword.set(false);
         this.passwordNotification.set(true);
+        this.auth.logout();
         this.currentPassword.set('');
         this.newPassword.set('');
         setTimeout(() => this.passwordNotification.set(false), 5000);

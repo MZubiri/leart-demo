@@ -71,7 +71,7 @@ Confirmado significa reproducido en el entorno local descrito o demostrado por u
 | H02 | **P0 · Crítico:** confidencialidad de fotografías. | Completado | R005 |
 | H03 | **P1 · Alto:** exposición de información interna. | Completado | R007 |
 | H04 | **P1 · Alto:** abuso del login y almacenamiento. | Completado | R009 |
-| H05 | **P1 · Alto:** sesiones comprometidas siguen vigentes. | Los tokens duran 24 horas en [TokenService.cs:31](backend/Leart.Api/Services/TokenService.cs#L31). Cambiar la contraseña solo actualiza su hash en [AdminAuthController.cs:93](backend/Leart.Api/Controllers/AdminAuthController.cs#L93). El token anterior siguió funcionando después del cambio. | Incorporar revocación o versión de sesión comprobada por el servidor y definir una duración adecuada. **1 d**. |
+| H05 | **P1 · Alto:** sesiones comprometidas siguen vigentes. | Completado | R011 |
 | H06 | **P2 · Medio:** archivos no verificados. | La validación comprueba extensión y tamaño, pero no el contenido real: [FileStorageService.cs:43](backend/Leart.Api/Services/FileStorageService.cs#L43). Un archivo de texto renombrado a JPG fue aceptado y servido. | Validar y decodificar imágenes, limitar dimensiones y normalizarlas. Definir una política separada para PDF si realmente se necesita. **1–2 d**. |
 
 ### Integridad y comportamiento comercial
@@ -311,6 +311,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 23/23 pruebas backend pasan, incluidas rechazo HTTP del sexto login y undécimo envío con políticas independientes y cuota sin crear archivo. Diff correcto.
 - **Pendientes o límites:** Políticas locales para una instancia de API; varias réplicas requieren coordinación compartida. Formulario público deliberado: la referencia no acredita pago; README lo explicita. Configurar las IP reales del proxy al desplegar.
 - **Próximo paso:** H05: invalidar tokens al cambiar/restablecer contraseña o eliminar un administrador.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R010 — 2026-11-18 — H05 — Inicio de revocación de sesiones
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H05; Los tokens duran 24 horas en [TokenService.cs:31](backend/Leart.Api/Services/TokenService.cs#L31). Cambiar la contraseña solo actualiza su hash en [AdminAuthController.cs:93](backend/Leart.Api/Controllers/AdminAuthController.cs#L93). El token anterior siguió funcionando después del cambio. → En curso.
+- **Avance y alcance:** Se ligarán los tokens a la credencial vigente mediante una huella HMAC; cambiar o restablecer contraseña y eliminar la cuenta invalidará las sesiones sin agregar una columna incompatible con bases existentes.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** Revisión de generación y validación JWT y cambio de contraseña.
+- **Pendientes o límites:** Pruebas de tokens anteriores, login nuevo y cuenta eliminada.
+- **Próximo paso:** Validar y confirmar H05.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R011 — 2026-11-18 — H05 — Revocación al cambiar contraseña o eliminar cuenta
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H05; En curso → Completado.
+- **Avance y alcance:** Cada JWT contiene una huella HMAC de la credencial vigente; en cada petición se verifica que el administrador exista y conserve esa credencial. Cambio y restablecimiento invalidan tokens anteriores sin una columna nueva. Duración reducida a una hora. El panel cierra la sesión después de cambiar clave y admite contraseñas de 12 caracteres a 72 bytes sin recortarlas en login.
+- **Archivos y evidencia:** [TokenService.cs](backend/Leart.Api/Services/TokenService.cs), [Program.cs](backend/Leart.Api/Program.cs), [AdminAuthController.cs](backend/Leart.Api/Controllers/AdminAuthController.cs), [SessionRevocationTests.cs](backend/Leart.Api.Tests/SessionRevocationTests.cs), [admin-settings.component.ts](src/app/admin/pages/admin-settings.component.ts), [admin-login.component.ts](src/app/admin/pages/admin-login.component.ts)
+- **Validación:** 24/24 pruebas backend pasan. HTTP: token vigente 200; tras cambio 401; login con clave nueva 200; eliminar cuenta revoca el token. Build Angular y diff correctos.
+- **Pendientes o límites:** Sin pendientes de revocación en este alcance; O04 sobre cookies sigue opcional.
+- **Próximo paso:** H06: validar y normalizar el contenido real de las imágenes.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

@@ -74,9 +74,9 @@ public class AdminAuthController : ControllerBase
             return BadRequest(new { message = "La contraseña actual y la nueva son requeridas." });
         }
 
-        if (dto.NewPassword.Length < 8)
+        if (dto.NewPassword.Length < 12 || System.Text.Encoding.UTF8.GetByteCount(dto.NewPassword) > 72 || SecurityConfiguration.IsPublishedPassword(dto.NewPassword))
         {
-            return BadRequest(new { message = "La nueva contraseña debe tener al menos 8 caracteres." });
+            return BadRequest(new { message = "La nueva contraseña debe tener al menos 12 caracteres y hasta 72 bytes." });
         }
 
         var username = User.FindFirstValue(ClaimTypes.Name) ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
