@@ -10,6 +10,7 @@ namespace Leart.Api.Tests;
 
 public class ApiFactory : WebApplicationFactory<Program>
 {
+    public Action<IServiceCollection>? OverrideServices { get; set; }
     public string StorageRoot { get; } = Path.Combine(Path.GetTempPath(), "leart-api-" + Guid.NewGuid().ToString("N"));
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -25,6 +26,7 @@ public class ApiFactory : WebApplicationFactory<Program>
             services.RemoveAll<DbContextOptions<AppDbContext>>();
             services.RemoveAll<IDbContextOptionsConfiguration<AppDbContext>>();
             services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase(databaseName));
+            OverrideServices?.Invoke(services);
         });
     }
 

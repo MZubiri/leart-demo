@@ -27,6 +27,9 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
     });
 
+builder.Services.AddExceptionHandler<ApiExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 // OpenAPI
 builder.Services.AddOpenApi();
 
@@ -104,36 +107,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Top-level diagnostic error middleware
-app.Use(async (context, next) =>
-{
-    try
-    {
-        await next();
-    }
-    catch (Exception ex)
-    {
-        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Unhandled exception on request {Path}: {Message}", context.Request.Path, ex.Message);
-
-        if (!context.Response.HasStarted)
-        {
-            context.Response.StatusCode = 500;
-            context.Response.ContentType = "text/html; charset=utf-8";
-            await context.Response.WriteAsync($@"
-<!DOCTYPE html>
-<html>
-<head><title>500 Internal Error - Leart Store</title></head>
-<body style='font-family: system-ui, sans-serif; padding: 2rem; background: #fff5f5; color: #742a2a; max-width: 900px; margin: 0 auto;'>
-  <h2>500 - Error Interno del Servidor</h2>
-  <p><strong>Ruta:</strong> {System.Net.WebUtility.HtmlEncode(context.Request.Path.Value)}</p>
-  <p><strong>Detalle:</strong> {System.Net.WebUtility.HtmlEncode(ex.Message)}</p>
-  <pre style='background: #fff; padding: 1rem; border: 1px solid #feb2b2; border-radius: 6px; overflow: auto; font-size: 13px;'>{System.Net.WebUtility.HtmlEncode(ex.ToString())}</pre>
-</body>
-</html>");
-        }
-    }
-});
+app.UseExceptionHandler();
 
 // Static Files & Uploads
 var uploadsPath = Path.Combine(webRootPath, "uploads");

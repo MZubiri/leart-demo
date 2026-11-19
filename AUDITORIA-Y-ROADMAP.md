@@ -69,7 +69,7 @@ Confirmado significa reproducido en el entorno local descrito o demostrado por u
 | --- | --- | --- | --- |
 | H01 | **P0 · Crítico:** control administrativo y de datos. | Completado | R003 |
 | H02 | **P0 · Crítico:** confidencialidad de fotografías. | Completado | R005 |
-| H03 | **P1 · Alto:** exposición de información interna. | El manejador global devuelve mensaje, excepción completa y stack trace también en producción: [Program.cs:114](backend/Leart.Api/Program.cs#L114). Una entrada demasiado larga produjo HTTP 500 con detalles de Entity Framework y rutas del servidor. | Devolver errores estructurados y genéricos con identificador de correlación. Conservar el detalle en logs internos. **0,5 d**. |
+| H03 | **P1 · Alto:** exposición de información interna. | Completado | R007 |
 | H04 | **P1 · Alto:** abuso del login y almacenamiento. | El login en [AdminAuthController.cs:24](backend/Leart.Api/Controllers/AdminAuthController.cs#L24) y la recepción pública de pedidos y archivos en [PublicController.cs:94](backend/Leart.Api/Controllers/PublicController.cs#L94) carecen de limitación de frecuencia y cuotas de aplicación. La referencia del pedido es texto libre, sin comprobación de pedido confirmado. | Limitar intentos y concurrencia, establecer cuotas de almacenamiento y protección contra envíos automatizados. Definir si la personalización requerirá una invitación vinculada al pedido. **1–2 d**. |
 | H05 | **P1 · Alto:** sesiones comprometidas siguen vigentes. | Los tokens duran 24 horas en [TokenService.cs:31](backend/Leart.Api/Services/TokenService.cs#L31). Cambiar la contraseña solo actualiza su hash en [AdminAuthController.cs:93](backend/Leart.Api/Controllers/AdminAuthController.cs#L93). El token anterior siguió funcionando después del cambio. | Incorporar revocación o versión de sesión comprobada por el servidor y definir una duración adecuada. **1 d**. |
 | H06 | **P2 · Medio:** archivos no verificados. | La validación comprueba extensión y tamaño, pero no el contenido real: [FileStorageService.cs:43](backend/Leart.Api/Services/FileStorageService.cs#L43). Un archivo de texto renombrado a JPG fue aceptado y servido. | Validar y decodificar imágenes, limitar dimensiones y normalizarlas. Definir una política separada para PDF si realmente se necesita. **1–2 d**. |
@@ -267,6 +267,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 19/19 pruebas backend pasan. Prueba HTTP: anónimo 401 en descarga, rutas públicas 404, administrador 200 con contenido esperado y Cache-Control no-store. Probada migración y bloqueo de recorrido de rutas. Build Angular correcto; sin diagnósticos nuevos.
 - **Pendientes o límites:** La migración de fotos reales se ejecutará al desplegar; hacer backup de ambos volúmenes según README. H09 abordará la eliminación física al borrar pedidos.
 - **Próximo paso:** H03: sustituir stack traces públicos por Problem Details genéricos.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R006 — 2026-11-18 — H03 — Inicio de respuestas de error seguras
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H03; El manejador global devuelve mensaje, excepción completa y stack trace también en producción: [Program.cs:114](backend/Leart.Api/Program.cs#L114). Una entrada demasiado larga produjo HTTP 500 con detalles de Entity Framework y rutas del servidor. → En curso.
+- **Avance y alcance:** Se reemplazará el middleware HTML de diagnóstico por Problem Details sin detalles internos y con identificador de correlación.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H02 confirmado en a211d1a; prueba de error HTTP por añadir.
+- **Pendientes o límites:** Comprobar que excepciones internas no aparezcan en la respuesta.
+- **Próximo paso:** Ejecutar prueba HTTP de fallo controlado y hacer commit H03.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R007 — 2026-11-18 — H03 — Errores genéricos con correlación
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H03; En curso → Completado.
+- **Avance y alcance:** Se sustituyó el HTML con excepción y stack trace por Problem Details genéricos, sin caché y con traceId. Los detalles quedan solo en el registro interno.
+- **Archivos y evidencia:** [ApiExceptionHandler.cs](backend/Leart.Api/Services/ApiExceptionHandler.cs), [Program.cs](backend/Leart.Api/Program.cs), [ErrorResponseTests.cs](backend/Leart.Api.Tests/ErrorResponseTests.cs)
+- **Validación:** 20/20 pruebas backend pasan; fallo HTTP controlado devuelve 500 application/problem+json con traceId, sin el detalle privado ni el tipo de excepción. Diff sin errores.
+- **Pendientes o límites:** Sin pendientes en este alcance; el destino operativo de logs depende del despliegue.
+- **Próximo paso:** H04: límites de intentos, concurrencia y cuota de almacenamiento.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada
