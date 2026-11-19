@@ -83,7 +83,7 @@ Confirmado significa reproducido en el entorno local descrito o demostrado por u
 | H09 | **P1 · Alto:** borrar un pedido conserva sus fotos. | Completado | R019 |
 | H10 | **P1 · Alto:** se revierten cambios administrativos. | Completado | R021 |
 | H11 | **P1 · Alto:** editor de productos defectuoso. | Completado | R023 |
-| H12 | **P1 · Alto:** editar destruye metadatos. | El payload fija ocasiones y reduce las variantes a una etiqueta; omite grupo, precio, código y orden: [admin-products.component.ts:718](src/app/admin/pages/admin-products.component.ts#L718). El PUT reemplaza esos campos con valores vacíos o predeterminados: [AdminProductsController.cs:101](backend/Leart.Api/Controllers/AdminProductsController.cs#L101). | Definir un contrato explícito de actualización: formulario completo o PATCH con campos presentes. Preservar los datos no editados. **1–2 d**. |
+| H12 | **P1 · Alto:** editar destruye metadatos. | Completado | R025 |
 | H13 | **P1 · Alto:** mezcla de configuraciones en una cotización. | La selección se identifica únicamente por producto y la nota nueva reemplaza la anterior: [store.service.ts:61](src/app/store/store.service.ts#L61). Agregar un cuadro S y otro M terminó como dos unidades con la configuración M. | Modelar líneas con identificador propio y configuración estructurada. Agrupar solo configuraciones equivalentes y migrar la selección guardada. **1 d**. |
 | H14 | **P1 · Alto:** precios y capacidades inconsistentes. | El precio usa tablas locales y prioriza el grupo del producto sobre la variante elegida: [pricing.ts:73](src/app/store/pricing.ts#L73), [pricing.ts:106](src/app/store/pricing.ts#L106). Elegir Grupo 4 en el flujo genérico calculó 130.000 COP en lugar de los 165.000 de su tabla. Los límites usan valores de categoría en [app.ts:109](src/app/app.ts#L109): Mini Hockey declara máximo cuatro en [DbInitializer.cs:1813](backend/Leart.Api/Data/DbInitializer.cs#L1813), pero el cotizador puede permitir ocho. | Establecer una fuente única de precios, variantes y restricciones. Usar identificadores estables y respetar mínimos, máximos y permisos de extras por producto. **3–5 d**. |
 | H15 | **P1 · Alto:** catálogo incorrecto ante vacío o fallo. | Una respuesta válida `[]` se ignora en [products.service.ts:20](src/app/core/services/products.service.ts#L20); en navegador siguieron apareciendo 75 productos. Ante fallos de BD, la API entrega el catálogo inicial en [PublicController.cs:63](backend/Leart.Api/Controllers/PublicController.cs#L63), que incluye un producto inactivo. La cotización recupera productos ausentes desde los datos locales: [store.service.ts:30](src/app/store/store.service.ts#L30). | Distinguir vacío, carga y fallo; respetar siempre la disponibilidad actual y evitar recuperar productos retirados sin validación. **1–2 d**. |
@@ -465,6 +465,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 5/5 pruebas frontend pasan, incluido montaje Angular en desarrollo sin NG01352 y conservación del subtítulo/regla al cambiar el nombre. Sin diagnósticos ni errores de diff.
 - **Pendientes o límites:** H12 debe corregir la construcción del payload para conservar metadatos no representados todavía.
 - **Próximo paso:** H12: editar todos los metadatos sin pérdida involuntaria.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R024 — 2026-11-18 — H12 — Inicio de actualización completa de metadatos
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H12; El payload fija ocasiones y reduce las variantes a una etiqueta; omite grupo, precio, código y orden: [admin-products.component.ts:718](src/app/admin/pages/admin-products.component.ts#L718). El PUT reemplaza esos campos con valores vacíos o predeterminados: [AdminProductsController.cs:101](backend/Leart.Api/Controllers/AdminProductsController.cs#L101). → En curso.
+- **Avance y alcance:** El editor representará grupo, precio, código, orden, variantes y ocasiones de forma independiente. Se enviará un contrato completo de escritura, sin sustituir listas por valores fijos.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H11 confirmado en fd552ef. Se añadirá regresión de cambio de nombre conservando el resto del producto.
+- **Pendientes o límites:** Verificar payload y compilación.
+- **Próximo paso:** Confirmar H12 antes de modificar la cotización.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R025 — 2026-11-18 — H12 — Editor completo sin reemplazos destructivos
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H12; En curso → Completado.
+- **Avance y alcance:** Grupo, precio, código, orden, variantes y ocasiones ahora tienen campos propios y se inicializan desde el producto. El payload completo de escritura conserva estos valores al editar otro campo; se retiraron listas fijas y la asociación incorrecta entre etiqueta y variantes.
+- **Archivos y evidencia:** [admin-products.component.ts](src/app/admin/pages/admin-products.component.ts), [admin-products.component.spec.ts](src/app/admin/pages/admin-products.component.spec.ts), [admin.service.ts](src/app/core/services/admin.service.ts)
+- **Validación:** 6/6 pruebas frontend pasan, incluida modificación exclusiva del nombre preservando grupo, precio, código, orden y listas originales. Build producción correcto; sin diagnósticos ni errores de diff.
+- **Pendientes o límites:** H14 alineará las reglas de cálculo con los metadatos comerciales; H16 ampliará validación de entradas en la API.
+- **Próximo paso:** H13: separar líneas por configuración y migrar la selección guardada.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

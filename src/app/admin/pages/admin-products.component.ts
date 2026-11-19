@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AdminService } from '../../core/services/admin.service';
+import { AdminService, ProductWriteRequest } from '../../core/services/admin.service';
 import { ProductsService } from '../../core/services/products.service';
 import { Category, Product } from '../../store/products';
 
@@ -171,7 +171,7 @@ import { Category, Product } from '../../store/products';
                 </div>
 
                 <div class="field-group">
-                  <label for="prodTag">Etiqueta (Tag / Grupo)</label>
+                  <label for="prodTag">Etiqueta (tag)</label>
                   <input name="prodTag"
                     id="prodTag"
                     type="text"
@@ -264,6 +264,31 @@ import { Category, Product } from '../../store/products';
                     />
                     <span>Producto Activo en Tienda</span>
                   </label>
+                </div>
+
+                <div class="field-group">
+                  <label for="prodGroup">Grupo</label>
+                  <input id="prodGroup" name="prodGroup" type="text" [ngModel]="formGroup()" (ngModelChange)="formGroup.set($event)" />
+                </div>
+                <div class="field-group">
+                  <label for="prodBasePrice">Precio base (COP)</label>
+                  <input id="prodBasePrice" name="prodBasePrice" type="number" min="0" [ngModel]="formBasePrice()" (ngModelChange)="formBasePrice.set($event)" />
+                </div>
+                <div class="field-group">
+                  <label for="prodCode">Código</label>
+                  <input id="prodCode" name="prodCode" type="text" [ngModel]="formCode()" (ngModelChange)="formCode.set($event)" />
+                </div>
+                <div class="field-group">
+                  <label for="prodOrder">Orden de visualización</label>
+                  <input id="prodOrder" name="prodOrder" type="number" min="0" [ngModel]="formDisplayOrder()" (ngModelChange)="formDisplayOrder.set($event)" />
+                </div>
+                <div class="field-group">
+                  <label for="prodVariants">Presentaciones (una por línea)</label>
+                  <textarea id="prodVariants" name="prodVariants" rows="3" [ngModel]="formVariants()" (ngModelChange)="formVariants.set($event)"></textarea>
+                </div>
+                <div class="field-group">
+                  <label for="prodOccasions">Ocasiones (una por línea)</label>
+                  <textarea id="prodOccasions" name="prodOccasions" rows="3" [ngModel]="formOccasions()" (ngModelChange)="formOccasions.set($event)"></textarea>
                 </div>
 
                 <div class="field-group full">
@@ -605,6 +630,12 @@ export class AdminProductsComponent implements OnInit {
   readonly currentEditingId = signal<string | null>(null);
 
   readonly formName = signal('');
+  readonly formGroup = signal('');
+  readonly formBasePrice = signal<number | null>(null);
+  readonly formCode = signal('');
+  readonly formDisplayOrder = signal(0);
+  readonly formVariants = signal('');
+  readonly formOccasions = signal('');
   readonly formKicker = signal('');
   readonly formCategory = signal<Category>('Sets armables');
   readonly formDetail = signal('');
@@ -661,6 +692,12 @@ export class AdminProductsComponent implements OnInit {
     this.isEditing.set(false);
     this.currentEditingId.set(null);
     this.formName.set('');
+    this.formGroup.set('');
+    this.formBasePrice.set(null);
+    this.formCode.set('');
+    this.formDisplayOrder.set(0);
+    this.formVariants.set('');
+    this.formOccasions.set('');
     this.formKicker.set('');
     this.formCategory.set('Sets armables');
     this.formDetail.set('');
@@ -680,6 +717,12 @@ export class AdminProductsComponent implements OnInit {
     this.isEditing.set(true);
     this.currentEditingId.set(p.id);
     this.formName.set(p.name);
+    this.formGroup.set(p.group ?? '');
+    this.formBasePrice.set(p.basePrice ?? null);
+    this.formCode.set(p.code ?? '');
+    this.formDisplayOrder.set(p.displayOrder ?? 0);
+    this.formVariants.set(p.variants.join('\n'));
+    this.formOccasions.set(p.occasion.join('\n'));
     this.formKicker.set(p.kicker);
     this.formCategory.set(p.category);
     this.formDetail.set(p.detail);
@@ -715,7 +758,7 @@ export class AdminProductsComponent implements OnInit {
 
     this.modalSaving.set(true);
 
-    const payload: Partial<Product> = {
+    const payload: ProductWriteRequest = {
       name: this.formName().trim(),
       kicker: this.formKicker().trim(),
       category: this.formCategory(),
@@ -729,8 +772,12 @@ export class AdminProductsComponent implements OnInit {
       allowsAccessories: this.formAllowsAccessories(),
       rule: this.formRule().trim(),
       isActive: this.formIsActive(),
-      variants: [this.formTag() || 'Individual'],
-      occasion: ['Cumpleaños', 'Aniversario'],
+      group: this.formGroup().trim(),
+      basePrice: this.formBasePrice() ?? undefined,
+      code: this.formCode().trim(),
+      displayOrder: Number(this.formDisplayOrder()),
+      variants: this.formVariants().split('\n').map((value) => value.trim()).filter(Boolean),
+      occasion: this.formOccasions().split('\n').map((value) => value.trim()).filter(Boolean),
     };
 
     if (this.isEditing() && this.currentEditingId()) {

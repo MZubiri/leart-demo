@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Product } from '../../store/products';
 
+export type ProductWriteRequest = Omit<Product, 'id'> & { id?: string };
+
 export interface SiteSettingAdmin {
   id: number;
   storeName: string;
@@ -71,11 +73,11 @@ export class AdminService {
     return this.http.get<Product>(`${this.baseUrl}/products/${id}`);
   }
 
-  createProduct(data: Partial<Product>): Observable<Product> {
+  createProduct(data: ProductWriteRequest): Observable<Product> {
     return this.http.post<Product>(`${this.baseUrl}/products`, data);
   }
 
-  updateProduct(id: string, data: Partial<Product>): Observable<Product> {
+  updateProduct(id: string, data: ProductWriteRequest): Observable<Product> {
     return this.http.put<Product>(`${this.baseUrl}/products/${id}`, data);
   }
 

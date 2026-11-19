@@ -31,4 +31,19 @@ describe('Product editor', () => {
     expect(kicker.value).toBe('Subtítulo propio');
     expect(rule.value).toBe('Regla diferente');
   });
+  it('changes the name without erasing group, prices, code, order, variants or occasions', () => {
+    const product = { ...PRODUCTS[0], group: 'Grupo propio', basePrice: 180000, code: 'CUSTOM', displayOrder: 8,
+      variants: ['Presentación A', 'Presentación B'], occasion: ['Familia', 'Profesiones'] };
+    const update = vi.fn().mockReturnValue(of(product));
+    TestBed.configureTestingModule({ imports: [AdminProductsComponent], providers: [
+      { provide: AdminService, useValue: { getProducts: () => of([product]), updateProduct: update } },
+      { provide: ProductsService, useValue: { refresh: vi.fn() } },
+    ] });
+    const component = TestBed.createComponent(AdminProductsComponent).componentInstance;
+    component.openEditModal(product); component.formName.set('Nombre nuevo'); component.saveModalProduct();
+    const [id, payload] = update.mock.calls[0];
+    expect(id).toBe(product.id);
+    expect(payload).toMatchObject({ name: 'Nombre nuevo', group: product.group, basePrice: product.basePrice,
+      code: product.code, displayOrder: product.displayOrder, variants: product.variants, occasion: product.occasion });
+  });
 });
