@@ -29,6 +29,14 @@ describe('Guided quote', () => {
     expect(app.priceQuote().totalPrice).toBe(165000);
   });
 
+  it('increments the selected quotation line through the cart button', async () => {
+    const fixture = TestBed.createComponent(App); fixture.detectChanges();
+    const store = fixture.componentInstance.store;
+    store.add(PRODUCTS[0], 'Nota de prueba'); store.openCart(); await fixture.whenStable();
+    (fixture.nativeElement.querySelector('.mini-counter button:last-child') as HTMLButtonElement).click();
+    expect(store.cartLines()[0].quantity).toBe(2);
+  });
+
   it('stops the figure counter at the specific product maximum', async () => {
     const fixture = TestBed.createComponent(App); fixture.detectChanges();
     const app = fixture.componentInstance;

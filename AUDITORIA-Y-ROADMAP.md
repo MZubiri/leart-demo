@@ -189,7 +189,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | H10 | F2 | Completado | R021 |
 | H11 | F2 | Completado | R023 |
 | H12 | F2 | Completado | R025 |
-| H13 | F2 | Completado | R027 |
+| H13 | F2 | Completado | R050 |
 | H14 | F3 | Completado | R029 |
 | H15 | F2 | Completado | R031 |
 | H16 | F2 | Completado | R033 |
@@ -200,7 +200,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | H21 | F4 | Completado | R041 |
 | H22 | Transversal / cierre F5 | Completado | R045 |
 | H23 | F5 | Completado | R047 |
-| H24 | F5 | Pendiente | — |
+| H24 | F5 | En curso | R048 |
 | H25 | F5 | Pendiente | — |
 | H26 | F5 | Pendiente | — |
 | O01 | Por definir | No programada | — |
@@ -729,6 +729,39 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 47/47 pruebas estándar backend y 26/26 frontend pasan; build correcto. MySQL real pasa proyecciones HTTP, migración nueva y adopción del esquema anterior con migración posterior. EXPLAIN sobre10000 pedidos: sin índices filesort; con índices y estadísticas actualizadas backward index scan, con y sin filtro. HTTP prueba límites, páginas disjuntas, orden estable, conteos y ausencia de contenido pesado. Sin diagnósticos ni errores de diff.
 - **Pendientes o límites:** La medición es local y no sustituye métricas productivas. Páginas profundas mantienen OFFSET; evaluar cursor solo si el uso real lo requiere. H25 sigue para estados de error administrativos.
 - **Próximo paso:** H24: reducir transferencia gráfica y medir carga en navegador.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R048 — 2026-11-18 — H24 — Inicio de optimización y medición de imágenes
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H24; Pendiente → En curso.
+- **Avance y alcance:** Se generarán variantes WebP con anchos adecuados a las vistas, se diferirán imágenes fuera de pantalla y se reservarán dimensiones. Se medirá el catálogo en Chromium con los75 productos del catálogo inicial y se distinguirá la medición local de métricas productivas.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H23 confirmado; tamaños originales de imágenes principales entre1.6 y1.8MB frente a WebP existentes de100–138KB. Navegador de prueba en instalación.
+- **Pendientes o límites:** Pipeline de activos, atributos de imágenes, caché/compresión y medición.
+- **Próximo paso:** Capturar línea base y comparar transferencia tras generar variantes.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R049 — 2026-11-18 — H13 — Regresión detectada en el incremento visual de cotización
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H13; Completado → En curso.
+- **Avance y alcance:** Durante la revisión de imágenes se encontró un botón + del panel que aún enviaba product.id en vez del identificador de línea. Las pruebas previas cubrían el servicio pero no ese enlace del template. Se reabre H13 para corregir y probar el clic real del panel en un commit separado.
+- **Archivos y evidencia:** [app.html](src/app/app.html), [app.spec.ts](src/app/app.spec.ts)
+- **Validación:** Inspección del botón de mini-counter; se añade una regresión DOM antes de corregirlo.
+- **Pendientes o límites:** Reproducir fallo y confirmar incremento independiente.
+- **Próximo paso:** Corregir el binding del botón y reanudar H24.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R050 — 2026-11-18 — H13 — Enlace del botón de incremento corregido y probado
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H13; En curso → Completado.
+- **Avance y alcance:** El + del panel envía ahora el identificador de línea, igual que los demás controles. Se agregó una prueba DOM que abre el panel, pulsa ese botón y comprueba el incremento; el servicio conserva la separación de variantes ya verificada.
+- **Archivos y evidencia:** [app.html](src/app/app.html), [app.spec.ts](src/app/app.spec.ts)
+- **Validación:** Regresión reproducida antes de corregir: cantidad esperada2, obtenida1. Tras el cambio pasan3/3 pruebas del componente, incluida la pulsación del botón. Diff correcto.
+- **Pendientes o límites:** H24 continúa en curso con sus archivos aún sin confirmar; no se incluyeron en este commit.
+- **Próximo paso:** Reanudar optimización de imágenes H24.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada
