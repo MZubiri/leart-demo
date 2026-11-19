@@ -11,6 +11,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
+RUN mkdir -p /app/wwwroot/uploads/products /app/storage/orders && chown -R app:app /app/wwwroot/uploads /app/storage
+USER app
+VOLUME ["/app/wwwroot/uploads", "/app/storage"]
 ENV ASPNETCORE_URLS=http://+:5000
 EXPOSE 5000
 

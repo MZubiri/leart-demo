@@ -94,13 +94,43 @@ docker compose up -d --build
 * **Backend API**: `/api`, mediante el proxy del frontend.
 * **MySQL**: red interna, base `leart_db`, usuario `leart` y contraseña propia de `.env`.
 
-### Opción 2: Contenedor Autónomo Todo-en-Uno (Coolify / Single VPS)
-Si prefieres el contenedor con MariaDB, configura un archivo local `.env.runtime` con `Jwt__Secret`, `ConnectionStrings__DefaultConnection` (usuario `leart` en `127.0.0.1`), `MYSQL_PASSWORD` y las variables `BootstrapAdmin__*`. Para este modo, la contraseña de MySQL debe ser aleatoria y alfanumérica de al menos 24 caracteres.
+### Opción 2: runtime web con MySQL externo
+
+La imagen raíz sirve Angular y API, usa el usuario sin privilegios `app` (UID 1654)
+y requiere un MySQL externo. No contiene un servidor de BD. Configura un archivo local
+`.env.runtime` con conexión limitada, JWT y bootstrap. Los dos montajes son obligatorios:
 
 ```bash
 docker build -t leart-store -f Dockerfile .
-docker run -d -p 80:80 --env-file .env.runtime --name leart-store leart-store
+docker run -d -p 80:8080 --env-file .env.runtime --mount source=leart_uploads,target=/app/wwwroot/uploads --mount source=leart_private,target=/app/storage --name leart-store leart-store
 ```
+
+Para instalaciones de la imagen antigua con MariaDB embebido, **antes de reemplazarla**
+exporta su BD con mysqldump y copia uploads y almacenamiento privado a un destino seguro.
+No elimines el contenedor antiguo hasta comprobar la restauración en un MySQL externo.
+Los volúmenes creados anteriormente por root requieren una migración de propietario
+al UID/GID 1654 sobre esos volúmenes concretos, con el backend detenido y copia previa.
+
+### Copias y restauración verificables
+
+Compose mantiene los volúmenes de MySQL, uploads públicos y fotos privadas. Recrear
+contenedores conserva sus datos; `docker compose down -v` sí los elimina.
+No borres volúmenes al actualizar. Para otros puertos usa `HTTP_BIND` y `HTTP_PORT`.
+
+```bash
+# En el proyecto que se quiere respaldar; requiere servicios construidos y MySQL activo.
+bash scripts/backup.sh /ruta/segura/copia-nueva
+# En una instalación nueva, con su propio .env y nombre de proyecto explícito:
+COMPOSE_PROJECT_NAME=leart_restore bash scripts/restore.sh /ruta/segura/copia-nueva
+docker compose -p leart_restore up -d
+```
+
+La copia detiene temporalmente la API para alinear registros y archivos, la reactiva si
+estaba corriendo, usa permisos privados y crea sumas SHA-256. Debe protegerse/cifrarse
+fuera del servidor y verificarse periódicamente. La restauración valida las sumas y se
+niega a escribir en proyectos que ya tengan volúmenes. Conserva la copia hasta revisar
+pedidos, fotos y catálogo. Si falla, examina el proyecto nuevo; no sobrescribas uno vivo.
+Las credenciales de bootstrap y JWT se suministran aparte y no se incluyen en la copia.
 
 ---
 

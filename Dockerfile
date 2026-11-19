@@ -23,37 +23,15 @@ COPY backend/Leart.Api/ backend/Leart.Api/
 WORKDIR /src/backend/Leart.Api
 RUN dotnet publish "Leart.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# ==========================================
-# Etapa 3: Runtime Fullstack (.NET 9 + Angular + MySQL)
-# ==========================================
+# Runtime fullstack con MySQL externo y almacenamiento persistente.
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
-
-# Instalar MariaDB / MySQL server, cliente y utilidades
-RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    mariadb-server \
-    mariadb-client \
-    dos2unix \
-    ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-
-# Copiar aplicación ASP.NET Core compilada
 COPY --from=backend-build /app/publish .
-
-# Copiar el bundle de Angular y sus activos directamente a wwwroot
 COPY --from=frontend-build /app/dist/leart-demo/browser/ /app/wwwroot/
-
-# Crear directorios para subida de fotos y sockets de MariaDB
-RUN mkdir -p /app/wwwroot/uploads/products /app/wwwroot/uploads/orders /var/lib/mysql /var/run/mysqld && \
-    chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
-
-# Copiar y preparar script de inicio
-COPY entrypoint.sh /app/entrypoint.sh
-RUN dos2unix /app/entrypoint.sh && chmod +x /app/entrypoint.sh
-
-ENV ASPNETCORE_URLS=http://+:80
+RUN mkdir -p /app/wwwroot/uploads/products /app/storage/orders && chown -R app:app /app/wwwroot/uploads /app/storage
+USER app
+ENV ASPNETCORE_URLS=http://+:8080
 ENV ASPNETCORE_ENVIRONMENT=Production
-EXPOSE 80
-
-ENTRYPOINT ["/app/entrypoint.sh"]
+VOLUME ["/app/wwwroot/uploads", "/app/storage"]
+EXPOSE 8080
+ENTRYPOINT ["dotnet", "Leart.Api.dll"]

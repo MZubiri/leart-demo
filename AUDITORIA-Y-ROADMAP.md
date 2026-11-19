@@ -173,7 +173,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 
 ## 9. Seguimiento de ítems
 
-**Situación vigente:** 18 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
+**Situación vigente:** 19 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
 
 | ID | Fase | Estado vigente | Última entrada de avance o validación |
 | --- | --- | --- | --- |
@@ -195,7 +195,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | H16 | F2 | Completado | R033 |
 | H17 | F3 | Completado | R035 |
 | H18 | F2 | Completado | R037 |
-| H19 | F4 | Pendiente | — |
+| H19 | F4 | Completado | R039 |
 | H20 | F4 | Pendiente | — |
 | H21 | F4 | Pendiente | — |
 | H22 | Transversal / cierre F5 | Pendiente | — |
@@ -619,6 +619,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** Nginx real en Docker desechable: cinco comprobaciones HTTP pasan. JPG público, API terminada en .png y descarga administrativa alcanzan upstream; rutas privadas e históricas devuelven 404. Contenedor y archivos temporales retirados; diff correcto.
 - **Pendientes o límites:** Sin pendientes en el alcance comprobado; la aplicación en instalaciones existentes requiere el procedimiento documentado de despliegue.
 - **Próximo paso:** H19: persistencia y recuperación conjunta de base y archivos.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R038 — 2026-11-18 — H19 — Inicio de despliegue persistente y recuperación
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H19; Pendiente → En curso.
+- **Avance y alcance:** Se retira MariaDB embebido del runtime; MySQL queda como servicio externo y los archivos se montan en volúmenes. Se añaden procedimientos de copia consistente y restauración solo en proyectos nuevos.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H18 confirmado; Docker disponible para validar recuperación en infraestructura desechable.
+- **Pendientes o límites:** Scripts, documentación y ejercicio de restauración.
+- **Próximo paso:** Comprobar que recrear servicios y restaurar conservan registros y archivos.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R039 — 2026-11-18 — H19 — Runtime sin BD embebida y recuperación comprobada
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H19; En curso → Completado.
+- **Avance y alcance:** El runtime web usa MySQL externo y usuario app sin privilegios, con volúmenes explícitos para archivos públicos y privados. Compose conserva tres volúmenes y permite proyectos y puertos aislados. El healthcheck de MySQL consulta realmente la BD por TCP, evitando falsos positivos de mysqladmin. Los scripts generan copia consistente con API detenida, permisos privados y SHA-256; restauran solo en proyectos nuevos y rechazan sobrescrituras. README incluye migración de la imagen antigua y propiedad de volúmenes existentes.
+- **Archivos y evidencia:** [Dockerfile](Dockerfile), [Dockerfile](backend/Leart.Api/Dockerfile), [docker-compose.yml](docker-compose.yml), [backup.sh](scripts/backup.sh), [restore.sh](scripts/restore.sh), [test-backup.cjs](scripts/test-backup.cjs), [README.md](README.md), [.env.example](.env.example)
+- **Validación:** Ejercicio real con MySQL 8.4 y volúmenes desechables: registro SQL, archivo público y foto privada recuperados; recreación conserva archivos; API reanudada tras copia; segundo intento de restaurar rechazado. Servicios y volúmenes de prueba retirados. bash -n y diff correctos.
+- **Pendientes o límites:** La construcción completa de imágenes y smoke de API se realizará con la plataforma actualizada en H21; no se cambió ninguna instalación existente. Debe ensayarse la restauración de cada copia operativa.
+- **Próximo paso:** H21 antes de H20: actualizar plataforma y proveedor para generar las migraciones con el proveedor definitivo, evitando migrarlas dos veces.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada
