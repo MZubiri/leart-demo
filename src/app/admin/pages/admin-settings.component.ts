@@ -1,5 +1,8 @@
+import { Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { httpErrorMessage } from '../../core/services/http-error';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { DestroyRef, Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AdminService, UpdateSettingsRequest } from '../../core/services/admin.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -18,6 +21,8 @@ import { SettingsService } from '../../core/services/settings.service';
         </div>
       </div>
 
+      @if (loading()) { <p role="status">Cargando configuración...</p> }
+      @if (loadingError()) { <div role="alert">{{ loadingError() }} <button type="button" (click)="loadSettings()">Reintentar carga</button></div> }
       @if (savedNotification()) {
         <div class="notification-toast">
           <span>✓</span>
@@ -33,7 +38,7 @@ import { SettingsService } from '../../core/services/settings.service';
       }
 
       <div class="settings-card">
-        <form (ngSubmit)="saveSettings()" class="settings-form">
+        <form (ngSubmit)="saveSettings()" class="settings-form"><fieldset [disabled]="!loaded() || loading() || saving()" style="border:0;padding:0;margin:0;min-width:0;display:flex;flex-direction:column;gap:1.5rem">
           <!-- WhatsApp Section Highlight -->
           <div class="section-box whatsapp-box">
             <div class="section-badge">Canal Principal</div>
@@ -164,7 +169,7 @@ import { SettingsService } from '../../core/services/settings.service';
 
           <!-- Save Button Bar -->
           <div class="actions-bar">
-            <button type="submit" [disabled]="saving()" class="btn-save">
+            <button type="submit" [disabled]="saving() || loading() || !loaded()" class="btn-save">
               @if (saving()) {
                 <span>Guardando cambios...</span>
               } @else {
@@ -172,7 +177,7 @@ import { SettingsService } from '../../core/services/settings.service';
               }
             </button>
           </div>
-        </form>
+        </fieldset></form>
       </div>
 
       <!-- Security Section: Change Password -->
@@ -508,25 +513,30 @@ import { SettingsService } from '../../core/services/settings.service';
 })
 export class AdminSettingsComponent implements OnInit {
   private readonly admin = inject(AdminService);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly publicSettings = inject(SettingsService);
   private readonly auth = inject(AuthService);
 
   readonly storeName = signal('Leart Store');
-  readonly whatsAppNumber = signal('573000000000');
+  readonly whatsAppNumber = signal('');
   readonly cleanNumber = signal('573000000000');
   readonly announcementText = signal('Hecho en Medellín · Envíos a toda Colombia');
   readonly instagramUrl = signal('https://www.instagram.com/leart.store/');
   readonly quoteTemplate = signal('Hola Leart 👋 Quiero cotizar esta selección:');
   readonly personalizationTemplate = signal('Hola Leart 👋 Ya realicé mi pedido y quiero completar la información de personalización.');
 
-  readonly saving = signal(false);
+  readonly saving = signal(false); readonly loaded = signal(false); readonly loading = signal(false); readonly loadingError = signal('');
+  private loadRequest?: Subscription;
   readonly savedNotification = signal(false);
   readonly errorMessage = signal('');
 
-  ngOnInit(): void {
-    this.admin.getSettings().subscribe({
+  ngOnInit(): void { this.loadSettings(); }
+
+  loadSettings(): void {
+    this.loadRequest?.unsubscribe(); this.loaded.set(false); this.loading.set(true); this.loadingError.set('');
+    this.loadRequest = this.admin.getSettings().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (s) => {
-        this.storeName.set(s.storeName);
+        this.loaded.set(true); this.loading.set(false); this.storeName.set(s.storeName);
         this.whatsAppNumber.set(s.whatsAppNumber);
         this.cleanNumber.set(s.whatsAppNumber.replace(/\D/g, ''));
         this.announcementText.set(s.announcementText);
@@ -535,7 +545,7 @@ export class AdminSettingsComponent implements OnInit {
         this.personalizationTemplate.set(s.whatsAppPersonalizationTemplate);
       },
       error: (err) => {
-        this.errorMessage.set('No se pudo cargar la configuración del servidor.');
+        this.loading.set(false); this.loadingError.set(httpErrorMessage(err, 'No se pudo cargar la configuración.'));
       },
     });
   }
@@ -546,6 +556,7 @@ export class AdminSettingsComponent implements OnInit {
   }
 
   saveSettings(): void {
+    if (!this.loaded() || this.loading() || this.saving()) return;
     const rawNumber = this.cleanNumber();
     if (!rawNumber || rawNumber.length < 8) {
       this.errorMessage.set('Por favor ingresa un número de WhatsApp válido con código de país (ej: 573001234567).');
@@ -565,7 +576,7 @@ export class AdminSettingsComponent implements OnInit {
       whatsAppPersonalizationTemplate: this.personalizationTemplate().trim(),
     };
 
-    this.admin.updateSettings(payload).subscribe({
+    this.admin.updateSettings(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (updated) => {
         this.saving.set(false);
         this.savedNotification.set(true);
@@ -576,7 +587,7 @@ export class AdminSettingsComponent implements OnInit {
       },
       error: (err) => {
         this.saving.set(false);
-        this.errorMessage.set(err?.error?.message || 'Error al guardar la configuración.');
+        this.errorMessage.set(httpErrorMessage(err, 'No se pudo guardar la configuración.'));
       },
     });
   }
@@ -588,6 +599,7 @@ export class AdminSettingsComponent implements OnInit {
   readonly passwordError = signal('');
 
   submitPasswordChange(): void {
+    if (this.changingPassword()) return;
     if (!this.currentPassword() || !this.newPassword()) {
       this.passwordError.set('Por favor completa ambos campos de contraseña.');
       return;
@@ -605,7 +617,7 @@ export class AdminSettingsComponent implements OnInit {
     this.auth.changePassword({
       currentPassword: this.currentPassword(),
       newPassword: this.newPassword()
-    }).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.changingPassword.set(false);
         this.passwordNotification.set(true);
@@ -616,7 +628,7 @@ export class AdminSettingsComponent implements OnInit {
       },
       error: (err) => {
         this.changingPassword.set(false);
-        this.passwordError.set(err?.error?.message || 'Error al actualizar la contraseña.');
+        this.passwordError.set(httpErrorMessage(err, 'No se pudo actualizar la contraseña.'));
       }
     });
   }

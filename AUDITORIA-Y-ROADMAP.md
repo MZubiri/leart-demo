@@ -173,7 +173,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 
 ## 9. Seguimiento de ítems
 
-**Situación vigente:** 24 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
+**Situación vigente:** 25 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
 
 | ID | Fase | Estado vigente | Última entrada de avance o validación |
 | --- | --- | --- | --- |
@@ -201,8 +201,8 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | H22 | Transversal / cierre F5 | Completado | R045 |
 | H23 | F5 | Completado | R047 |
 | H24 | F5 | Completado | R051 |
-| H25 | F5 | Pendiente | — |
-| H26 | F5 | Pendiente | — |
+| H25 | F5 | Completado | R053 |
+| H26 | F5 | En curso | R054 |
 | O01 | Por definir | No programada | — |
 | O02 | Por definir | No programada | — |
 | O03 | Por definir | No programada | — |
@@ -773,6 +773,39 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 28/28 frontend y47/47 backend estándar pasan; build producción y Docker frontend Alpine correctos, validando el encoder musl. Nginx real pasa rutas privadas/públicas, gzip y caché diferenciada. Chromium local390×844 DPR1,80ms,200000B/s: imágenes2.490.199→207.218 bytes (−91,7%),13→5 peticiones. LCP observado2680→2780ms; segunda comprobación2752ms sin imágenes rotas. Auditoría npm sigue16 moderados de desarrollo, sin altos/críticos. Sin diagnósticos ni errores de diff.
 - **Pendientes o límites:** No se demuestra mejora de LCP con estas corridas locales; queda medición del hosting con usuarios reales. Los activos subidos conservan su URL y dependen de su tamaño administrado. Las pruebas de imágenes usan el catálogo inicial con API controlada, no una instalación productiva.
 - **Próximo paso:** H25: estados de error, reintento y confirmación de operaciones administrativas.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R052 — 2026-11-18 — H25 — Inicio de errores administrativos visibles y recuperables
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H25; Pendiente → En curso.
+- **Avance y alcance:** Se distinguirán carga, fallo y vacío; los fallos conservarán los datos anteriores. Las mutaciones mostrarán resultado real y los formularios mantendrán su contenido. Se cancelarán cargas obsoletas al cambiar filtros.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H24 confirmado; identificados errores silenciosos en listados, dashboard, uploads y guardado de productos.
+- **Pendientes o límites:** Estados, reintentos y pruebas de errores y carreras de peticiones.
+- **Próximo paso:** Comprobar que503 no se muestre como lista vacía ni permita guardar ajustes no cargados.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R053 — 2026-11-18 — H25 — Errores administrativos visibles sin perder estado
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H25; En curso → Completado.
+- **Avance y alcance:** Pedidos y productos distinguen carga, fallo y vacío, conservan listas anteriores identificadas y permiten reintentar. Las cargas obsoletas se cancelan al cambiar filtros. Mutaciones esperan confirmación, bloquean duplicados y muestran errores/éxito reales. El selector de estado conserva el valor confirmado ante fallos. Guardado y upload de productos mantienen contenido y muestran errores de validación. Ajustes no se pueden guardar si no cargaron; dashboard usa valores no disponibles en vez de ceros falsos.
+- **Archivos y evidencia:** [http-error.ts](src/app/core/services/http-error.ts), [admin-orders.component.ts](src/app/admin/pages/admin-orders.component.ts), [admin-products.component.ts](src/app/admin/pages/admin-products.component.ts), [admin-dashboard.component.ts](src/app/admin/pages/admin-dashboard.component.ts), [admin-settings.component.ts](src/app/admin/pages/admin-settings.component.ts), [admin-errors.spec.ts](src/app/admin/pages/admin-errors.spec.ts)
+- **Validación:** 35/35 pruebas frontend pasan, incluidas siete nuevas regresiones de503, reintento, carrera de filtros, mutaciones fallidas, formulario/upload conservados, ajustes sin cargar y métricas no disponibles. Build producción correcto y diff limpio. Los componentes usan DatePipe explícito; el analizador del editor conservó diagnósticos que citan imports CommonModule ya eliminados, mientras el compilador y pruebas actuales pasan.
+- **Pendientes o límites:** La comprobación final repetirá build y pruebas junto con H26. El estado remoto después de una desconexión se debe consultar antes de repetir mutaciones; la UI lo indica.
+- **Próximo paso:** H26: foco inicial, confinamiento, Escape, restauración y nombres accesibles.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R054 — 2026-11-18 — H26 — Inicio de accesibilidad de diálogos y controles
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H26; Pendiente → En curso.
+- **Avance y alcance:** Se gestionarán foco inicial, confinamiento, Escape, restauración, fondo inerte y scroll para cotizador, panel y modales administrativos. Se corregirán nombres y asociaciones de controles y se verificará el teclado en Chromium.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H25 confirmado; se identificaron diálogos sin gestión de foco y el id occasion duplicado al abrir cotizador sobre catálogo.
+- **Pendientes o límites:** Comportamiento modal común, etiquetas y pruebas DOM/navegador.
+- **Próximo paso:** Implementar y verificar apertura, Tab/Shift+Tab, Escape y retorno al disparador.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

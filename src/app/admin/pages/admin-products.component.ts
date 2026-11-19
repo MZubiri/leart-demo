@@ -1,5 +1,8 @@
+import { Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { httpErrorMessage } from '../../core/services/http-error';
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { DestroyRef, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AdminService, ProductWriteRequest } from '../../core/services/admin.service';
 import { ProductsService } from '../../core/services/products.service';
@@ -16,11 +19,15 @@ import { Category, Product } from '../../store/products';
           <h1>Gestión de Productos</h1>
           <p>Administra los productos del catálogo, fotos, descripciones y límites de minifiguras.</p>
         </div>
-        <button type="button" class="btn-create" (click)="openCreateModal()">
+        <button type="button" class="btn-create" [disabled]="loading() || !!loadError() || mutating()" (click)="openCreateModal()">
           <span>＋ Nuevo Producto</span>
         </button>
       </div>
 
+      @if (loadError()) { <div role="alert">{{ loadError() }} @if (products().length) { <p>Se conservan los últimos productos cargados.</p> } <button type="button" (click)="loadProducts()">Reintentar carga</button></div> }
+      @if (actionError()) { <p role="alert">{{ actionError() }}</p> }
+      @if (mutating()) { <p role="status">Guardando cambio...</p> }
+      @if (notice()) { <p role="status">{{ notice() }}</p> }
       <!-- Filters Bar -->
       <div class="filter-bar">
         <div class="search-box">
@@ -51,7 +58,7 @@ import { Category, Product } from '../../store/products';
       <div class="table-card">
         @if (loading()) {
           <div class="table-loading">Cargando productos...</div>
-        } @else if (filteredProducts().length === 0) {
+        } @else if (loadError() && products().length === 0) { <p>El catálogo no está disponible.</p> } @else if (filteredProducts().length === 0) {
           <div class="table-empty">No se encontraron productos con estos criterios.</div>
         } @else {
           <div class="table-responsive">
@@ -91,16 +98,16 @@ import { Category, Product } from '../../store/products';
                         type="button"
                         class="toggle-btn"
                         [class.active]="prod.isActive"
-                        (click)="toggleActive(prod)"
+                        [disabled]="mutating() || loading() || !!loadError()" (click)="toggleActive(prod)"
                       >
                         {{ prod.isActive ? 'Activo' : 'Pausado' }}
                       </button>
                     </td>
                     <td class="col-actions">
-                      <button type="button" class="btn-action edit" (click)="openEditModal(prod)">
+                      <button type="button" class="btn-action edit" [disabled]="mutating() || loading() || !!loadError()" (click)="openEditModal(prod)">
                         Editar
                       </button>
-                      <button type="button" class="btn-action delete" (click)="deleteProduct(prod)">
+                      <button type="button" class="btn-action delete" [disabled]="mutating() || loading() || !!loadError()" (click)="deleteProduct(prod)">
                         Eliminar
                       </button>
                     </td>
@@ -122,7 +129,9 @@ import { Category, Product } from '../../store/products';
             </div>
 
             <form (ngSubmit)="saveModalProduct()" class="modal-form">
-              <div class="form-grid">
+              @if (modalError()) { <p role="alert">{{ modalError() }}</p> }
+              @if (uploading()) { <p role="status">Subiendo imagen...</p> }
+              <fieldset [disabled]="modalSaving() || uploading()" style="border:0;padding:0;margin:0;min-width:0"><div class="form-grid">
                 <div class="field-group full">
                   <label for="prodName">Nombre del producto *</label>
                   <input name="prodName"
@@ -305,7 +314,7 @@ import { Category, Product } from '../../store/products';
 
               <div class="modal-actions">
                 <button type="button" class="btn-cancel" (click)="closeModal()">Cancelar</button>
-                <button type="submit" [disabled]="modalSaving()" class="btn-submit">
+                <button type="submit" [disabled]="modalSaving() || uploading()" class="btn-submit">
                   @if (modalSaving()) {
                     <span>Guardando...</span>
                   } @else {
@@ -313,7 +322,7 @@ import { Category, Product } from '../../store/products';
                   }
                 </button>
               </div>
-            </form>
+              </fieldset></form>
           </div>
         </div>
       }
@@ -603,10 +612,14 @@ import { Category, Product } from '../../store/products';
 })
 export class AdminProductsComponent implements OnInit {
   private readonly admin = inject(AdminService);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly publicProducts = inject(ProductsService);
 
   readonly products = signal<Product[]>([]);
   readonly loading = signal(true);
+  readonly loadError = signal(''); readonly actionError = signal(''); readonly notice = signal('');
+  readonly modalError = signal(''); readonly uploading = signal(false); readonly mutating = signal(false);
+  private listRequest?: Subscription;
   readonly searchTerm = signal('');
   readonly selectedCategory = signal<string>('Todos');
 
@@ -654,41 +667,36 @@ export class AdminProductsComponent implements OnInit {
   }
 
   loadProducts(): void {
-    this.loading.set(true);
-    this.admin.getProducts().subscribe({
+    this.listRequest?.unsubscribe(); this.loadError.set(''); this.loading.set(true);
+    this.listRequest = this.admin.getProducts().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (list) => {
         this.products.set(list);
         this.loading.set(false);
       },
-      error: () => {
-        this.loading.set(false);
-      },
+      error: error => { this.loadError.set(httpErrorMessage(error, 'No se pudieron cargar los productos.')); this.loading.set(false); },
     });
   }
 
   toggleActive(product: Product): void {
-    this.admin.toggleProductActive(product.id).subscribe({
-      next: (res) => {
-        this.products.update((list) =>
-          list.map((p) => (p.id === product.id ? { ...p, isActive: res.isActive } : p)),
-        );
-        this.publicProducts.refresh();
-      },
+    if (this.mutating() || this.loading() || this.loadError()) return;
+    this.mutating.set(true); this.actionError.set(''); this.notice.set('');
+    this.admin.toggleProductActive(product.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: result => { this.mutating.set(false); this.products.update(list => list.map(item => item.id === product.id ? { ...item, isActive: result.isActive } : item)); this.notice.set('Disponibilidad guardada.'); this.publicProducts.refresh(); },
+      error: error => { this.mutating.set(false); this.actionError.set(httpErrorMessage(error, 'No se pudo cambiar la disponibilidad.')); },
     });
   }
 
   deleteProduct(product: Product): void {
-    if (confirm(`¿Estás seguro de eliminar el producto "${product.name}"?`)) {
-      this.admin.deleteProduct(product.id).subscribe({
-        next: () => {
-          this.products.update((list) => list.filter((p) => p.id !== product.id));
-          this.publicProducts.refresh();
-        },
-      });
-    }
+    if (this.mutating() || this.loading() || this.loadError() || !confirm('¿Eliminar el producto "' + product.name + '"?')) return;
+    this.mutating.set(true); this.actionError.set(''); this.notice.set('');
+    this.admin.deleteProduct(product.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => { this.mutating.set(false); this.products.update(list => list.filter(item => item.id !== product.id)); this.notice.set('Producto eliminado.'); this.publicProducts.refresh(); },
+      error: error => { this.mutating.set(false); this.actionError.set(httpErrorMessage(error, 'No se pudo eliminar el producto.')); },
+    });
   }
 
   openCreateModal(): void {
+    this.modalError.set('');
     this.isEditing.set(false);
     this.currentEditingId.set(null);
     this.formName.set('');
@@ -705,7 +713,7 @@ export class AdminProductsComponent implements OnInit {
     this.formImage.set('');
     this.formDescription.set('');
     this.formMinFigures.set(1);
-    this.formMaxFigures.set(8);
+    this.formMaxFigures.set(4);
     this.formAllowsPets.set(true);
     this.formAllowsAccessories.set(true);
     this.formRule.set('El valor depende del grupo del set y la cantidad de figuras.');
@@ -714,6 +722,7 @@ export class AdminProductsComponent implements OnInit {
   }
 
   openEditModal(p: Product): void {
+    this.modalError.set('');
     this.isEditing.set(true);
     this.currentEditingId.set(p.id);
     this.formName.set(p.name);
@@ -739,22 +748,26 @@ export class AdminProductsComponent implements OnInit {
   }
 
   closeModal(): void {
+    if (this.modalSaving() || this.uploading()) return;
     this.modalOpen.set(false);
   }
 
   onUploadFile(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
-    if (!file) return;
-
-    this.admin.uploadProductImage(file).subscribe({
+    if (!file || this.uploading() || this.modalSaving()) return;
+    this.uploading.set(true); this.modalError.set('');
+    this.admin.uploadProductImage(file).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
-        this.formImage.set(res.url);
+        this.uploading.set(false); this.formImage.set(res.url);
       },
+      error: error => { this.uploading.set(false); this.modalError.set(httpErrorMessage(error, 'No se pudo subir la imagen.')); },
     });
   }
 
   saveModalProduct(): void {
-    if (!this.formName().trim()) return;
+    if (this.modalSaving() || this.uploading()) return;
+    if (!this.formName().trim()) { this.modalError.set('El nombre es obligatorio.'); return; }
+    this.modalError.set('');
 
     this.modalSaving.set(true);
 
@@ -781,17 +794,17 @@ export class AdminProductsComponent implements OnInit {
     };
 
     if (this.isEditing() && this.currentEditingId()) {
-      this.admin.updateProduct(this.currentEditingId()!, payload).subscribe({
+      this.admin.updateProduct(this.currentEditingId()!, payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (updated) => {
           this.modalSaving.set(false);
-          this.modalOpen.set(false);
+          this.modalOpen.set(false); this.notice.set('Producto guardado.');
           this.loadProducts();
           this.publicProducts.refresh();
         },
-        error: () => this.modalSaving.set(false),
+        error: error => { this.modalSaving.set(false); this.modalError.set(httpErrorMessage(error, 'No se pudo guardar el producto.')); },
       });
     } else {
-      this.admin.createProduct(payload).subscribe({
+      this.admin.createProduct(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (created) => {
           this.modalSaving.set(false);
           this.modalOpen.set(false);
@@ -804,6 +817,7 @@ export class AdminProductsComponent implements OnInit {
   }
 
   onImgError(event: Event): void {
-    (event.target as HTMLImageElement).src = '/images/cuadro-personalizado.webp';
+    const image = event.target as HTMLImageElement;
+    if (!image.src.endsWith('/images/cuadro-personalizado.webp')) image.src = '/images/cuadro-personalizado.webp';
   }
 }

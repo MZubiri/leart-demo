@@ -1,13 +1,14 @@
-import { CommonModule } from '@angular/common';
-import { Component, computed, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { httpErrorMessage } from '../../core/services/http-error';
+import { DatePipe } from '@angular/common';
+import { DestroyRef, Component, computed, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { FormsModule } from '@angular/forms';
 import { AdminService, OrderAdmin, OrderSummary } from '../../core/services/admin.service';
 
 @Component({
   selector: 'app-admin-orders',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [DatePipe],
   template: `
     <div class="orders-page">
       <div class="page-header">
@@ -17,6 +18,10 @@ import { AdminService, OrderAdmin, OrderSummary } from '../../core/services/admi
         </div>
       </div>
 
+      @if (loadError()) { <div role="alert">{{ loadError() }} @if (orders().length) { <p>Se conservan los datos de {{ loadedStatus() }}, página {{ loadedPage() }}.</p> } <button type="button" (click)="loadOrders()">Reintentar carga</button></div> }
+      @if (actionError()) { <p role="alert">{{ actionError() }}</p> }
+      @if (mutating()) { <p role="status">Guardando cambio...</p> }
+      @if (notice()) { <p role="status">{{ notice() }}</p> }
       <!-- Filter by status -->
       <div class="filter-bar">
         <div class="status-tabs">
@@ -37,7 +42,7 @@ import { AdminService, OrderAdmin, OrderSummary } from '../../core/services/admi
       <div class="table-card">
         @if (loading()) {
           <div class="table-loading">Cargando pedidos...</div>
-        } @else if (orders().length === 0) {
+        } @else if (loadError() && orders().length === 0) { <p>Los pedidos no están disponibles.</p> } @else if (orders().length === 0) {
           <div class="table-empty">
             <span>📭</span>
             <p>No hay pedidos con el estado "{{ selectedStatus() }}".</p>
@@ -86,12 +91,12 @@ import { AdminService, OrderAdmin, OrderSummary } from '../../core/services/admi
                       <select
                         class="status-select"
                         [class]="'select-' + order.status.toLowerCase().replace(' ', '-')"
-                        [ngModel]="order.status"
-                        (ngModelChange)="onStatusChange(order, $event)"
+                        [value]="order.status" [disabled]="mutating() || loading() || !!loadError()"
+                        (change)="onStatusChange(order, $any($event.target).value, $any($event.target))"
                       >
                         <option value="Pendiente">Pendiente</option>
                         <option value="En producción">En producción</option>
-                        <option value="Completado">Completado</option>
+                        <option value="Completado">Completado</option><option value="Cancelado">Cancelado</option>
                       </select>
                     </td>
                     <td><small>{{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}</small></td>
@@ -100,7 +105,7 @@ import { AdminService, OrderAdmin, OrderSummary } from '../../core/services/admi
                         <button type="button" class="btn-detail" (click)="openDetailModal(order)">
                           Ver detalles
                         </button>
-                        <button type="button" class="btn-delete" (click)="deleteOrder(order)">
+                        <button type="button" class="btn-delete" [disabled]="mutating() || loading() || !!loadError()" (click)="deleteOrder(order)">
                           🗑️
                         </button>
                       </div>
@@ -488,8 +493,9 @@ import { AdminService, OrderAdmin, OrderSummary } from '../../core/services/admi
 })
 export class AdminOrdersComponent implements OnInit, OnDestroy {
   private readonly admin = inject(AdminService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  readonly statusList = ['Todos', 'Pendiente', 'En producción', 'Completado'];
+  readonly statusList = ['Todos', 'Pendiente', 'En producción', 'Completado', 'Cancelado'];
   readonly selectedStatus = signal('Todos');
   readonly orders = signal<OrderSummary[]>([]);
   readonly page = signal(1);
@@ -500,6 +506,9 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   readonly detailError = signal('');
   private detailRequest?: Subscription;
   readonly loading = signal(true);
+  readonly loadError = signal(''); readonly actionError = signal(''); readonly notice = signal('');
+  readonly mutating = signal(false); readonly loadedStatus = signal(''); readonly loadedPage = signal(1);
+  private listRequest?: Subscription;
   readonly attachmentUrls = signal<Record<number, string>>({});
   readonly attachmentError = signal('');
   private previewRequests: Subscription[] = [];
@@ -510,15 +519,16 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   }
 
   loadOrders(): void {
-    this.loading.set(true);
-    this.admin.getOrders(this.selectedStatus(), this.page(), this.pageSize).subscribe({
+    this.listRequest?.unsubscribe(); this.loadError.set(''); this.loading.set(true);
+    this.listRequest = this.admin.getOrders(this.selectedStatus(), this.page(), this.pageSize).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
+        this.loadedStatus.set(this.selectedStatus()); this.loadedPage.set(this.page());
         this.orders.set(data.items);
         this.total.set(data.total);
         if (this.page() > this.pages()) { this.page.set(this.pages()); this.loadOrders(); return; }
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: error => { this.loadError.set(httpErrorMessage(error, 'No se pudieron cargar los pedidos.')); this.loading.set(false); },
     });
   }
 
@@ -528,31 +538,33 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     this.loadOrders();
   }
 
-  onStatusChange(order: OrderSummary, newStatus: string): void {
-    this.admin.updateOrderStatus(order.id, newStatus).subscribe({
+  onStatusChange(order: OrderSummary, newStatus: string, control?: HTMLSelectElement): void {
+    if (control) control.value = order.status;
+    if (this.mutating() || this.loading() || this.loadError()) return;
+    this.mutating.set(true); this.actionError.set(''); this.notice.set('');
+    this.admin.updateOrderStatus(order.id, newStatus).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
-        this.orders.update((list) =>
-          list.map((o) => (o.id === order.id ? { ...o, status: newStatus } : o)),
-        );
+        this.mutating.set(false); this.notice.set('Estado guardado.');
+        this.orders.update(list => list.map(item => item.id === order.id ? { ...item, status: newStatus } : item)); this.loadOrders();
       },
+      error: error => { this.mutating.set(false); this.actionError.set(httpErrorMessage(error, 'No se pudo guardar el estado.')); },
     });
   }
 
   deleteOrder(order: OrderSummary): void {
-    if (confirm(`¿Eliminar el pedido "${order.orderReference}"?`)) {
-      this.admin.deleteOrder(order.id).subscribe({
-        next: () => {
-          this.loadOrders();
-        },
-      });
-    }
+    if (this.mutating() || this.loading() || this.loadError() || !confirm('¿Eliminar el pedido "' + order.orderReference + '"?')) return;
+    this.mutating.set(true); this.actionError.set(''); this.notice.set('');
+    this.admin.deleteOrder(order.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => { this.mutating.set(false); this.notice.set('Pedido eliminado.'); this.loadOrders(); },
+      error: error => { this.mutating.set(false); this.actionError.set(httpErrorMessage(error, 'No se pudo eliminar el pedido.')); },
+    });
   }
 
   goPage(page: number): void { if (page < 1 || page > this.pages()) return; this.page.set(page); this.loadOrders(); }
 
   openDetailModal(summary: OrderSummary): void {
     this.closeDetailModal(); this.detailLoading.set(true); this.detailError.set('');
-    this.detailRequest = this.admin.getOrderById(summary.id).subscribe({
+    this.detailRequest = this.admin.getOrderById(summary.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: order => { this.detailLoading.set(false); this.showOrder(order); },
       error: () => { this.detailLoading.set(false); this.detailError.set('No se pudo cargar el pedido. Vuelve a abrirlo para reintentar.'); },
     });
@@ -561,7 +573,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   private showOrder(order: OrderAdmin): void {
     this.activeOrder.set(order);
     for (const attachment of order.attachments) {
-      this.previewRequests.push(this.admin.getAttachment(attachment.id).subscribe({
+      this.previewRequests.push(this.admin.getAttachment(attachment.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (blob) => {
           const type = /^image\/(png|jpeg|webp|gif)$/.test(attachment.contentType) ? attachment.contentType : 'application/octet-stream';
           const preview = new Blob([blob], { type });
@@ -582,7 +594,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     this.activeOrder.set(null);
   }
 
-  ngOnDestroy(): void { this.closeDetailModal(); }
+  ngOnDestroy(): void { this.listRequest?.unsubscribe(); this.closeDetailModal(); }
 
   buildCustomerWhatsAppUrl(order: Pick<OrderAdmin, 'phone' | 'customerName' | 'orderReference'>): string {
     const cleanPhone = order.phone.replace(/\D/g, '');

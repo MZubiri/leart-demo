@@ -1,12 +1,15 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { httpErrorMessage } from '../../core/services/http-error';
+import { DatePipe } from '@angular/common';
+import { DestroyRef, Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdminService, OrderSummary } from '../../core/services/admin.service';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [DatePipe, RouterLink],
   template: `
     <div class="dashboard-page">
       <div class="page-header">
@@ -16,13 +19,14 @@ import { AdminService, OrderSummary } from '../../core/services/admin.service';
         </div>
       </div>
 
+      @if (error()) { <div role="alert">{{ error() }} @if (hasData()) { <p>Se conservan los últimos datos cargados.</p> } <button type="button" (click)="loadData()">Reintentar</button></div> }
       <!-- Quick Metrics Cards -->
       <div class="metrics-grid">
         <div class="metric-card highlight">
           <div class="card-icon">📱</div>
           <div class="card-body">
             <span class="card-label">WhatsApp de Contacto</span>
-            <strong class="card-val">+{{ settings()?.whatsAppNumber || 'Sin configurar' }}</strong>
+            <strong class="card-val">+{{ hasData() ? (settings()?.whatsAppNumber || 'Sin configurar') : 'Sin cargar' }}</strong>
             <small>Configurable en tiempo real</small>
           </div>
           <a routerLink="/admin/configuracion" class="card-link">Modificar →</a>
@@ -32,8 +36,8 @@ import { AdminService, OrderSummary } from '../../core/services/admin.service';
           <div class="card-icon">🧱</div>
           <div class="card-body">
             <span class="card-label">Productos en Catálogo</span>
-            <strong class="card-val">{{ totalProducts() }}</strong>
-            <small>{{ activeProductsCount() }} productos activos</small>
+            <strong class="card-val">{{ hasData() ? totalProducts() : '—' }}</strong>
+            <small>{{ hasData() ? activeProductsCount() : '—' }} productos activos</small>
           </div>
           <a routerLink="/admin/productos" class="card-link">Gestionar →</a>
         </div>
@@ -42,8 +46,8 @@ import { AdminService, OrderSummary } from '../../core/services/admin.service';
           <div class="card-icon">📥</div>
           <div class="card-body">
             <span class="card-label">Pedidos / Personalizaciones</span>
-            <strong class="card-val">{{ totalOrders() }}</strong>
-            <small>{{ pendingOrdersCount() }} pendientes por revisar</small>
+            <strong class="card-val">{{ hasData() ? totalOrders() : '—' }}</strong>
+            <small>{{ hasData() ? pendingOrdersCount() : '—' }} pendientes por revisar</small>
           </div>
           <a routerLink="/admin/pedidos" class="card-link">Ver pedidos →</a>
         </div>
@@ -53,12 +57,12 @@ import { AdminService, OrderSummary } from '../../core/services/admin.service';
       <div class="dashboard-section">
         <div class="section-head">
           <h2>Últimos pedidos de personalización recibidos</h2>
-          <a routerLink="/admin/pedidos" class="view-all-link">Ver todos ({{ totalOrders() }}) →</a>
+          <a routerLink="/admin/pedidos" class="view-all-link">Ver todos ({{ hasData() ? totalOrders() : '—' }}) →</a>
         </div>
 
         @if (loading()) {
           <div class="loading-state">Cargando datos...</div>
-        } @else if (orders().length === 0) {
+        } @else if (error() && !hasData()) { <p>Los datos no están disponibles.</p> } @else if (orders().length === 0) {
           <div class="empty-state">
             <span>📭</span>
             <p>Aún no se han recibido pedidos de personalización desde la web.</p>
@@ -267,12 +271,14 @@ import { AdminService, OrderSummary } from '../../core/services/admin.service';
 })
 export class AdminDashboardComponent implements OnInit {
   private readonly admin = inject(AdminService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly settings = signal<{ whatsAppNumber: string } | null>(null);
   readonly totalProducts = signal(0);
   readonly totalOrders = signal(0);
   readonly orders = signal<OrderSummary[]>([]);
-  readonly loading = signal(true);
+  readonly loading = signal(true); readonly hasData = signal(false); readonly error = signal('');
+  private request?: Subscription;
 
   readonly activeProductsCount = signal(0);
   readonly pendingOrdersCount = signal(0);
@@ -282,15 +288,15 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   loadData(): void {
-    this.loading.set(true);
-    this.admin.getDashboard().subscribe({
+    this.request?.unsubscribe(); this.error.set(''); this.loading.set(true);
+    this.request = this.admin.getDashboard().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: data => {
-        this.settings.set({ whatsAppNumber: data.whatsAppNumber });
+        this.hasData.set(true); this.settings.set({ whatsAppNumber: data.whatsAppNumber });
         this.totalProducts.set(data.totalProducts); this.activeProductsCount.set(data.activeProducts);
         this.totalOrders.set(data.totalOrders); this.pendingOrdersCount.set(data.pendingOrders);
         this.orders.set(data.recentOrders); this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: error => { this.error.set(httpErrorMessage(error, 'No se pudieron cargar las métricas.')); this.loading.set(false); },
     });
   }
 }
