@@ -78,7 +78,7 @@ Confirmado significa reproducido en el entorno local descrito o demostrado por u
 
 | ID | Prioridad e impacto | Hallazgo y evidencia | Tarea accionable y esfuerzo |
 | --- | --- | --- | --- |
-| H07 | **P1 · Alto:** confirmación falsa de recepción. | Ante cualquier error HTTP, el formulario marca el envío como completado en [personalization.page.ts:92](src/app/pages/personalization.page.ts#L92). Después afirma que registró datos y fotos en [personalization.page.html:24](src/app/pages/personalization.page.html#L24). La condición de envío omite el teléfono requerido: [personalization.page.ts:36](src/app/pages/personalization.page.ts#L36). Reproducido con HTTP 400. | Confirmar únicamente tras persistencia exitosa, conservar el formulario y permitir reintento. Mostrar una alternativa por WhatsApp con un mensaje fiel al resultado. **0,5–1 d**. |
+| H07 | **P1 · Alto:** confirmación falsa de recepción. | Completado | R015 |
 | H08 | **P1 · Alto:** pedidos incompletos y archivos huérfanos. | Los errores al guardar fotos se ignoran y el pedido puede responder 200 sin ellas. Los archivos se escriben antes de persistir la BD: [PublicController.cs:123](backend/Leart.Api/Controllers/PublicController.cs#L123). Los límites están desalineados: 20 MB por archivo en [FileStorageService.cs:18](backend/Leart.Api/Services/FileStorageService.cs#L18), frente a 25 MB por petición en [nginx.conf:7](nginx.conf#L7). | Prevalidar el conjunto completo, alinear límites y devolver el resultado de cada adjunto. Añadir compensación y limpieza cuando falle la persistencia. **1–2 d**. |
 | H09 | **P1 · Alto:** borrar un pedido conserva sus fotos. | El borrado elimina registros, pero no archivos físicos: [AdminOrdersController.cs:112](backend/Leart.Api/Controllers/AdminOrdersController.cs#L112). Tras borrar un pedido, su adjunto siguió respondiendo HTTP 200. | Implementar eliminación o retención explícita de adjuntos, con reintentos y comprobación de archivos huérfanos. **0,5–1 d**. |
 | H10 | **P1 · Alto:** se revierten cambios administrativos. | Cada arranque sobrescribe nombre, imagen, descripción, variantes, precio y otros campos de los productos iniciales: [DbInitializer.cs:53](backend/Leart.Api/Data/DbInitializer.cs#L53), invocado desde [Program.cs:192](backend/Leart.Api/Program.cs#L192). Una edición se perdió al reiniciar. Un producto inicial eliminado también se vuelve a insertar. | Separar carga inicial y migraciones de datos, preservar las ediciones del negocio y versionar cualquier actualización del catálogo. **1 d**. |
@@ -355,6 +355,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 25/25 pruebas backend pasan en Linux con la biblioteca nativa, incluidas decodificación normalizada, rechazo de texto renombrado, PNG truncado y ancho excesivo, cuota y descarga autenticada de una imagen real. Sin diagnósticos en los archivos cambiados; diff correcto.
 - **Pendientes o límites:** H08 debe hacer explícito el rechazo del lote completo: el controlador previo todavía ignora individualmente errores de adjuntos. No se reinterpretaron adjuntos históricos.
 - **Próximo paso:** H07: corregir la confirmación falsa del formulario y añadir regresiones frontend.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R014 — 2026-11-18 — H07 — Inicio de confirmación veraz del formulario
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H07; Ante cualquier error HTTP, el formulario marca el envío como completado en [personalization.page.ts:92](src/app/pages/personalization.page.ts#L92). Después afirma que registró datos y fotos en [personalization.page.html:24](src/app/pages/personalization.page.html#L24). La condición de envío omite el teléfono requerido: [personalization.page.ts:36](src/app/pages/personalization.page.ts#L36). Reproducido con HTTP 400. → En curso.
+- **Avance y alcance:** Se corregirán validación del teléfono, errores HTTP y mensajes de recepción. Se habilita el ejecutor de pruebas Angular para verificar este fallo y los siguientes; H22 seguirá abierto hasta completar CI y cobertura transversal.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H06 confirmado en 2535ea6. Revisado el esquema local del builder unit-test y sus dependencias compatibles.
+- **Pendientes o límites:** Implementar UI y pruebas de fallo, éxito y doble envío.
+- **Próximo paso:** Validar el formulario ante API rechazada y fuera de línea.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R015 — 2026-11-18 — H07 — Confirmación veraz y conservación del formulario
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H07; En curso → Completado.
+- **Avance y alcance:** El teléfono es obligatorio. Los errores HTTP o de red no marcan éxito ni eliminan datos/fotos; se permite reintento y contacto con un mensaje que no afirma recepción. La respuesta exitosa valida referencia y muestra el número real de adjuntos recibidos. Se impiden envíos simultáneos y posteriores al éxito. Se habilitó Vitest para las regresiones frontend.
+- **Archivos y evidencia:** [personalization.page.ts](src/app/pages/personalization.page.ts), [personalization.page.html](src/app/pages/personalization.page.html), [personalization.page.spec.ts](src/app/pages/personalization.page.spec.ts), [angular.json](angular.json), [package.json](package.json), [package-lock.json](package-lock.json)
+- **Validación:** npm test -- --watch=false: 4/4 pasan, cubriendo teléfono vacío, rechazo HTTP, desconexión y envío duplicado. Build producción correcto. Sin diagnósticos ni errores de diff. Dependencias instaladas con npm 11.6.2, la versión declarada por el proyecto, tras fallo del resolvedor npm 10 del entorno.
+- **Pendientes o límites:** H08 hará atómica la recepción del lote en la API. H22 sigue pendiente para CI y cobertura transversal.
+- **Próximo paso:** H08: no aceptar pedidos con adjuntos rechazados y compensar fallos de persistencia.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

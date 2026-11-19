@@ -32,13 +32,14 @@ export class PersonalizationPage {
   readonly submitted = signal(false);
   readonly submittedReference = signal('');
   readonly errorMessage = signal('');
+  readonly receivedPhotos = signal(0);
 
-  readonly ready = computed(() => Boolean(this.order().trim() && this.name().trim() && this.product()));
+  readonly ready = computed(() => Boolean(this.order().trim() && this.name().trim() && this.phone().trim() && this.product()));
 
   readonly whatsappUrl = computed(() => {
     const ref = this.submittedReference() || this.order();
     const message = [
-      'Hola Leart 👋 Ya completé la información de personalización en la web.',
+      this.submitted() ? 'Hola Leart 👋 Mi personalización quedó registrada en la web.' : 'Hola Leart 👋 Necesito ayuda para enviar mi personalización. Su registro todavía no está confirmado.',
       '',
       `Pedido o referencia: ${ref}`,
       `Nombre: ${this.name()}`,
@@ -49,9 +50,9 @@ export class PersonalizationPage {
       `Nombres, fecha o frase: ${this.phrase()}`,
       `Requerimientos especiales: ${this.requirements()}`,
       '',
-      this.photoNames().length
-        ? `Adjunté ${this.photoNames().length} foto(s) de referencia en el formulario.`
-        : 'Aún no he seleccionado fotos de referencia.',
+      this.submitted()
+        ? `Fotos recibidas por la web: ${this.receivedPhotos()}.`
+        : `Tengo ${this.photoNames().length} foto(s) que necesito enviar con mi pedido.`,
     ].join('\n');
 
     return this.settingsService.buildWhatsAppUrl(message);
@@ -64,7 +65,7 @@ export class PersonalizationPage {
   }
 
   submitOrder(): void {
-    if (!this.ready()) return;
+    if (!this.ready() || this.submitting() || this.submitted()) return;
 
     this.submitting.set(true);
     this.errorMessage.set('');
@@ -83,17 +84,25 @@ export class PersonalizationPage {
       formData.append('photos', file, file.name);
     }
 
-    this.http.post<{ orderReference: string }>(`${environment.apiUrl}/public/personalization`, formData).subscribe({
+    this.http.post<{ orderReference: string; attachments?: unknown[] }>(`${environment.apiUrl}/public/personalization`, formData).subscribe({
       next: (res) => {
         this.submitting.set(false);
+        if (!res || typeof res.orderReference !== 'string' || !res.orderReference.trim()) {
+          this.errorMessage.set('No se pudo confirmar la recepción. Consulta con tu asesor antes de reenviar.');
+          return;
+        }
+        this.receivedPhotos.set(res.attachments?.length ?? 0);
         this.submitted.set(true);
         this.submittedReference.set(res.orderReference);
       },
       error: (err) => {
         this.submitting.set(false);
-        // Fallback: If backend is unreachable, still allow customer to proceed to WhatsApp
-        this.submitted.set(true);
-        this.submittedReference.set(this.order().trim());
+        this.submitted.set(false);
+        this.submittedReference.set('');
+        this.errorMessage.set(err.status === 0
+          ? 'No se pudo confirmar el envío. Revisa tu conexión o consulta con tu asesor antes de reenviar.'
+          : err.status === 429 ? 'Has enviado varias solicitudes. Espera antes de reintentar.'
+          : err.error?.message || err.error?.title || 'No se pudo guardar tu información. Revisa los datos y vuelve a intentarlo.');
       },
     });
   }

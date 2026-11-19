@@ -21,7 +21,8 @@
       <div style="width: 56px; height: 56px; border-radius: 50%; background: #e8f5e9; color: #2e7d32; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; margin: 0 auto 1.5rem;">✓</div>
       <h2 style="font-size: 1.8rem; margin-bottom: 0.75rem;">¡Información recibida!</h2>
       <p style="color: #666; margin-bottom: 1.5rem;">Tu referencia es: <strong style="color: #111; font-size: 1.1rem;">{{submittedReference()}}</strong></p>
-      <p style="color: #444; max-width: 500px; margin: 0 auto 2rem; font-size: 0.95rem; line-height: 1.5;">Hemos registrado los datos de tu pedido y tus fotos adjuntas de forma segura. Ahora dale clic al botón para confirmar con tu asesor en WhatsApp.</p>
+      <p style="color: #444; max-width: 500px; margin: 0 auto 2rem; font-size: 0.95rem; line-height: 1.5;">Tu información quedó registrada. Fotos recibidas: {{receivedPhotos()}} de {{selectedFiles().length}}. Continúa para coordinar con tu asesor por WhatsApp.</p>
+      @if (receivedPhotos() < selectedFiles().length) { <p role="alert">Faltan fotos por recibir. Consulta con tu asesor para completarlas.</p> }
       <a [href]="whatsappUrl()" target="_blank" rel="noreferrer" class="button button-dark" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.9rem 1.8rem; border-radius: 999px; text-decoration: none; font-weight: 600;">
         Notificar a Leart por WhatsApp ↗
       </a>
@@ -97,6 +98,9 @@
           </div>
         </div>
 
+        @if (errorMessage()) {
+          <div role="alert" class="postpay-error"><p>{{errorMessage()}}</p><a [href]="whatsappUrl()" target="_blank" rel="noreferrer">Consultar con mi asesor por WhatsApp ↗</a></div>
+        }
         <div class="send-personalization">
           <div>
             <b>La información está lista</b>
