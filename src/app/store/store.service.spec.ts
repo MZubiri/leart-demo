@@ -1,5 +1,6 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { PricingService } from '../core/services/pricing.service';
 import { ProductsService } from '../core/services/products.service';
 import { SettingsService } from '../core/services/settings.service';
 import { PRODUCTS } from './products';
@@ -10,6 +11,7 @@ describe('Quotation lines', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({ providers: [
+      { provide: PricingService, useValue: { rules: signal(null) } },
       { provide: ProductsService, useValue: { products: signal(PRODUCTS) } },
       { provide: SettingsService, useValue: { buildWhatsAppUrl: (message: string) => message } },
     ] });

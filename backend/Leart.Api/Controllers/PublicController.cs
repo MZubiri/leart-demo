@@ -16,13 +16,18 @@ public class PublicController : ControllerBase
     private readonly AppDbContext _context;
     private readonly IFileStorageService _fileStorage;
     private readonly ILogger<PublicController> _logger;
+    private readonly PricingCatalog _pricing;
 
-    public PublicController(AppDbContext context, IFileStorageService fileStorage, ILogger<PublicController> logger)
+    public PublicController(AppDbContext context, IFileStorageService fileStorage, ILogger<PublicController> logger, PricingCatalog pricing)
     {
         _context = context;
         _fileStorage = fileStorage;
         _logger = logger;
+        _pricing = pricing;
     }
+
+    [HttpGet("pricing")]
+    public ActionResult<System.Text.Json.JsonElement> GetPricing() => Ok(_pricing.Rules);
 
     [HttpGet("settings")]
     public async Task<ActionResult<PublicSettingsDto>> GetSettings()

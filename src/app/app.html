@@ -42,6 +42,8 @@
         <small>Paso {{activeStep()}} de 3 · El valor final se confirma por WhatsApp</small>
       </div>
       <div class="customizer-body">
+        @if (pricing.error()) { <p role="alert">{{pricing.error()}}</p><button type="button" (click)="pricing.refresh()">Reintentar tarifas</button> }
+        @else if (!pricing.rules()) { <p role="status">Cargando tarifas y presentaciones...</p> }
         @if (activeStep() === 1) {
           <h3>1. ¿Qué quieres regalar?</h3>
           <p class="step-help">Elige una de las cinco líneas de Leart.</p>
@@ -74,11 +76,11 @@
             }
           </div>
           <div class="details-row quote-details">
-            <div><label>Minifiguras</label><div class="counter"><button type="button" (click)="changeFigures(-1)" [disabled]="figures() <= 1">−</button><strong>{{figures()}}</strong><button type="button" (click)="changeFigures(1)" [disabled]="remainingCapacity() === 0">+</button></div><small>La capacidad se comparte con las mascotas.</small></div>
-            <div><label>Mascotas</label><div class="counter"><button type="button" (click)="changePets(-1)" [disabled]="pets() === 0">−</button><strong>{{pets()}}</strong><button type="button" (click)="changePets(1)" [disabled]="selectedCategory() === 'Llaveros' || remainingCapacity() === 0">+</button></div><small>Perros y gatos genéricos, según disponibilidad.</small></div>
+            <div><label>Minifiguras</label><div class="counter"><button type="button" (click)="changeFigures(-1)" [disabled]="figures() <= minFigures()">−</button><strong>{{figures()}}</strong><button type="button" (click)="changeFigures(1)" [disabled]="!canIncreaseFigures()">+</button></div><small>Hasta {{maxFigures()}} minifiguras en esta presentación.</small></div>
+            <div><label>Mascotas</label><div class="counter"><button type="button" (click)="changePets(-1)" [disabled]="pets() === 0">−</button><strong>{{pets()}}</strong><button type="button" (click)="changePets(1)" [disabled]="pets() >= maxPets()">+</button></div><small>Hasta {{maxPets()}} mascotas con las figuras seleccionadas.</small></div>
           </div>
-          <div class="capacity-meter"><span><b>{{capacityUsed()}}</b> de {{maxFigures()}} espacios usados</span><i><b [style.width.%]="capacityUsed() / maxFigures() * 100"></b></i><small>Minifiguras y mascotas cuentan dentro del mismo límite.</small></div>
-          <label class="check-option"><input type="checkbox" [ngModel]="accessories()" (ngModelChange)="accessories.set($event)"><span>Quiero consultar por accesorios adicionales</span></label>
+          <div class="capacity-meter"><span><b>{{capacityUsed()}}</b> de {{totalCapacity()}} espacios usados</span><i><b [style.width.%]="capacityUsed() / (totalCapacity() || 1) * 100"></b></i><small>La capacidad depende de la presentación y de la combinación elegida.</small></div>
+          <label class="check-option"><input type="checkbox" [disabled]="!selectedProduct()?.allowsAccessories" [ngModel]="accessories()" (ngModelChange)="accessories.set($event)"><span>Quiero consultar por accesorios adicionales</span></label>
           <div class="price-quote-preview" style="margin-top: 18px; padding: 14px; background: #fff; border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink);">
             <div style="display: flex; justify-content: space-between; align-items: baseline;">
               <span style="font-size: 11px; font-weight: 800; text-transform: uppercase;">Precio estimado:</span>
@@ -114,8 +116,8 @@
       </div>
       <div class="customizer-actions">
         @if (activeStep() > 1) {<button class="back" type="button" (click)="previousStep()">Atrás</button>}
-        @if (activeStep() < 3) {<button class="button button-dark" type="button" (click)="nextStep()">Continuar <span>→</span></button>}
-        @else {<button class="button button-dark" type="button" (click)="addCustom()">Agregar a cotización <span>+</span></button>}
+        @if (activeStep() < 3) {<button class="button button-dark" type="button" (click)="nextStep()" [disabled]="!pricing.rules() || !selectedProduct() || (activeStep() === 2 && !canAdd())">Continuar <span>→</span></button>}
+        @else {<button class="button button-dark" type="button" (click)="addCustom()" [disabled]="!canAdd()">Agregar a cotización <span>+</span></button>}
       </div>
     </section>
   </div>
@@ -127,7 +129,7 @@
     <div class="cart-head"><div><small>TU SELECCIÓN</small><h2>Cotización ({{store.cartCount()}})</h2></div><button type="button" aria-label="Cerrar cotización" (click)="store.closeCart()">×</button></div>
     <div class="cart-content">
       @for (line of store.cartLines(); track line.id) {
-        <article class="cart-line"><img [src]="line.product.image" [alt]="line.product.name"><div><strong>{{line.product.name}}</strong><small>{{line.product.detail}}</small><p>{{store.configurationSummary(line.configuration)}}</p><div class="mini-counter"><button type="button" (click)="store.changeQuantity(line.id, -1)">−</button><span>{{line.quantity}}</span><button type="button" (click)="store.changeQuantity(line.product.id, 1)">+</button></div><textarea rows="2" placeholder="Notas para esta selección" [ngModel]="line.note" (ngModelChange)="store.updateNote(line.id, $event)"></textarea></div></article>
+        <article class="cart-line"><img [src]="line.product.image" [alt]="line.product.name"><div><strong>{{line.product.name}}</strong><small>{{line.product.detail}}</small><p>{{store.configurationSummary(line.configuration, line.product)}}</p><div class="mini-counter"><button type="button" (click)="store.changeQuantity(line.id, -1)">−</button><span>{{line.quantity}}</span><button type="button" (click)="store.changeQuantity(line.product.id, 1)">+</button></div><textarea rows="2" placeholder="Notas para esta selección" [ngModel]="line.note" (ngModelChange)="store.updateNote(line.id, $event)"></textarea></div></article>
       } @empty {
         <div class="cart-empty"><span>□</span><h3>Tu cotización está vacía</h3><p>Explora el catálogo o arma una idea guiada para enviarla a Leart.</p><a routerLink="/catalogo" (click)="store.closeCart()">Ir al catálogo</a></div>
       }

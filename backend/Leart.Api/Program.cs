@@ -57,6 +57,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     });
 });
 
+builder.Services.AddSingleton<PricingCatalog>();
+
 // Services
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();

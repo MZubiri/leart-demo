@@ -26,7 +26,7 @@
           </div>
           <div>
             <small>CAPACIDAD</small>
-            <strong>@if(item.allowsPets){Hasta {{item.maxFigures}} entre figuras y mascotas}@else{Hasta {{item.maxFigures}} minifiguras}</strong>
+            <strong>@if(item.category === 'Cajas acrílicas'){Hasta {{item.maxFigures}} minifiguras; mascotas según presentación}@else if(item.allowsPets){Hasta {{item.maxFigures}} entre figuras y mascotas}@else{Hasta {{item.maxFigures}} minifiguras}</strong>
           </div>
           <div>
             <small>PRECIO BASE</small>

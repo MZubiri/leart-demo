@@ -2,7 +2,8 @@ import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { ProductsService } from '../core/services/products.service';
 import { SettingsService } from '../core/services/settings.service';
 import { PRODUCTS, Product } from './products';
-import { formatCop } from './pricing';
+import { calculatePrice, formatCop } from './pricing';
+import { PricingService } from '../core/services/pricing.service';
 
 export interface CartConfiguration {
   variant: string;
@@ -31,6 +32,7 @@ export interface CartLine extends StoredCartLine {
 export class StoreService {
   private readonly productsService = inject(ProductsService);
   private readonly settingsService = inject(SettingsService);
+  private readonly pricing = inject(PricingService);
 
   readonly productsSignal = this.productsService.products;
   get products(): Product[] {
@@ -99,12 +101,15 @@ export class StoreService {
     this.openCart();
   }
 
-  configurationSummary(configuration?: CartConfiguration): string {
+  configurationSummary(configuration?: CartConfiguration, product?: Product): string {
     if (!configuration) return '';
+    const quote = product ? calculatePrice({ ...configuration, category: product.category, product, rules: this.pricing.rules() }) : null;
+    const price = quote ? quote.totalPrice : configuration.estimatedPrice;
     return [configuration.variant, configuration.figures + ' minifigura(s)',
       configuration.pets ? configuration.pets + ' mascota(s)' : '',
       configuration.accessories ? 'Consultar accesorios' : '', configuration.occasion,
-      configuration.estimatedPrice != null ? 'Estimado: ' + formatCop(configuration.estimatedPrice) : '',
+      price != null ? 'Estimado: ' + formatCop(price) : 'A cotizar',
+      quote && !quote.valid ? 'Revisar configuración con Leart' : '',
     ].filter(Boolean).join(' · ');
   }
 
@@ -152,8 +157,8 @@ export class StoreService {
     const lines = this.cartLines().map(
       (line) =>
         `• ${line.quantity}x ${line.product.name} — ${line.product.category} (${line.product.detail})${
-          [this.configurationSummary(line.configuration), line.note].filter(Boolean).length
-            ? `\n  Detalles: ${[this.configurationSummary(line.configuration), line.note].filter(Boolean).join(' · ')}` : ''
+          [this.configurationSummary(line.configuration, line.product), line.note].filter(Boolean).length
+            ? `\n  Detalles: ${[this.configurationSummary(line.configuration, line.product), line.note].filter(Boolean).join(' · ')}` : ''
         }`,
     );
 

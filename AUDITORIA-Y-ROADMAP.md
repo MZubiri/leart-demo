@@ -85,7 +85,7 @@ Confirmado significa reproducido en el entorno local descrito o demostrado por u
 | H11 | **P1 · Alto:** editor de productos defectuoso. | Completado | R023 |
 | H12 | **P1 · Alto:** editar destruye metadatos. | Completado | R025 |
 | H13 | **P1 · Alto:** mezcla de configuraciones en una cotización. | Completado | R027 |
-| H14 | **P1 · Alto:** precios y capacidades inconsistentes. | El precio usa tablas locales y prioriza el grupo del producto sobre la variante elegida: [pricing.ts:73](src/app/store/pricing.ts#L73), [pricing.ts:106](src/app/store/pricing.ts#L106). Elegir Grupo 4 en el flujo genérico calculó 130.000 COP en lugar de los 165.000 de su tabla. Los límites usan valores de categoría en [app.ts:109](src/app/app.ts#L109): Mini Hockey declara máximo cuatro en [DbInitializer.cs:1813](backend/Leart.Api/Data/DbInitializer.cs#L1813), pero el cotizador puede permitir ocho. | Establecer una fuente única de precios, variantes y restricciones. Usar identificadores estables y respetar mínimos, máximos y permisos de extras por producto. **3–5 d**. |
+| H14 | **P1 · Alto:** precios y capacidades inconsistentes. | Completado | R029 |
 | H15 | **P1 · Alto:** catálogo incorrecto ante vacío o fallo. | Una respuesta válida `[]` se ignora en [products.service.ts:20](src/app/core/services/products.service.ts#L20); en navegador siguieron apareciendo 75 productos. Ante fallos de BD, la API entrega el catálogo inicial en [PublicController.cs:63](backend/Leart.Api/Controllers/PublicController.cs#L63), que incluye un producto inactivo. La cotización recupera productos ausentes desde los datos locales: [store.service.ts:30](src/app/store/store.service.ts#L30). | Distinguir vacío, carga y fallo; respetar siempre la disponibilidad actual y evitar recuperar productos retirados sin validación. **1–2 d**. |
 | H16 | **P2 · Medio:** validaciones insuficientes en la API. | Los DTO no expresan límites de longitud y dominio: [OrderDtos.cs:3](backend/Leart.Api/DTOs/OrderDtos.cs#L3). El cálculo de máximos permite inconsistencias en [AdminProductsController.cs:75](backend/Leart.Api/Controllers/AdminProductsController.cs#L75): se aceptó un producto con mínimo 1 y máximo −5. Se admiten estados arbitrarios en [AdminOrdersController.cs:106](backend/Leart.Api/Controllers/AdminOrdersController.cs#L106). | Validar longitudes, cantidades, categorías, estados y relaciones entre campos antes de persistir. Devolver errores 4xx claros. **1–2 d**. |
 | H17 | **P2 · Medio:** plantillas configurables sin efecto. | El panel guarda plantillas en [admin-settings.component.ts:559](src/app/admin/pages/admin-settings.component.ts#L559), pero los mensajes se construyen con texto fijo en [store.service.ts:119](src/app/store/store.service.ts#L119) y [personalization.page.ts:40](src/app/pages/personalization.page.ts#L40). | Consumir las plantillas configuradas y validar sus variables. **0,5 d**. |
@@ -509,6 +509,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 9/9 pruebas frontend y build producción pasan. Se comprobó S/M en líneas separadas, agrupación de una selección idéntica, cambios aislados, mensaje WhatsApp y migración v1→v2. Tras ajustar generación de IDs compatible con HTTP, las tres pruebas enfocadas de cotización vuelven a pasar. Sin diagnósticos ni errores de diff.
 - **Pendientes o límites:** No es posible recuperar configuraciones ya sobrescritas por versiones anteriores; se conservan las notas que todavía existan.
 - **Próximo paso:** H14: centralizar tarifas y respetar capacidades y extras por producto.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R028 — 2026-11-18 — H14 — Inicio de tarifas únicas y restricciones por producto
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H14; El precio usa tablas locales y prioriza el grupo del producto sobre la variante elegida: [pricing.ts:73](src/app/store/pricing.ts#L73), [pricing.ts:106](src/app/store/pricing.ts#L106). Elegir Grupo 4 en el flujo genérico calculó 130.000 COP en lugar de los 165.000 de su tabla. Los límites usan valores de categoría en [app.ts:109](src/app/app.ts#L109): Mini Hockey declara máximo cuatro en [DbInitializer.cs:1813](backend/Leart.Api/Data/DbInitializer.cs#L1813), pero el cotizador puede permitir ocho. → En curso.
+- **Avance y alcance:** Se centralizarán tarifas y capacidades en un documento de reglas servido por la API. El cotizador respetará mínimos, máximos y permisos del producto y la variante elegida. Las celdas de precios sin respaldo comercial se mostrarán como A cotizar; no se inferirán recargos a partir del precio base editado.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H13 confirmado en f613f91. Matriz contrastada con excel_readable: cuadros 3/6/10 y capacidades específicas de cajas.
+- **Pendientes o límites:** Regresiones de grupos, tallas, mascotas, límites y precios personalizados.
+- **Próximo paso:** Verificar que catálogo, selección y estimación no produzcan combinaciones ni importes inventados.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R029 — 2026-11-18 — H14 — Tarifas únicas y capacidades verificadas por producto
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H14; En curso → Completado.
+- **Avance y alcance:** Matriz versionada servida por la API, sin otra tabla de precios en el frontend. El grupo elegido prevalece y el flujo genérico selecciona un producto de ese grupo. Se respetan mínimos/máximos y permisos de extras; las cajas admiten las combinaciones específicas de figuras/mascotas de la planilla. Se bloquean configuraciones inválidas y se recalculan resúmenes de líneas con tarifas/metadatos vigentes. Las combinaciones sin precio confirmado y los precios base personalizados muestran A cotizar sin inferir recargos.
+- **Archivos y evidencia:** [pricing-rules.json](backend/Leart.Api/Data/pricing-rules.json), [PricingCatalog.cs](backend/Leart.Api/Services/PricingCatalog.cs), [PublicController.cs](backend/Leart.Api/Controllers/PublicController.cs), [pricing.service.ts](src/app/core/services/pricing.service.ts), [pricing.ts](src/app/store/pricing.ts), [pricing.spec.ts](src/app/store/pricing.spec.ts), [app.ts](src/app/app.ts), [app.spec.ts](src/app/app.spec.ts), [store.service.ts](src/app/store/store.service.ts), [product.page.html](src/app/pages/product.page.html), [README.md](README.md)
+- **Validación:** 34/34 pruebas backend y 21/21 frontend pasan. Se verifican Grupo 4 a 165000, límite propio de Mini Hockey, límites de cuadros, permisos de extras, cantidades mínimas y combinaciones de cajas; errores o tarifas desconocidas no generan precios inventados. Build producción correcto; sin diagnósticos ni errores de diff.
+- **Pendientes o límites:** Confirmación comercial pendiente para M/1 y L/1–2 y para matrices de precios personalizados: el sistema permite cotizarlos sin importe automático. La política y la fuente de reglas quedan documentadas; no se aprobaron precios comerciales por cuenta propia.
+- **Próximo paso:** H15: representar catálogo vacío y caída de la API sin resucitar datos locales.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

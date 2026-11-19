@@ -1,0 +1,177 @@
+{
+  "currency": "COP",
+  "version": 1,
+  "extraPrices": {
+    "mascota": 15000,
+    "bebe": 14000,
+    "moto": 18000,
+    "ladrilloNombre": 8000,
+    "paredEspecial": 18000,
+    "fondoPersonalizado": 8000,
+    "minifiguraSetExtra": 24000,
+    "minifiguraMomentoExtra": 26000,
+    "minifiguraIndividual": 24000,
+    "llaveroIndividual": 28000
+  },
+  "frames": {
+    "S": {
+      "1": 96000,
+      "2": 124000,
+      "3": 146000
+    },
+    "M": {
+      "1": null,
+      "2": 138000,
+      "3": 160000,
+      "4": 180000,
+      "5": 200000,
+      "6": 220000
+    },
+    "L": {
+      "1": null,
+      "2": null,
+      "3": 190000,
+      "4": 210000,
+      "5": 230000,
+      "6": 250000,
+      "7": 270000,
+      "8": 290000,
+      "9": 310000,
+      "10": 330000
+    }
+  },
+  "sets": {
+    "Grupo 1": {
+      "p1": 130000,
+      "p2": 158000,
+      "extra": 24000
+    },
+    "Grupo 2": {
+      "p1": 140000,
+      "p2": 168000,
+      "extra": 24000
+    },
+    "Grupo 3": {
+      "p1": 154000,
+      "p2": 182000,
+      "extra": 24000
+    },
+    "Grupo 4": {
+      "p1": 165000,
+      "p2": 195000,
+      "extra": 24000
+    },
+    "Edición Especial Casita UP": {
+      "p1": 273000,
+      "p2": 295000,
+      "extra": 24000
+    },
+    "Casita UP": {
+      "p1": 273000,
+      "p2": 295000,
+      "extra": 24000
+    },
+    "Skyline": {
+      "p1": 165000,
+      "p2": 195000,
+      "extra": 24000
+    }
+  },
+  "moments": {
+    "con-luz": {
+      "p1": 184000,
+      "p2": 210000,
+      "extra": 26000
+    },
+    "sin-luz": {
+      "p1": 164000,
+      "p2": 190000,
+      "extra": 26000
+    },
+    "mini-armables": {
+      "p1": 134000,
+      "p2": 160000,
+      "extra": 26000
+    }
+  },
+  "variants": {
+    "Cuadros": [
+      "Talla S (20x15 cm) · máx. 3",
+      "Talla M (27x22 cm) · máx. 6",
+      "Talla L (32x23 cm) · máx. 10"
+    ],
+    "Sets armables": [
+      "Grupo 1",
+      "Grupo 2",
+      "Grupo 3",
+      "Grupo 4",
+      "Edición Especial Casita UP",
+      "Skyline"
+    ],
+    "Cajas acrílicas": [
+      "Caja Sencilla · máx. 1",
+      "Caja Doble · máx. 4",
+      "Caja Doble + Moto"
+    ],
+    "Mini momentos": [
+      "Con luz (piezas tipo lego)",
+      "Sin luz (piezas tipo lego)",
+      "Mini armables compactos"
+    ],
+    "Mini Box": [
+      "Taller de Herramientas",
+      "Mini Fitness",
+      "Buena Vibra / DJ"
+    ],
+    "Llaveros": [
+      "Llavero personalizado",
+      "Llavero de jugador",
+      "Llavero de personaje"
+    ],
+    "Minifiguras": [
+      "Figura individual",
+      "Imán decorativo"
+    ]
+  },
+  "defaultLimits": {
+    "Cuadros": 3,
+    "Sets armables": 8,
+    "Cajas acrílicas": 4,
+    "Mini momentos": 6,
+    "Mini Box": 4,
+    "Llaveros": 1,
+    "Minifiguras": 8
+  },
+  "frameLimits": {
+    "S": 3,
+    "M": 6,
+    "L": 10
+  },
+  "acrylicPetLimits": {
+    "1": 4,
+    "2": 3,
+    "3": 1,
+    "4": 0
+  },
+  "acrylic": {
+    "simple": 60000,
+    "double": {
+      "1": 70000,
+      "2": 90000,
+      "3": 114000,
+      "4": 138000
+    },
+    "moto": {
+      "1": 88000,
+      "2": 106000
+    },
+    "maxFigures": {
+      "simple": 1,
+      "double": 4,
+      "moto": 2
+    },
+    "simpleMaxPets": 1,
+    "motoMaxPets": 0
+  },
+  "miniBoxBase": 70000
+}
