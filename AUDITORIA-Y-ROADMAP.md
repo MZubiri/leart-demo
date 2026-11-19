@@ -173,7 +173,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 
 ## 9. Seguimiento de ítems
 
-**Situación vigente:** 25 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
+**Situación vigente:** 24 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
 
 | ID | Fase | Estado vigente | Última entrada de avance o validación |
 | --- | --- | --- | --- |
@@ -190,7 +190,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | H11 | F2 | Completado | R023 |
 | H12 | F2 | Completado | R025 |
 | H13 | F2 | Completado | R050 |
-| H14 | F3 | Completado | R029 |
+| H14 | F3 | Implementado; pendiente de validación | R056 |
 | H15 | F2 | Completado | R031 |
 | H16 | F2 | Completado | R033 |
 | H17 | F3 | Completado | R035 |
@@ -202,7 +202,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | H23 | F5 | Completado | R047 |
 | H24 | F5 | Completado | R051 |
 | H25 | F5 | Completado | R053 |
-| H26 | F5 | En curso | R054 |
+| H26 | F5 | En curso | R055 |
 | O01 | Por definir | No programada | — |
 | O02 | Por definir | No programada | — |
 | O03 | Por definir | No programada | — |
@@ -806,6 +806,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** H25 confirmado; se identificaron diálogos sin gestión de foco y el id occasion duplicado al abrir cotizador sobre catálogo.
 - **Pendientes o límites:** Comportamiento modal común, etiquetas y pruebas DOM/navegador.
 - **Próximo paso:** Implementar y verificar apertura, Tab/Shift+Tab, Escape y retorno al disparador.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R055 — 2026-11-18 — H26 — Gestión modal común y validación de pasos dinámicos
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H26; En curso → En curso.
+- **Avance y alcance:** CDK confina foco; una directiva común maneja Escape, fondo inerte con conteo de capas, scroll y restauración. Cotizador, panel y modales administrativos comparten ese comportamiento. Se añadieron nombres de controles, asociación de imagen/upload y IDs únicos. La prueba Chromium detectó pérdida de foco al reemplazar Continuar por Agregar en el paso3; se añadió retorno al encabezado del paso cuando desaparece el control enfocado.
+- **Archivos y evidencia:** [modal-dialog.directive.ts](src/app/shared/modal-dialog.directive.ts), [modal-dialog.directive.spec.ts](src/app/shared/modal-dialog.directive.spec.ts), [test-keyboard.cjs](scripts/test-keyboard.cjs), [app.html](src/app/app.html), [admin-products.component.ts](src/app/admin/pages/admin-products.component.ts), [admin-orders.component.ts](src/app/admin/pages/admin-orders.component.ts), [admin-layout.component.ts](src/app/admin/admin-layout.component.ts), [store.service.ts](src/app/store/store.service.ts), [ci.yml](.github/workflows/ci.yml)
+- **Validación:** 36/36 pruebas frontend pasan antes del ajuste de foco dinámico; build tras el ajuste correcto. Auditoría npm producción0avisos. Primera prueba de teclado reprodujo el foco perdido y se está repitiendo completa.
+- **Pendientes o límites:** Validar Chromium completo, transición cotizador-panel y restauración; cierre final de build, pruebas e infraestructura.
+- **Próximo paso:** Repetir prueba de teclado y corregir cualquier caso restante antes de completar H26.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R056 — 2026-11-18 — H14 — Separar cierre técnico de confirmación comercial
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H14; Completado → Implementado; pendiente de validación.
+- **Avance y alcance:** Se corrige el estado de H14: R029 verificó la corrección técnica, pero el roadmap exige confirmar la matriz comercial antes de cerrar el ítem. No consta esa confirmación del usuario. La matriz y capacidades ya están centralizadas y probadas; los casos sin tarifa confirmada permanecen A cotizar. Se solicitó confirmación concreta de la matriz vigente, sin detener las demás validaciones.
+- **Archivos y evidencia:** [pricing-rules.json](backend/Leart.Api/Data/pricing-rules.json), [pricing.ts](src/app/store/pricing.ts), [pricing.spec.ts](src/app/store/pricing.spec.ts), [README.md](README.md)
+- **Validación:** Las regresiones de precios, límites y variantes pasan en la suite frontend final. La aprobación comercial no se deduce de una prueba técnica ni de la autorización general para corregir código.
+- **Pendientes o límites:** Confirmación del usuario de la matriz enlazada y de conservar A cotizar en cuadros M/1, L/1–2 y precios personalizados. No se inventaron tarifas ni se cambió producción.
+- **Próximo paso:** Con la respuesta, registrar la decisión y cerrar H14 o ajustar únicamente los valores que se indiquen.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada
