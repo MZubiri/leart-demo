@@ -30,6 +30,7 @@ builder.Services.AddControllers()
 
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddProblemDetails();
+builder.Services.AddHealthChecks().AddCheck<DatabaseReadinessCheck>("database", tags: ["ready"], timeout: TimeSpan.FromSeconds(3));
 
 // OpenAPI
 builder.Services.AddOpenApi();
@@ -148,10 +149,13 @@ app.UseAuthorization();
 app.UseRateLimiter();
 
 app.MapControllers();
+app.MapHealthChecks("/health/live", new() { Predicate = _ => false });
+app.MapHealthChecks("/health/ready", new() { Predicate = check => check.Tags.Contains("ready") });
 
 // SPA Fallback that never crashes if index.html is temporarily missing
 app.MapFallback(async context =>
 {
+    if (context.Request.Path.StartsWithSegments("/api") || context.Request.Path.StartsWithSegments("/uploads") || context.Request.Path.StartsWithSegments("/private")) { context.Response.StatusCode = 404; return; }
     var indexPath = Path.Combine(webRootPath, "index.html");
     if (File.Exists(indexPath))
     {
@@ -160,7 +164,7 @@ app.MapFallback(async context =>
     }
     else
     {
-        context.Response.StatusCode = 200;
+        context.Response.StatusCode = 404;
         context.Response.ContentType = "text/html; charset=utf-8";
         await context.Response.WriteAsync("<!DOCTYPE html><html><body><h1>Leart Store API</h1><p>El backend se encuentra activo. El frontend se est&aacute; inicializando.</p></body></html>");
     }
@@ -172,13 +176,14 @@ using (var scope = app.Services.CreateScope())
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    int retries = 10;
+    int retries = 3;
     while (retries > 0)
     {
         try
         {
-            logger.LogInformation("Conectando a MariaDB/MySQL y verificando esquema de base de datos...");
-            await db.Database.EnsureCreatedAsync();
+            logger.LogInformation("Conectando a MySQL y verificando esquema de base de datos...");
+            if (args.Contains("--adopt-existing-schema")) { await SchemaInitializer.AdoptExistingAsync(db); return; }
+            await SchemaInitializer.InitializeAsync(db);
             await AdminBootstrap.InitializeAsync(db, builder.Configuration, args.Contains("--reset-admin-password"));
             if (args.Contains("--reset-admin-password")) return;
             await DbInitializer.SeedAsync(db, logger);
@@ -196,7 +201,8 @@ using (var scope = app.Services.CreateScope())
             }
             else
             {
-                logger.LogError(ex, "No se pudo conectar a MySQL tras varios intentos. Se continuara en modo seguro.");
+                logger.LogCritical(ex, "No se pudo inicializar MySQL. Se detiene el arranque.");
+                throw;
             }
         }
     }

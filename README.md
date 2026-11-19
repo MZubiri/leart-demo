@@ -181,3 +181,30 @@ no se incluyen en la SPA. Usar código y patrones de compilación confiables y s
 los parches de Angular CLI; no se forzaron versiones mayores incompatibles transitivas.
 No quedan avisos altos o críticos. Repetir estas auditorías antes de publicar: los
 resultados dependen de la fecha y del registro consultado.
+
+## Migraciones y salud
+
+Las bases nuevas se crean con migraciones EF versionadas. El arranque se detiene si
+la BD o el esquema no están preparados; no sirve pedidos en un modo ficticio.
+`/health/live` comprueba el proceso y `/health/ready` consulta la BD y el esquema,
+respondiendo 503 si falla. El proxy publica ambas rutas sin caché.
+
+Para una BD anterior creada con EnsureCreated, primero haz una copia y detén todas
+las instancias antiguas de la API. Ejecuta una sola vez, con la configuración de esa BD:
+
+```bash
+dotnet run --project backend/Leart.Api -- --adopt-existing-schema
+# En Compose, con el backend detenido:
+docker compose run --rm --no-deps backend --adopt-existing-schema
+```
+
+El comando verifica tablas, tipos, longitudes, nulabilidad, charset, valores por defecto,
+claves primarias, índices y relaciones contra la migración inicial. Si difieren, termina
+sin registrar la línea base: revisar la diferencia sobre una copia; nunca borrar datos
+para forzarla. Si coinciden, registra únicamente esa migración y termina sin servir HTTP.
+El siguiente arranque aplica las migraciones posteriores conservando datos y catálogo.
+MySQL usa DDL con commits implícitos: mantener la copia y usar una sola instancia para
+aplicar cambios. Verificar readiness y datos antes de reabrir tráfico.
+
+Para crear futuras migraciones usa dotnet-ef 10.0.15; la fábrica de diseño no conecta a
+una BD ni lee secretos. Revisar el SQL generado y ensayarlo sobre una copia antes de aplicar.

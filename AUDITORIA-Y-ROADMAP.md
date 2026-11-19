@@ -173,7 +173,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 
 ## 9. Seguimiento de ítems
 
-**Situación vigente:** 20 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
+**Situación vigente:** 21 de 26 problemas corregidos. Las 5 mejoras opcionales no están programadas. Ver el estado y la evidencia de cada ítem; las tareas en curso no cuentan como completadas.
 
 | ID | Fase | Estado vigente | Última entrada de avance o validación |
 | --- | --- | --- | --- |
@@ -196,7 +196,7 @@ La tabla siguiente es la fuente del **estado vigente de cada ítem**. La bitáco
 | H17 | F3 | Completado | R035 |
 | H18 | F2 | Completado | R037 |
 | H19 | F4 | Completado | R039 |
-| H20 | F4 | Pendiente | — |
+| H20 | F4 | Completado | R043 |
 | H21 | F4 | Completado | R041 |
 | H22 | Transversal / cierre F5 | Pendiente | — |
 | H23 | F5 | Pendiente | — |
@@ -663,6 +663,28 @@ Al actualizar esta tabla, actualizar también el resumen de situación inicial/v
 - **Validación:** 44/44 pruebas backend estándar pasan y la integración MySQL queda explícitamente omitida fuera de su runner; runner aislado ejecutó y pasó su prueba real de bootstrap y reinicio. 25/25 frontend y build producción pasan. Sin MSB3277. Auditorías NuGet transitiva y npm producción: 0 avisos. Imagen API Docker construida; usuario app UID1654, directorios escribibles y runtime 10.0.15 comprobados.
 - **Pendientes o límites:** Auditoría npm completa: 16 paquetes de desarrollo afectados por dos avisos moderados (glob/minimatch); no se fuerzan cambios mayores incompatibles. Solo código/patrones confiables en herramientas. La licencia Oracle GPL con excepción FOSS requiere revisión según distribución antes de publicar. No se desplegó a producción.
 - **Próximo paso:** H20: migraciones con esquema compatible, adopción controlada de bases anteriores y readiness real.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R042 — 2026-11-18 — H20 — Inicio de evolución de esquema y readiness
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H20; Pendiente → En curso.
+- **Avance y alcance:** Se crearán migraciones sobre el proveedor final, compatibles con el esquema anterior. La adopción de una BD EnsureCreated será explícita y verificará columnas, claves e índices antes de registrar la línea base. El arranque fallará si no puede inicializar y la salud distinguirá proceso de capacidad de consultar BD.
+- **Archivos y evidencia:** Este documento.
+- **Validación:** H21 confirmado; generado el SQL de creación original usando Pomelo/EF9 para una prueba de actualización sin pérdida.
+- **Pendientes o límites:** Migraciones, adopción, endpoints de salud y pruebas sobre base nueva y anterior.
+- **Próximo paso:** Validar migración inicial y rechazo de esquemas incompatibles en MySQL aislado.
+- **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
+
+### R043 — 2026-11-18 — H20 — Migraciones, adopción validada y readiness real
+
+- **Responsable:** Codex, por autorización del usuario.
+- **Ítem y estado:** H20; En curso → Completado.
+- **Avance y alcance:** Se incorporó migración inicial con tipos compatibles con Pomelo/EF9 y snapshot versionado. El arranque migra bases nuevas y rechaza bases anteriores sin adopción explícita. La adopción coteja tablas, columnas, tipos, nulabilidad, charset, defaults, identidades, índices y relaciones con la migración inicial, nunca con el modelo futuro, antes de registrar su historial. Fallar la inicialización detiene el proceso. Liveness permanece separado de readiness; API y archivos desconocidos no reciben HTML con 200.
+- **Archivos y evidencia:** [SchemaInitializer.cs](backend/Leart.Api/Data/SchemaInitializer.cs), [DesignTimeDbContextFactory.cs](backend/Leart.Api/Data/DesignTimeDbContextFactory.cs), [AppDbContextModelSnapshot.cs](backend/Leart.Api/Data/Migrations/AppDbContextModelSnapshot.cs), [AppDbContext.cs](backend/Leart.Api/Data/AppDbContext.cs), [Program.cs](backend/Leart.Api/Program.cs), [DatabaseReadinessCheck.cs](backend/Leart.Api/Services/DatabaseReadinessCheck.cs), [LegacySchema.sql](backend/Leart.Api.Tests/Fixtures/LegacySchema.sql), [MySqlIntegrationTests.cs](backend/Leart.Api.Tests/MySqlIntegrationTests.cs), [ReadinessTests.cs](backend/Leart.Api.Tests/ReadinessTests.cs), [nginx.conf](nginx.conf), [README.md](README.md)
+- **Validación:** 46/46 pruebas backend estándar pasan (1 integración omitida por defecto). Runner MySQL real pasa migración nueva, reinicio, importación del esquema Pomelo, rechazo de columna inesperada sin registrar historial y adopción conservando producto, tienda, pedido y referencia privada. Pruebas HTTP: readiness 503 ante fallo de BD, liveness 200, API inexistente 404 y arranque detenido por BD inaccesible. EF sin cambios pendientes; regresión Nginx pasa. Sin diagnósticos ni errores de diff.
+- **Pendientes o límites:** El DDL de MySQL no es transaccional: aplicar con copia verificada y una sola instancia, según README. No se migró ninguna BD productiva.
+- **Próximo paso:** H22: automatizar estas comprobaciones en CI y completar la protección transversal.
 - **Commit:** esta entrada se incluye con los cambios del ítem; consultar el historial Git por su ID.
 
 ### Plantilla para la siguiente entrada

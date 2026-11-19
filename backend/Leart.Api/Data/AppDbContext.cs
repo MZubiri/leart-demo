@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MySql.EntityFrameworkCore.Extensions;
 using Leart.Api.Models;
 
 namespace Leart.Api.Data;
@@ -18,6 +19,7 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
 
         modelBuilder.Entity<SiteSetting>(entity =>
         {
